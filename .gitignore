@@ -1,2 +1,5 @@
 /target/
 /src/main/resources/com/algo/170703171333_0001.pdf
+.classpath
+.project
+.settings/
