@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.perso.exception.FichierInvalideException;
+import com.perso.utils.ResultatPdf;
 
 @Service("ReaderFileService")
 public class ReaderFileServiceImpl implements ReaderFileService {
@@ -76,7 +78,9 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	 */
 	private void multiThreaded(File file) throws IOException {
 
-		this.transformService.extract(file);
+		List<ResultatPdf> resultList = this.transformService.extract(file);
+		
+		
 	}
 
 	/**
