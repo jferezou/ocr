@@ -31,7 +31,7 @@ public class TransformServiceImpl implements TransformService {
 		Ocr.setUp(); // one time setup
 		
 
-		Zone zoneEchantillon = new Zone(new Point(285, 339), new Point(795, 823));
+		Zone zoneEchantillon = new Zone(new Point(13, 133), new Point(370, 155));
 		LOGGER.info("zoneEchantillon : {}", zoneEchantillon.toString());
 		
 		Zone zone1 = new Zone(new Point(285, 339), new Point(795, 823));
