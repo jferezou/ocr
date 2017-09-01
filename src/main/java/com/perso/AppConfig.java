@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ComponentScan(basePackages = {"com.perso.*"})
-@PropertySource("classpath:com/algo/config.properties")
+@PropertySource("classpath:com/perso/config.properties")
 @EnableTransactionManagement
 public class AppConfig {
 
