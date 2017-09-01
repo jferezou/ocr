@@ -87,7 +87,7 @@ public class TransformServiceImpl implements TransformService {
 			result.setDominant(dominant);
 			result.setAccompagnement(accompagnement);
 			result.setIsole(isole);
-			result.setInterpretation(interpretations[i].split("Fait à")[0].split("tat[iï]on:")[1]);
+			result.setInterpretation(interpretations[i].split("Fait")[0].split("tat[iï]on:")[1]);
 			resultList.add(result);
 		}
 
