@@ -1,12 +1,6 @@
 package com.perso.service;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,8 +65,10 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 			// on lance un traitement parallèle
 			Function<Path, List<ResultatPdf>> myfunction = (a -> this.traitement(a));
-			List<List<ResultatPdf>> lineResult = IntStream.range(0, paths.size()).parallel().mapToObj(i -> myfunction.apply(paths.get(i))).collect(Collectors.toList());
+			List<List<ResultatPdf>> finalResults = IntStream.range(0, paths.size()).parallel().mapToObj(i -> myfunction.apply(paths.get(i))).collect(Collectors.toList());
 
+			// on ecrit les résultats
+			this.ecritureResultat(finalResults);
 		}
 
 	}
@@ -118,12 +114,15 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	}
 
 	private void ecritureResultat(List<List<ResultatPdf>> resultList) throws IOException {
+
 		try (final FileWriter fw = new FileWriter(this.fichierResultat)) {
-            CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Dominant", "Accompagnement", "Isole", "interpretation"));
+			fw.append("sep=;");
+			fw.append("\n");
+            CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Dominant","Erreur", "Accompagnement","Erreur", "Isole","Erreur", "interpretation"));
             // on écrit les résultats dans le fichier
 			for(List<ResultatPdf> premiereListe : resultList) {
 				for (ResultatPdf resultatPdf : premiereListe) {
-					CSVUtils.writeLine(fw, Arrays.asList(resultatPdf.getEchantillon(), resultatPdf.getDominant().toString(), resultatPdf.getAccompagnement().toString(), resultatPdf.getIsole().toString(), resultatPdf.getInterpretation()));
+					CSVUtils.writeResult(fw, resultatPdf);
 				}
 			}
         }

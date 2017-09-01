@@ -34,6 +34,7 @@ exclude(module: 'commons-logging')
     compile group: 'mysql', name: 'mysql-connector-java', version:'6.0.6'
     compile group: 'com.asprise.ocr', name: 'java-ocr-api', version:'15.3.0.3'
     compile group: 'org.apache.commons', name: 'commons-text', version:'1.1'
+    compile group: 'org.projectlombok', name: 'lombok' , version:'1.16.18'
     testCompile group: 'junit', name: 'junit', version:'4.12'
     testCompile group: 'org.assertj', name: 'assertj-core', version:'3.6.2'
     testCompile group: 'org.mockito', name: 'mockito-core', version:'1.10.19'
