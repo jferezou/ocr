@@ -1,0 +1,10 @@
+﻿Echantillon;Dominant;Accompagnement;Isole;interpretation
+ 31601466\n\n;[Sainfoin];[Papaver];[Réséda, Phacélie, Aigrernoine eupatoire, Mélîlot, Germandrée];\nSainfoin 76%, papaver 15.8%, r\u00E9s\u00E9da 3.7%, p}\n1ac\u00E9lie 3.2%.\n
+ 31601467\n\n;[Papaver];[Sainfoin];[Phacélie, Tamaris, Seringat, Rèéda, Tilleul, Nerprun, Sedum, Trèfle blanc, Aigremnine eupatoire, Luzerne, Sumac];\nPapaver 58.3%, sainfoin 20.4%, phac\u00E9lie 10%, tamaris 3.4%, seringat 3%.\nF\nV\n
+ 31601468\n\n;[];[];[Sainfoin, Phacélie, Papaver, Réséda, Ronce, Trèfle blanc, Sedum];\n\u00CE\nainfoin 74.7%, phac\u00E9lie 1\n
+ 31601469\n\n;[Sainfoin];[Phacélie];[Papaver, Trèfle blanc, Sedum];\nSainfoin 81.4\n-%, phac\u00E9l\u00EEe 17.1%.\nn..-\n
+ 31601470\n\n;[];[];[Sainfnîn, Phacélie, Sedum, Papaver, Ronce];\nSainfoin 78.5%, phacelie 20.3%.\n
+ 31601471\n\n;[Colza];[lSOIéS (<14%) I Marronnier, Fruitiers, Trèfle blanc, Erable, Papaver, Ræéda, Cornnuîller sanguin, Noyer];[];\nIl s\u2018agit d'un miel \u00E0 pr\u00E9dominance de colza.\nColza 7909%, marronnier 6%, fruitiers 3.4%, tr\u00E8fle blanc 3.4%.\n
+ 31601472\n\n;[];[];[Phacélie, Colza, Fruitiers, Marronnier, Réséda, Saule, Ronce, Sainfoin, Luzerne, Méiilot, Pin];\nIl s'agit d'un miel de fleurs.\nPhac\u00E9iie 45.4%, colza 42.8%, fruitiers 3%.\n
+ 31601473\n\n;[];[];[Colza, Myosotis, Papaver, Fruitiers, Trèfle blanc, Sainfoin, Lotier, Saule, Graminéæ, Réséda, Erable, Cercis, Phacèlie, Marronnier];\nII s'g'rt d'un miel de fleurs.\nAutres pollens: filleul, sureau.\nColza 78.9%, myosotis 7.1%, papaver 3.2%, fruitiers 2.4%, tr\u00E8fle blanc 2.4%.\n
+ 31601474\n;[Colza];[];[Phacélie, Sainfoin, Trèfle blanc, Papaver, Ronce, Pyracantha, Cornouiller sanguin, Thym, Fruitiers, Graminées];\nIl s'agit d'un miel de fleurs.\nColza 88.5%, phac\u00E9lie 4.7%, sainfoin 1.9%.\nK\n

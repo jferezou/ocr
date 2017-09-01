@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.perso'
+version = '1.0.0-0'
+
+description = "Module OCR de lecture de document"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile(group: 'org.springframework', name: 'spring-core', version:'4.3.7.RELEASE') {
+exclude(module: 'commons-logging')
+    }
+    compile group: 'org.springframework', name: 'spring-context', version:'4.3.7.RELEASE'
+    compile group: 'org.springframework', name: 'spring-test', version:'4.3.7.RELEASE'
+    compile group: 'org.springframework', name: 'spring-tx', version:'4.3.7.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version:'4.3.7.RELEASE'
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version:'1.2.2'
+    compile group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.7.25'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-core', version:'1.2.3'
+    compile group: 'org.apache.tika', name: 'tika-core', version:'1.14'
+    compile group: 'com.itextpdf', name: 'itext7-core', version:'7.0.2'
+    compile group: 'mysql', name: 'mysql-connector-java', version:'6.0.6'
+    compile group: 'com.asprise.ocr', name: 'java-ocr-api', version:'15.3.0.3'
+    compile group: 'org.apache.commons', name: 'commons-text', version:'1.1'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+    testCompile group: 'org.assertj', name: 'assertj-core', version:'3.6.2'
+    testCompile group: 'org.mockito', name: 'mockito-core', version:'1.10.19'
+}
