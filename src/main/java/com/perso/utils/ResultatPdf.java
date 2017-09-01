@@ -1,10 +1,14 @@
 package com.perso.utils;
 
+import java.util.List;
+
 public class ResultatPdf {
 
 	private String echantillon;
 	private String interpretation;
-	private String zone1;
+	private List<String> dominant;
+	private List<String> accompagnement;
+	private List<String> isole;
 	public String getEchantillon() {
 		return echantillon;
 	}
@@ -17,15 +21,27 @@ public class ResultatPdf {
 	public void setInterpretation(String interpretation) {
 		this.interpretation = interpretation;
 	}
-	public String getZone1() {
-		return zone1;
-	}
-	public void setZone1(String zone1) {
-		this.zone1 = zone1;
-	}
 	@Override
 	public String toString() {
-		return "ResultatPdf [echantillon=" + echantillon + ", zone1=" + zone1 + ", interpretation=" + interpretation + "]";
+		return this.echantillon+";"+ this.dominant+";"+ this.accompagnement+";"+ this.isole +";"+this.interpretation;
+	}
+	public List<String> getDominant() {
+		return dominant;
+	}
+	public void setDominant(List<String> dominant) {
+		this.dominant = dominant;
+	}
+	public List<String> getAccompagnement() {
+		return accompagnement;
+	}
+	public void setAccompagnement(List<String> accompagnement) {
+		this.accompagnement = accompagnement;
+	}
+	public List<String> getIsole() {
+		return isole;
+	}
+	public void setIsole(List<String> isole) {
+		this.isole = isole;
 	}
 
 	

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -54,11 +55,33 @@ public class TransformServiceImpl implements TransformService {
 		List<ResultatPdf> resultList = new ArrayList<>();
 		for(int i =0 ; i < echantillons.length; i++) {
 			ResultatPdf result = new ResultatPdf();
-			result.setEchantillon(echantillons[i].split(DEUX_POINTS)[1]);
-			result.setZone1(zone1S[i].replace(DEUX_POINTS+" ", "\n"));
-			result.setInterpretation(interpretations[i].split("Fait à")[0].split("tat[iï]on:")[1]);
+			result.setEchantillon(StringEscapeUtils.escapeJava(echantillons[i].split(DEUX_POINTS)[1]));
+			String[] tempZone1 = zone1S[i].replace(DEUX_POINTS+" ", DEUX_POINTS+" \n").split("\n");;
+			int curseur = 0;
+			List<String> dominant = new ArrayList<>();
+			List<String> accompagnement = new ArrayList();
+			List<String> isole = new ArrayList();
+			for (int j = 0 ; j < tempZone1.length ;j++) {
+				if(tempZone1[j].contains(DEUX_POINTS)) {
+					curseur++;
+				}
+				else {
+					if(curseur == 1) {
+						dominant.add(tempZone1[j]);
+					}
+					else if(curseur == 2) {
+						accompagnement.add(tempZone1[j]);
+					}
+					else if(curseur == 3) {
+						isole.add(tempZone1[j]);
+					}
+				}
+			}
+			result.setDominant(dominant);
+			result.setAccompagnement(accompagnement);
+			result.setIsole(isole);
+			result.setInterpretation(StringEscapeUtils.escapeJava(interpretations[i].split("Fait à")[0].split("tat[iï]on:")[1]));
 			resultList.add(result);
-			LOGGER.info(result.toString());
 		}
 
 		LOGGER.info("Fin du traitement du fichier {}", pdfFile.getName());
@@ -68,7 +91,7 @@ public class TransformServiceImpl implements TransformService {
 	
 	private String zoneReading(final String pdfDoc, final Zone zone) {
 		Ocr ocr = new Ocr(); // create a new OCR engine
-		ocr.startEngine(Ocr.LANGUAGE_FRA, Ocr.SPEED_FASTEST); 
+		ocr.startEngine(Ocr.LANGUAGE_FRA, Ocr.SPEED_SLOW); 
 		// int pageIndex, int startX, int startY, int width, int height
 		String s = ocr.recognize(pdfDoc, -1, zone.getDebut().getX(), zone.getDebut().getY(), zone.getWidth(), zone.getHeigth(), Ocr.RECOGNIZE_TYPE_TEXT, Ocr.OUTPUT_FORMAT_PLAINTEXT);
 		return s;

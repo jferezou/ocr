@@ -4,8 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.perso.exception.FichierInvalideException;
+import com.perso.utils.CSVUtils;
 import com.perso.utils.ResultatPdf;
 
 @Service("ReaderFileService")
@@ -80,7 +83,15 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 		List<ResultatPdf> resultList = this.transformService.extract(file);
 		
-		
+		try (final FileWriter fw = new FileWriter(this.fichierResultat)) {
+
+			CSVUtils.writeLine(fw, Arrays.asList("Echantillon","Dominant", "Accompagnement","Isole","interpretation"));
+			// on écrit les résultats dans le fichier
+			for (ResultatPdf resultatPdf : resultList) {
+				CSVUtils.writeLine(fw, Arrays.asList(resultatPdf.getEchantillon(), resultatPdf.getDominant().toString(), resultatPdf.getAccompagnement().toString(), resultatPdf.getIsole().toString(), resultatPdf.getInterpretation()));
+			}
+
+		}
 	}
 
 	/**
