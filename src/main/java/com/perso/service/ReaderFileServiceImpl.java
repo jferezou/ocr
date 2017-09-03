@@ -52,11 +52,12 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	TransformService transformService;
 
 	@Override
-	public void readAndLaunch() throws FichierInvalideException, TikaException, IOException {
+	public List<ResultatPdf> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
 		// Vérifie que le fichier existe
 		File file = new File(this.filePath);
 		String fileName = file.getName();
+		List<ResultatPdf> finalResults = new ArrayList<>();
 		if (!file.exists()) {
 			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.filePath);
 		}
@@ -85,8 +86,8 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 				// on lance un traitement parallèle
 				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
-				Function<Path, List<ResultatPdf>> myfunction = (a -> this.traitement(a));
-				List<List<ResultatPdf>> finalResults = IntStream.range(0, pathsTemp.size()).parallel().mapToObj(i -> myfunction.apply(pathsTemp.get(i))).collect(Collectors.toList());
+				Function<Path, ResultatPdf> myfunction = (a -> this.traitement(a));
+				finalResults = IntStream.range(0, pathsTemp.size()).parallel().filter(index -> Files.isRegularFile(pathsTemp.get(index))).mapToObj(i -> myfunction.apply(pathsTemp.get(i))).collect(Collectors.toList());
 
 				// on ecrit les résultats
 				this.ecritureResultat(finalResults);
@@ -95,7 +96,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
 			}
 		}
-
+		return finalResults;
 	}
 
 	private void splitPdf(final Path path){
@@ -128,24 +129,22 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	private List<ResultatPdf> traitement(Path path) {
-		List<ResultatPdf> resultList = new ArrayList<>();
-		if(Files.isRegularFile(path)) {
-			try {
-				File file = path.toFile();
-				boolean isPdf = checkIsPdfFile(file);
+	private ResultatPdf traitement(Path path) {
+		ResultatPdf result = new ResultatPdf();
+		try {
+			File file = path.toFile();
+			boolean isPdf = checkIsPdfFile(file);
 
-				if (isPdf) {
-					// traitement principal
-					resultList = this.transformService.extract(file);
-				}
-			} catch (TikaException e) {
-				LOGGER.error("Erreur lors du traitement du fichier", e);
-			} catch (IOException e) {
-				LOGGER.error("Erreur lors du traitement du fichier", e);
+			if (isPdf) {
+				// traitement principal
+				result = this.transformService.extract(file);
 			}
+		} catch (TikaException e) {
+			LOGGER.error("Erreur lors du traitement du fichier", e);
+		} catch (IOException e) {
+			LOGGER.error("Erreur lors du traitement du fichier", e);
 		}
-		return resultList;
+		return result;
 	}
 
 
@@ -161,17 +160,15 @@ public class ReaderFileServiceImpl implements ReaderFileService {
         return isPdf;
 	}
 
-	private void ecritureResultat(List<List<ResultatPdf>> resultList) throws IOException {
+	private void ecritureResultat(List<ResultatPdf> resultList) throws IOException {
 
 		try (final FileWriter fw = new FileWriter(this.fichierResultat)) {
 			fw.append("sep=;");
 			fw.append("\n");
             CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Dominant","Erreur", "Accompagnement","Erreur", "Isole","Erreur", "interpretation"));
             // on écrit les résultats dans le fichier
-			for(List<ResultatPdf> premiereListe : resultList) {
-				for (ResultatPdf resultatPdf : premiereListe) {
+			for (ResultatPdf resultatPdf : resultList) {
 					CSVUtils.writeResult(fw, resultatPdf);
-				}
 			}
         }
 	}

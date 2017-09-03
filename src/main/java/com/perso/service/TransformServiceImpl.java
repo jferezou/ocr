@@ -33,7 +33,7 @@ public class TransformServiceImpl implements TransformService {
 	/**
 	 * Permet de reconnaitre le texte
 	 */
-	public List<ResultatPdf> extract(final File pdfFile) throws IOException {
+	public ResultatPdf extract(final File pdfFile) throws IOException {
 		LOGGER.info("Début du traitement du fichier {}", pdfFile.getPath());
 		
 		Ocr.setUp(); // one time setup
@@ -55,11 +55,16 @@ public class TransformServiceImpl implements TransformService {
 		String[] echantillons = zoneEchantillonValue.split(PAGE_SEPARATEUR);
 		String[] zone1S = zone1Value.split(PAGE_SEPARATEUR);
 		String[] interpretations = zoneInterpretationValue.split(PAGE_SEPARATEUR);
-		List<ResultatPdf> resultList = new ArrayList<>();
+		ResultatPdf result = new ResultatPdf();
 		for(int i =0 ; i < echantillons.length; i++) {
-			ResultatPdf result = new ResultatPdf();
 			result.setPdfFilePath(pdfFile.getPath());
-			result.setEchantillon(echantillons[i].split(DEUX_POINTS)[1].replace("\n","").replace(" ",""));
+			final String[] s = echantillons[i].split(DEUX_POINTS);
+			if(s.length >1) {
+				result.setEchantillon(s[1].replace("\n", "").replace(" ", ""));
+			}
+			else {
+				result.setEchantillon(s[0].replace("\n", "").replace(" ", ""));
+			}
 			String[] tempZone1 = zone1S[i].replace(DEUX_POINTS+" ", DEUX_POINTS+" \n").split("\n");;
 			int curseur = 0;
             List<ZoneDroiteObj> dominant = new ArrayList<>();
@@ -96,11 +101,10 @@ public class TransformServiceImpl implements TransformService {
 			else {
 				result.setInterpretation(split[0]);
 			}
-			resultList.add(result);
 		}
 
 		LOGGER.info("Fin du traitement du fichier {}", pdfFile.getName());
-		return resultList;
+		return result;
 	}
 
 	
