@@ -9,6 +9,7 @@ import java.util.List;
 @Setter
 public class ResultatPdf {
 
+	private String pdfFilePath;
 	private String echantillon;
 	private String interpretation;
 	private List<ZoneDroiteObj> dominant;

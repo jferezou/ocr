@@ -58,6 +58,7 @@ public class TransformServiceImpl implements TransformService {
 		List<ResultatPdf> resultList = new ArrayList<>();
 		for(int i =0 ; i < echantillons.length; i++) {
 			ResultatPdf result = new ResultatPdf();
+			result.setPdfFilePath(pdfFile.getPath());
 			result.setEchantillon(echantillons[i].split(DEUX_POINTS)[1].replace("\n","").replace(" ",""));
 			String[] tempZone1 = zone1S[i].replace(DEUX_POINTS+" ", DEUX_POINTS+" \n").split("\n");;
 			int curseur = 0;
@@ -87,7 +88,14 @@ public class TransformServiceImpl implements TransformService {
 			result.setDominant(dominant);
 			result.setAccompagnement(accompagnement);
 			result.setIsole(isole);
-			result.setInterpretation(interpretations[i].split("Fait")[0].split("tat[iï]on:")[1]);
+			final String fait = interpretations[i].split("Fait")[0];
+			final String[] split = fait.split("tat[iï]on:");
+			if(split.length > 1) {
+				result.setInterpretation(split[1]);
+			}
+			else {
+				result.setInterpretation(split[0]);
+			}
 			resultList.add(result);
 		}
 

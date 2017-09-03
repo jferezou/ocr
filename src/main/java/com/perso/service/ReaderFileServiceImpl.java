@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.xobject.PdfImageXObject;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -36,6 +40,8 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private String filePath;
 	@Value("${fichierResultat}")
 	private String fichierResultat;
+	@Value("${temp.dir}")
+	private String tempDir;
 
 	@Value("${monoThread}")
 	private boolean monoThreaded;
@@ -63,14 +69,56 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			// on recupère la liste de fichiers
 			List<Path> paths = Files.walk(Paths.get(this.filePath)).collect(Collectors.toList());
 
-			// on lance un traitement parallèle
-			Function<Path, List<ResultatPdf>> myfunction = (a -> this.traitement(a));
-			List<List<ResultatPdf>> finalResults = IntStream.range(0, paths.size()).parallel().mapToObj(i -> myfunction.apply(paths.get(i))).collect(Collectors.toList());
+			File tempsDir = new File(this.tempDir);
+			if(tempsDir.isDirectory()) {
+				// on supprime le contenu du temp dir
+				for(File fileTemp : tempsDir.listFiles()) {
+					fileTemp.delete();
+				}
 
-			// on ecrit les résultats
-			this.ecritureResultat(finalResults);
+				// pour chaque fichier, on les split en page dans le temp dir
+				for(Path path : paths) {
+					if(Files.isRegularFile(path)) {
+						this.splitPdf(path);
+					}
+				}
+
+				// on lance un traitement parallèle
+				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
+				Function<Path, List<ResultatPdf>> myfunction = (a -> this.traitement(a));
+				List<List<ResultatPdf>> finalResults = IntStream.range(0, pathsTemp.size()).parallel().mapToObj(i -> myfunction.apply(pathsTemp.get(i))).collect(Collectors.toList());
+
+				// on ecrit les résultats
+				this.ecritureResultat(finalResults);
+			}
+			else {
+				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
+			}
 		}
 
+	}
+
+	private void splitPdf(final Path path){
+		try {
+			File inFile= path.toFile();
+			boolean isPdf = checkIsPdfFile(inFile);
+			if(isPdf && inFile.isFile()) {
+				PdfDocument pdfDoc = new PdfDocument(new PdfReader(inFile.getPath()));
+				int nbPages = pdfDoc.getNumberOfPages();
+				String fileName = inFile.getName().split(".pdf")[0];
+
+				for (int page = 1; page <= nbPages; page++) {
+					String name = this.tempDir + "//" + fileName + "_" + page + ".pdf";
+					PdfDocument newPdfDoc = new PdfDocument(new PdfWriter(name));
+					pdfDoc.copyPagesTo(page,page, newPdfDoc);
+					newPdfDoc.close();
+				}
+			}
+		} catch (TikaException e) {
+			LOGGER.error("Erreur lors du traitement du fichier", e);
+		} catch (IOException e) {
+			LOGGER.error("Erreur lors du traitement du fichier", e);
+		}
 	}
 
 	/**
