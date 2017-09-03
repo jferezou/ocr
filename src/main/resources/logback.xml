@@ -9,7 +9,7 @@
   </appender>
 	<appender name="FILE-AUDIT"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>D:\\developpement\\logs\\debug.log</file>
+		<file>D:\\dev\\logs\\ocr.log</file>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       		<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
 		</encoder>

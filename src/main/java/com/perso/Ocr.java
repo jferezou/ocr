@@ -5,7 +5,12 @@ import java.util.Date;
 import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.context.annotation.*;
 import com.perso.exception.FichierInvalideException;
 import com.perso.service.ReaderFileService;
 import com.perso.service.ReaderFileServiceImpl;
@@ -15,15 +20,17 @@ import com.perso.service.ReaderFileServiceImpl;
  * @author jferezou
  *
  */
+@SpringBootApplication
+@ComponentScan(basePackages = {"com.perso.*"})
+@PropertySource("classpath:com/perso/config.properties")
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
+@Import({ AppConfig.class, RestOcr.class })
 public class Ocr {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Ocr.class);
 
-	private Ocr(){
-		
-	}
 	
 	public static void main(String[] args) {
-		new SpringRunner(Ocr.class, AppConfig.class).run(args);
+		SpringApplication.run(Ocr.class,args);
 	}
 
 	
