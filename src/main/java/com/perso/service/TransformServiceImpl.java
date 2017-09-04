@@ -55,7 +55,7 @@ public class TransformServiceImpl implements TransformService {
         result.setPdfFilePath(pdfFile.getPath());
         String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
         zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
-        zoneEchantillonValueTempName.replace("\n","");
+        zoneEchantillonValueTempName = zoneEchantillonValueTempName.replace("\n","");
         result.setEchantillon(zoneEchantillonValueTempName);
 
         String[] tempZone1 = zone1Value.split("\n");
