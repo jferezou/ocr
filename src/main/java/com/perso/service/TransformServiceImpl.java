@@ -3,11 +3,10 @@ package com.perso.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.perso.utils.ZoneDroiteObj;
+import com.perso.utils.CompositionObj;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,10 +38,10 @@ public class TransformServiceImpl implements TransformService {
 		Ocr.setUp(); // one time setup
 		
 
-		Zone zoneEchantillon = new Zone(new Point(13, 133), new Point(370, 155));
+		Zone zoneEchantillon = new Zone(new Point(540, 114), new Point(807, 140));
 		LOGGER.info("zoneEchantillon : {}", zoneEchantillon.toString());
 		
-		Zone zone1 = new Zone(new Point(285, 339), new Point(795, 823));
+		Zone zone1 = new Zone(new Point(500, 370), new Point(800, 837));
 		LOGGER.info("Zone1 : {}", zone1.toString());
 		
 		Zone zoneInterpretation = new Zone(new Point(0, 795), new Point(800, 1150));
@@ -52,57 +51,85 @@ public class TransformServiceImpl implements TransformService {
 		String zone1Value = this.zoneReading(pdfFile.getPath(), zone1);				
 		String zoneInterpretationValue = this.zoneReading(pdfFile.getPath(), zoneInterpretation);
 
-		String[] echantillons = zoneEchantillonValue.split(PAGE_SEPARATEUR);
-		String[] zone1S = zone1Value.split(PAGE_SEPARATEUR);
-		String[] interpretations = zoneInterpretationValue.split(PAGE_SEPARATEUR);
 		ResultatPdf result = new ResultatPdf();
-		for(int i =0 ; i < echantillons.length; i++) {
-			result.setPdfFilePath(pdfFile.getPath());
-			final String[] s = echantillons[i].split(DEUX_POINTS);
-			if(s.length >1) {
-				result.setEchantillon(s[1].replace("\n", "").replace(" ", ""));
-			}
-			else {
-				result.setEchantillon(s[0].replace("\n", "").replace(" ", ""));
-			}
-			String[] tempZone1 = zone1S[i].replace(DEUX_POINTS+" ", DEUX_POINTS+" \n").split("\n");;
-			int curseur = 0;
-            List<ZoneDroiteObj> dominant = new ArrayList<>();
-            List<ZoneDroiteObj> accompagnement = new  ArrayList<>();
-            List<ZoneDroiteObj> isole = new  ArrayList<>();
-			for (int j = 0 ; j < tempZone1.length ;j++) {
-				if(tempZone1[j].contains(DEUX_POINTS) || tempZone1[j].contains("%") || tempZone1[j].contains("<")) {
-					curseur++;
-				}
-				else {
-                    boolean valid = possibleValues.contains(tempZone1[j]);
-                    ZoneDroiteObj zoneObj = new ZoneDroiteObj();
-                    zoneObj.setValue(tempZone1[j]);
-                    zoneObj.setValid(valid);
-					if(curseur == 1) {
-						dominant.add(zoneObj);
-					}
-					else if(curseur == 2) {
-						accompagnement.add(zoneObj);
-					}
-					else if(curseur == 3) {
-						isole.add(zoneObj);
-					}
-				}
-			}
-			result.setDominant(dominant);
-			result.setAccompagnement(accompagnement);
-			result.setIsole(isole);
-			final String fait = interpretations[i].split("Fait")[0];
-			final String[] split = fait.split("tat[iï]on:");
-			if(split.length > 1) {
-				result.setInterpretation(split[1]);
-			}
-			else {
-				result.setInterpretation(split[0]);
-			}
-		}
+        result.setPdfFilePath(pdfFile.getPath());
+        String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
+        zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
+        zoneEchantillonValueTempName.replace("\n","");
+        result.setEchantillon(zoneEchantillonValueTempName);
 
+        String[] tempZone1 = zone1Value.split("\n");
+
+        List<CompositionObj> compositionList = new ArrayList<>();
+        for (int j = 0 ; j < tempZone1.length ;j++) {
+            if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
+                CompositionObj zoneObj = new CompositionObj();
+                boolean valid = false;
+                for(String valeurPossible : this.possibleValues) {
+                    String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase());
+                    String currentValueTemp = StringUtils.stripAccents(tempZone1[j].toLowerCase());
+                    if(tempP.equals(currentValueTemp)) {
+                        zoneObj.setValue(valeurPossible);
+                        valid = true;
+                    }
+                }
+
+                if(!valid) {
+                    zoneObj.setValue(tempZone1[j]);
+                }
+                zoneObj.setValid(valid);
+                compositionList.add(zoneObj);
+            }
+        }
+
+        // on repere la ligne d'interpretation (il doit y avoir des % et des ,)
+        final String[] splitedInterpretationLine =  zoneInterpretationValue.split("\n");
+
+        for (int j = 0 ; j < splitedInterpretationLine.length ;j++) {
+            String line = splitedInterpretationLine[j];
+            if(line.contains("%")) {
+                LOGGER.debug("line = {}", line);
+                // on supprime les ,
+                line = line.replace(",","");
+                // on splite par rapport aux %
+                String[] splitedLine = line.split("%");
+
+                // en theorie on doit se retouver avec qq de la forme {Nom} {Valeur}
+                for (int i = 0 ; i < splitedLine.length ;i++) {
+                    String currentValue = splitedLine[i];
+                    LOGGER.debug("currentValue = {}", currentValue);
+                    int lastSpaceIndex = currentValue.lastIndexOf(" ");
+                    LOGGER.debug("lastIndex = {}", lastSpaceIndex);
+                    if(lastSpaceIndex > -1) {
+                        String name = currentValue.substring(0, lastSpaceIndex);
+                        LOGGER.debug("name = {}", name);
+                        String percentValue = currentValue.substring(lastSpaceIndex, currentValue.length());
+
+                        double percent = 0;
+                        try {
+                            percent = Double.parseDouble(percentValue.replace(" ",""));
+                        }
+                        catch(NumberFormatException e) {
+                            LOGGER.warn("Erreur de parsing du nombre {}",percentValue);
+                        }
+                        String tempName = StringUtils.stripAccents(name.toLowerCase());
+                        tempName = StringUtils.stripStart(tempName, " ");
+                        tempName = StringUtils.stripEnd(tempName, " ");
+                        for (CompositionObj comp : compositionList) {
+                            if (StringUtils.stripAccents(comp.getValue().toLowerCase()).equals(tempName)) {
+                                comp.setPercentage(percent);
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        for (CompositionObj comp : compositionList) {
+            comp.calculateType();
+        }
+        result.setCompositions(compositionList);
 		LOGGER.info("Fin du traitement du fichier {}", pdfFile.getName());
 		return result;
 	}

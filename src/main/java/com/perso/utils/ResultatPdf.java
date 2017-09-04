@@ -11,20 +11,6 @@ public class ResultatPdf {
 
 	private String pdfFilePath;
 	private String echantillon;
-	private String interpretation;
-	private List<ZoneDroiteObj> dominant;
-	private List<ZoneDroiteObj> accompagnement;
-	private List<ZoneDroiteObj> isole;
+	private List<CompositionObj> compositions;
 
-
-	@Override
-	public String toString() {
-		return this.echantillon+";"+ this.dominant+";"+ this.accompagnement+";"+ this.isole +";"+this.interpretation;
-	}
-
-	
-	
-	
-	
-	
 }

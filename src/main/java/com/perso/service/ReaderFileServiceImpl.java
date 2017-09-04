@@ -114,6 +114,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 					pdfDoc.copyPagesTo(page,page, newPdfDoc);
 					newPdfDoc.close();
 				}
+				pdfDoc.close();
 			}
 		} catch (TikaException e) {
 			LOGGER.error("Erreur lors du traitement du fichier", e);
@@ -165,7 +166,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 		try (final FileWriter fw = new FileWriter(this.fichierResultat)) {
 			fw.append("sep=;");
 			fw.append("\n");
-            CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Dominant","Erreur", "Accompagnement","Erreur", "Isole","Erreur", "interpretation"));
+            CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Composition","Pourcentage", "Type"));
             // on écrit les résultats dans le fichier
 			for (ResultatPdf resultatPdf : resultList) {
 					CSVUtils.writeResult(fw, resultatPdf);

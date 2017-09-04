@@ -24,7 +24,7 @@ import com.perso.service.ReaderFileServiceImpl;
 @ComponentScan(basePackages = {"com.perso.*"})
 @PropertySource("classpath:com/perso/config.properties")
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,HibernateJpaAutoConfiguration.class})
-@Import({ AppConfig.class, RestOcr.class })
+@Import({ AppConfig.class})
 public class Ocr {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Ocr.class);
 
