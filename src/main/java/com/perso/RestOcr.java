@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Service
 @Path("/traitement")
@@ -31,8 +31,9 @@ public class RestOcr {
 
     @GET
     @Path("/t1")
+    @Produces(MediaType.APPLICATION_JSON)
     @ServiceMethod
-    public Response transmettreEtatRame(@QueryParam("pdfName") final String pdfName)  throws InvalidFormatException {
+    public Response transmettreEtatRame()  throws InvalidFormatException {
 
         List<ResultatPdf> results = null;
         try {
@@ -42,6 +43,21 @@ public class RestOcr {
         }
         // Réponse du service
         return ok(results);
+    }
+
+    @GET
+    @Path("/getpdf")
+    @Produces("application/pdf")
+    @ServiceMethod
+    public Response getFile(@QueryParam("pdfName") final String pdfName) {
+
+        File file = new File("D:\\dev\\temp\\"+pdfName);
+
+        Response.ResponseBuilder response = Response.ok((Object) file);
+//        response.header("Content-Disposition", "attachment; filename=new-android-book.pdf");
+        response.header("Access-Control-Allow-Origin", "*");
+        return response.build();
+
     }
 
     /**
