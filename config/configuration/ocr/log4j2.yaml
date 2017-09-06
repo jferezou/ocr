@@ -1,8 +1,8 @@
 Configuration:
   properties:
     property:
-      - name: "D:\\dev\\logs"
-        value: logs
+      - name: "log.path"
+        value: "D:/dev/logs"
       - name: "app"
         value: OCR
       - name: "log.file"
