@@ -1,0 +1,66 @@
+Configuration:
+  properties:
+    property:
+      - name: "D:\\dev\\logs"
+        value: logs
+      - name: "app"
+        value: OCR
+      - name: "log.file"
+        value: "${log.path}/${app}.log"
+      - name: "log.file.pattern"
+        value: "${log.path}/${app}-%d{dd-MM-yyyy}-%i.log.gz"
+      - name: "json.log.file"
+        value: "${log.path}/${app}.json.log"
+      - name: "json.log.file.pattern"
+        value: "${log.path}/${app}-%d{dd-MM-yyyy}-%i.json.log.gz"
+
+  Appenders:
+
+    Console:
+      name: MainConsoleApp
+      target: SYSTEM_OUT
+      follow: true
+      PatternLayout:
+        pattern: "%clr{%d{ISO8601}}{faint} [T-%replace{%t}{.*\\-}{}] %clr{%-5level} %30.30logger{2} | %X{clientIP} | %X{user}%marker-- %msg%n"
+
+    RollingFile:
+      - name: MainFileApp
+        fileName: "${log.file}"
+        filePattern: "${log.file.pattern}"
+        PatternLayout:
+          pattern: "%d{ISO8601} [T-%replace{%t}{.*\\-}{}] %-5level %30.30logger{2} | %X{clientIP} | %X{user}%marker-- %msg%n"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 1
+          SizeBasedTriggeringPolicy:
+            size: "250 MB"
+        DefaultRolloverStrategy:
+          max: 20
+      - name: MainJSONFileApp
+        fileName: "${json.log.file}"
+        filePattern: "${json.log.file.pattern}"
+        JSONLayout:
+          complete: false
+          compact: true
+          eventEol: true
+          properties: true
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 1
+          SizeBasedTriggeringPolicy:
+            size: "10 MB"
+        DefaultRolloverStrategy:
+          max: 20
+
+  Loggers:
+    Root:
+      AppenderRef:
+        - ref: MainJSONFileApp
+        - ref: MainFileApp
+        - ref: MainConsoleApp
+      level: info
+    Logger:
+      - name: "org.springframework.security"
+      - name: "org.springframework"
+      - name: "com.perso"
+        level: debug

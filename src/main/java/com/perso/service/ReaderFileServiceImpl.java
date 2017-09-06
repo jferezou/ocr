@@ -36,17 +36,13 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	
 	private MediaType APPLICATION_PDF = MediaType.parse("application/pdf");
 
-	@Value("${fichier}")
+	@Value("${dossier.entrant}")
 	private String filePath;
-	@Value("${fichierResultat}")
+	@Value("${fichier.resultat}")
 	private String fichierResultat;
-	@Value("${temp.dir}")
+	@Value("${dossier.temporaire}")
 	private String tempDir;
 
-	@Value("${monoThread}")
-	private boolean monoThreaded;
-	@Value("${treadNumber}")
-	private int treadNumber;
 
 	@Autowired
 	TransformService transformService;

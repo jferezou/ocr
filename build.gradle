@@ -7,6 +7,17 @@ buildscript {
     }
 }
 
+configurations {
+    lombok
+    cxf
+    jackson
+    log4j
+    apacheCommons
+    springCommons
+    javaxValidation
+    all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -28,32 +39,76 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    ver = [
+            cxf  : '3.1.11',
+            log4j: '2.7'
+    ]
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile(group: 'org.springframework', name: 'spring-core', version:'4.3.7.RELEASE') {
-exclude(module: 'commons-logging')
-    }
-    compile group: 'org.springframework', name: 'spring-context', version:'4.3.7.RELEASE'
-    compile group: 'org.springframework', name: 'spring-test', version:'4.3.7.RELEASE'
-    compile group: 'org.springframework', name: 'spring-tx', version:'4.3.7.RELEASE'
-    compile group: 'org.springframework', name: 'spring-jdbc', version:'4.3.7.RELEASE'
-    compile group: 'commons-dbcp', name: 'commons-dbcp', version:'1.2.2'
-    compile group: 'org.slf4j', name: 'jcl-over-slf4j', version:'1.7.25'
-    compile group: 'ch.qos.logback', name: 'logback-classic', version:'1.2.3'
-    compile group: 'ch.qos.logback', name: 'logback-core', version:'1.2.3'
     compile group: 'org.apache.tika', name: 'tika-core', version:'1.14'
     compile group: 'com.itextpdf', name: 'itext7-core', version:'7.0.2'
-    compile group: 'mysql', name: 'mysql-connector-java', version:'6.0.6'
     compile group: 'com.asprise.ocr', name: 'java-ocr-api', version:'15.3.0.3'
-    compile group: 'org.apache.commons', name: 'commons-text', version:'1.1'
-    compile group: 'org.projectlombok', name: 'lombok' , version:'1.16.18'
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1'
-    compile("org.springframework.boot:spring-boot-starter-web")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version: '1.5.6.RELEASE'
-    testCompile group: 'junit', name: 'junit', version:'4.12'
-    testCompile group: 'org.assertj', name: 'assertj-core', version:'3.6.2'
-    testCompile group: 'org.mockito', name: 'mockito-core', version:'1.10.19'
+    compile("org.springframework.boot:spring-boot-starter-web"){
+        exclude module: "spring-boot-starter-logging"
+        exclude module: "logback-classic"
+    }
+    compile("org.springframework.boot:spring-boot-starter-actuator"){
+        exclude module: "spring-boot-starter-logging"
+        exclude module: "logback-classic"
+    }
+
+    compile(group: 'javax.servlet', name: 'javax.servlet-api', version:'3.1.0')
+
+    lombok(group: 'org.projectlombok', name: 'lombok', version: '1.16.16')
+
+    cxf(group: 'org.apache.cxf', name: 'cxf-core', version: ver.cxf)
+    cxf(group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: ver.cxf)
+    cxf(group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: ver.cxf)
+    cxf(group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: ver.cxf)
+    cxf(group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: ver.cxf)
+    cxf(group: 'org.apache.cxf.xjc-utils', name: 'cxf-xjc-runtime', version: '3.1.0')
+
+    jackson(group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.2.2')
+    jackson(group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-base', version: '2.2.2')
+
+    log4j(group: 'org.apache.logging.log4j', name: 'log4j-api', version: ver.log4j)
+    log4j(group: 'org.apache.logging.log4j', name: 'log4j-core', version: ver.log4j)
+    log4j(group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: ver.log4j)
+    log4j(group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: ver.log4j)
+    log4j(group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: ver.log4j)
+
+    apacheCommons(group: 'org.apache.poi', name: 'poi', version: '3.7')
+    apacheCommons(group: 'commons-io', name: 'commons-io', version: '2.5')
+    apacheCommons(group: 'org.apache.commons', name: 'commons-lang3', version: '3.5')
+    apacheCommons(group: 'org.apache.commons', name: 'commons-collections4', version: '4.1')
+
+    springCommons(group: 'org.springframework', name: 'spring-orm', version: '4.3.8.RELEASE')
+    springCommons(group: 'org.springframework', name: 'spring-beans', version: '4.3.8.RELEASE')
+    springCommons(group: 'org.springframework', name: 'spring-aop', version: '4.3.8.RELEASE')
+    springCommons(group: 'org.springframework', name: 'spring-context', version: '4.3.8.RELEASE')
+    springCommons(group: 'org.springframework', name: 'spring-jdbc', version: '4.3.8.RELEASE')
+    springCommons(group: 'org.springframework.security', name: 'spring-security-web', version: '4.2.2.RELEASE')
+    springCommons(group: 'org.springframework.session', name: 'spring-session', version: '1.3.1.RELEASE')
+
+    javaxValidation(group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final')
+    javaxValidation(group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final')
+    javaxValidation(group: 'org.glassfish.web', name: 'el-impl', version: '2.2')
+
+
+    compile(configurations.lombok)
+    compile(configurations.cxf)
+    compile(configurations.jackson)
+    compile(configurations.log4j)
+    compile(configurations.apacheCommons)
+    compile(configurations.springCommons)
+    compile(configurations.javaxValidation)
+    compile(group: 'org.yaml', name: 'snakeyaml', version: '1.14')
+    compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.7')
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security')
 }

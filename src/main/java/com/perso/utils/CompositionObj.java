@@ -1,9 +1,16 @@
 package com.perso.utils;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class CompositionObj {
+import java.io.Serializable;
+
+@Getter
+@Setter
+public class CompositionObj implements Serializable {
+
+    /** Numéro de sérialisation */
+    private static final long serialVersionUID = -1;
 
 
     private boolean isValid;

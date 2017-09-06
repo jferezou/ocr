@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.perso.config.ListeFleursConfig;
 import com.perso.utils.CompositionObj;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.asprise.ocr.Ocr;
@@ -23,10 +25,11 @@ public class TransformServiceImpl implements TransformService {
 	private static final String DEUX_POINTS=":";
 	private static final String PAGE_SEPARATEUR = "----page-separator----";
 
-	@Value("${options}")
+	@Value("${ocr.options}")
 	private String options;
-    @Value("#{'${possibleValues}'.split(';')}")
-	private List<String> possibleValues;
+
+	@Autowired
+	private ListeFleursConfig listeFleurs;
 
 	@Override
 	/**
@@ -65,7 +68,7 @@ public class TransformServiceImpl implements TransformService {
             if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
                 CompositionObj zoneObj = new CompositionObj();
                 boolean valid = false;
-                for(String valeurPossible : this.possibleValues) {
+                for(String valeurPossible : this.listeFleurs.getList()) {
                     String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase());
                     String currentValueTemp = StringUtils.stripAccents(tempZone1[j].toLowerCase());
                     if(tempP.equals(currentValueTemp)) {

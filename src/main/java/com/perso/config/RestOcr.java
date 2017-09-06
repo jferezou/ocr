@@ -1,11 +1,14 @@
-package com.perso;
+package com.perso.config;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
 import com.perso.service.ReaderFileService;
 import com.perso.service.TransformServiceImpl;
+import com.perso.utils.ResponseTraitement;
 import com.perso.utils.ResultatPdf;
+import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
+import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +36,21 @@ public class RestOcr {
     @Path("/t1")
     @Produces(MediaType.APPLICATION_JSON)
     @ServiceMethod
-    public Response transmettreEtatRame()  throws InvalidFormatException {
+    public Response lancerTraitement()  throws InvalidFormatException {
 
-        List<ResultatPdf> results = null;
+        ResponseTraitement response = new ResponseTraitement();
         try {
-            results = this.readerFileService.readAndLaunch();
+            List<ResultatPdf> results = this.readerFileService.readAndLaunch();
+            response.setResultats(results);
         } catch (FichierInvalideException | TikaException | IOException e) {
             LOGGER.error("", e);
         }
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity(response);
+        responseBuilder.status(200);
+
         // Réponse du service
-        return ok(results);
+        return responseBuilder.build();
     }
 
     @GET
@@ -53,10 +61,15 @@ public class RestOcr {
 
         File file = new File("D:\\dev\\temp\\"+pdfName);
 
-        Response.ResponseBuilder response = Response.ok((Object) file);
-//        response.header("Content-Disposition", "attachment; filename=new-android-book.pdf");
-        response.header("Access-Control-Allow-Origin", "*");
-        return response.build();
+//        Response.ResponseBuilder response = Response.ok(file);
+//        response.header("Access-Control-Allow-Origin", "*");
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity(file);
+        responseBuilder.status(200);
+        responseBuilder.header("Access-Control-Allow-Origin", "*");
+
+        // Réponse du service
+        return responseBuilder.build();
 
     }
 
