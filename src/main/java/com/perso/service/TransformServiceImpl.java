@@ -55,6 +55,7 @@ public class TransformServiceImpl implements TransformService {
 		String zoneInterpretationValue = this.zoneReading(pdfFile.getPath(), zoneInterpretation);
 
 		ResultatPdf result = new ResultatPdf();
+        result.setPdfFileName(pdfFile.getName());
         result.setPdfFilePath(pdfFile.getPath());
         String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
         zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
