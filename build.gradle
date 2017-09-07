@@ -100,7 +100,9 @@ dependencies {
     javaxValidation(group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final')
     javaxValidation(group: 'org.glassfish.web', name: 'el-impl', version: '2.2')
 
-
+    compile (group: 'net.sourceforge.tess4j', name: 'tess4j', version: '3.4.0'){
+        exclude module: "logback-classic"
+    }
     compile(configurations.lombok)
     compile(configurations.cxf)
     compile(configurations.jackson)

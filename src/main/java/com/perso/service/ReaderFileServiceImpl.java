@@ -1,5 +1,7 @@
 package com.perso.service;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +30,8 @@ import org.springframework.stereotype.Service;
 import com.perso.exception.FichierInvalideException;
 import com.perso.utils.CSVUtils;
 import com.perso.utils.ResultatPdf;
+
+import javax.imageio.ImageIO;
 
 @Service("ReaderFileService")
 public class ReaderFileServiceImpl implements ReaderFileService {
@@ -83,7 +87,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				// on lance un traitement parallèle
 				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
 				Function<Path, ResultatPdf> myfunction = (a -> this.traitement(a));
-				finalResults = IntStream.range(0, pathsTemp.size()).parallel().filter(index -> Files.isRegularFile(pathsTemp.get(index))).mapToObj(i -> myfunction.apply(pathsTemp.get(i))).collect(Collectors.toList());
+				finalResults = IntStream.range(0, pathsTemp.size()).filter(index -> Files.isRegularFile(pathsTemp.get(index))).mapToObj(i -> myfunction.apply(pathsTemp.get(i))).collect(Collectors.toList());
 
 				// on ecrit les résultats
 				this.ecritureResultat(finalResults);
@@ -109,6 +113,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 					PdfDocument newPdfDoc = new PdfDocument(new PdfWriter(name));
 					pdfDoc.copyPagesTo(page,page, newPdfDoc);
 					newPdfDoc.close();
+
 				}
 				pdfDoc.close();
 			}

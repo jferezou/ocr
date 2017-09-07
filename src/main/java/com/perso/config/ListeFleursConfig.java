@@ -7,17 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties(prefix = "segment")
+@ConfigurationProperties(prefix = "liste")
 public class ListeFleursConfig {
 
-    private List<String> list;
+    private List<String> fleurs;
 
     ListeFleursConfig() {
-        this.list = new ArrayList<>();
+        this.fleurs = new ArrayList<>();
     }
 
-    public List<String> getList() {
-        return this.list;
+    public List<String> getFleurs() {
+        return this.fleurs;
     }
 
 }

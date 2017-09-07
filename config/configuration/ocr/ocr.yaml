@@ -1,8 +1,8 @@
 dossier:
-  entrant: D:\\developpement\\ocr\\src\\main\\resources\\com\\perso\\
-  temporaire: D:\\developpement\\temp
+  entrant: D:\\dev\\ocr\\src\\main\\resources\\com\\perso\\
+  temporaire: D:\\dev\\temp
 fichier:
-  resultat: D:\\developpement\\ocr\\src\\main\\resources\\com\\Result.csv
+  resultat: D:\\dev\\ocr\\src\\main\\resources\\com\\Result.csv
 
 ocr:
   #PROP_IMG_PREPROCESS_TYPE=custom|PROP_IMG_PREPROCESS_CUSTOM_CMDS=scale(10);PROP_IMG_PREPROCESS_CUSTOM_CMDS=invert();default()
@@ -41,3 +41,4 @@ liste:
     - Noyer
     - Réséda
     - Cornouiller sanguin
+    - Pyracanthe

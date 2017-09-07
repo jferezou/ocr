@@ -1,5 +1,6 @@
 package com.perso.service;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.util.List;
 
 import com.perso.config.ListeFleursConfig;
 import com.perso.utils.CompositionObj;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +42,7 @@ public class TransformServiceImpl implements TransformService {
 	public ResultatPdf extract(final File pdfFile) throws IOException {
 		LOGGER.info("Début du traitement du fichier {}", pdfFile.getPath());
 		
-		Ocr.setUp(); // one time setup
+//		Ocr.setUp(); // one time setup
 		
 
 		Zone zoneEchantillon = new Zone(new Point(540, 114), new Point(807, 140));
@@ -50,9 +54,9 @@ public class TransformServiceImpl implements TransformService {
 		Zone zoneInterpretation = new Zone(new Point(0, 795), new Point(800, 1150));
 		LOGGER.info("ZoneInterpretation : {}", zoneInterpretation.toString());
 
-		String zoneEchantillonValue = this.zoneReading(pdfFile.getPath(), zoneEchantillon);				
-		String zone1Value = this.zoneReading(pdfFile.getPath(), zone1);				
-		String zoneInterpretationValue = this.zoneReading(pdfFile.getPath(), zoneInterpretation);
+		String zoneEchantillonValue = this.zoneReading(pdfFile, zoneEchantillon);
+		String zone1Value = this.zoneReading(pdfFile, zone1);
+		String zoneInterpretationValue = this.zoneReading(pdfFile, zoneInterpretation);
 
 		ResultatPdf result = new ResultatPdf();
         result.setPdfFileName(pdfFile.getName());
@@ -69,7 +73,7 @@ public class TransformServiceImpl implements TransformService {
             if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
                 CompositionObj zoneObj = new CompositionObj();
                 boolean valid = false;
-                for(String valeurPossible : this.listeFleurs.getList()) {
+                for(String valeurPossible : this.listeFleurs.getFleurs()) {
                     String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase());
                     String currentValueTemp = StringUtils.stripAccents(tempZone1[j].toLowerCase());
                     if(tempP.equals(currentValueTemp)) {
@@ -139,11 +143,32 @@ public class TransformServiceImpl implements TransformService {
 	}
 
 	
-	private String zoneReading(final String pdfDoc, final Zone zone) {
-		Ocr ocr = new Ocr(); // create a new OCR engine
-		ocr.startEngine(Ocr.LANGUAGE_FRA, Ocr.SPEED_SLOW); 
-		// int pageIndex, int startX, int startY, int width, int height
-		String s = ocr.recognize(pdfDoc, -1, zone.getDebut().getX(), zone.getDebut().getY(), zone.getWidth(), zone.getHeigth(), Ocr.RECOGNIZE_TYPE_TEXT, Ocr.OUTPUT_FORMAT_PLAINTEXT,this.options);
-		return s;
+	private String zoneReading(final File pdfDoc, final Zone zone) {
+        ITesseract instance = new Tesseract();
+        String result= "";
+        try {
+            instance.setLanguage("fra");
+            instance.setDatapath("D:\\dev\\ocr\\src\\main\\resources\\tessdata");
+//            instance.setTessVariable("tessedit_char_whitelist", "ACPBZRT960847152");
+//            instance.setTessVariable("tessedit_char_blacklist", "æ");
+//            instance.setTessVariable("load_system_dawg", "false");
+//            instance.setTessVariable("load_freq_dawg", "false");
+//            instance.setTessVariable("user_words_suffix", "user-words");
+//            instance.setTessVariable("user_patterns_suffix", "user-patterns");
+//            instance.setTessVariable("", "bazaar");
+            List<String> config = new ArrayList<>();
+            config.add("bazaar");
+            config.add("quiet");
+            instance.setConfigs(config);
+            Rectangle rect = new Rectangle(zone.getDebut().getX(), zone.getDebut().getY(), zone.getWidth(), zone.getHeigth());
+            result = instance.doOCR(pdfDoc, rect);
+        } catch (TesseractException e) {
+            LOGGER.error("erreur",e);
+        }
+//		Ocr ocr = new Ocr(); // create a new OCR engine
+//		ocr.startEngine(Ocr.LANGUAGE_FRA, Ocr.SPEED_SLOW);
+//		// int pageIndex, int startX, int startY, int width, int height
+//		String s = ocr.recognize(pdfDoc, -1, zone.getDebut().getX(), zone.getDebut().getY(), zone.getWidth(), zone.getHeigth(), Ocr.RECOGNIZE_TYPE_TEXT, Ocr.OUTPUT_FORMAT_PLAINTEXT,this.options);
+		return result;
 	}
 }

@@ -53,15 +53,15 @@ public class EnvironmentInitializer {
     private List<String> errors = new ArrayList<>();
 
     public void setUp(String componentId, String appId) {
-        String sisDevDir = System.getProperty(Props.OCR_DEV_DIR);
+        String ocrDevDir = System.getProperty(Props.OCR_DEV_DIR);
         System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
         // On est en environnement de développement simplifié
-        if (sisDevDir != null) {
+        if (ocrDevDir != null) {
             System.out.println("### Starting " + componentId + ", files for execution are located at : " + System.getProperty("user.dir").replace('\\', '/'));
             Mode runningMode = getRunningMode();
             String runningDesc = "";
-            sisDevDir = fixPathAsDir(sisDevDir);
-            FolderConfig config = new FolderConfig(sisDevDir);
+            ocrDevDir = fixPathAsDir(ocrDevDir);
+            FolderConfig config = new FolderConfig(ocrDevDir);
 
             setupBootstrapConfigurationFileLocations(componentId, appId, config, runningMode);
             for (SortedMap.Entry<String, String> updatedProperty : updatedProperties.entrySet()) {
