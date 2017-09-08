@@ -1,8 +1,9 @@
 dossier:
-  entrant: D:\\dev\\ocr\\input\\
-  temporaire: D:\\dev\\temp
+  entrant: D:\\developpement\\ocr\\input\\
+  temporaire: D:\\developpement\\temp
+  tesseract: D:\\developpement\\ocr\\src\\main\\resources\\tessdata
 fichier:
-  resultat: D:\\dev\\ocr\\src\\main\\resources\\com\\Result.csv
+  resultat: D:\\developpement\\ocr\\src\\main\\resources\\com\\Result.csv
 
 ocr:
   #PROP_IMG_PREPROCESS_TYPE=custom|PROP_IMG_PREPROCESS_CUSTOM_CMDS=scale(10);PROP_IMG_PREPROCESS_CUSTOM_CMDS=invert();default()
@@ -34,6 +35,7 @@ liste:
     - Lotier
     - Saule
     - Graminé
+    - Graminées
     - Fruitiers
     - Trèfle blanc
     - Erable
@@ -42,3 +44,5 @@ liste:
     - Réséda
     - Cornouiller sanguin
     - Pyracanthe
+    - Cercis
+    - Thym

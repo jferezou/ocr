@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public interface GenerateImageService {
-
-    File generatePng(final Path path);
-    boolean checkIfPng(final File file) throws TikaException, IOException;
+public interface PdfService {
+    void splitPdf(final Path path);
 }

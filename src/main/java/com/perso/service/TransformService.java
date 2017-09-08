@@ -7,5 +7,5 @@ import com.perso.utils.ResultatPdf;
 
 public interface TransformService {
 
-	ResultatPdf extract(final File pdfFile) throws IOException;
+	ResultatPdf extract(final File pngFile) throws IOException;
 }

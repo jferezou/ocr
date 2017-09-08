@@ -43,6 +43,9 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private GenerateImageService generateImageService;
 
 	@Autowired
+	private PdfService pdfService;
+
+	@Autowired
 	TransformService transformService;
 
 	@Override
@@ -73,19 +76,17 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 				// pour chaque fichier, on les split en page dans le temp dir
 				for(Path path : paths) {
-					if(Files.isRegularFile(path)) {
-						this.splitPdf(path);
-					}
+					this.pdfService.splitPdf(path);
 				}
 
 				// on lance un traitement
 				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
-				List<File> pngFileList = pathsTemp.stream().map(path -> this.generateImageService.generatePng(path)).collect(Collectors.toList());
+				List<File> pngFileList = pathsTemp.stream().filter(myPath -> Files.isRegularFile(myPath)).map(path -> this.generateImageService.generatePng(path)).collect(Collectors.toList());
 
-				finalResults = pngFileList.stream().map(i -> this.traitement(i)).collect(Collectors.toList());
+				finalResults = pngFileList.stream().filter(myFile -> myFile.isFile()).map(pngFile -> this.traitement(pngFile)).collect(Collectors.toList());
 
 				// on ecrit les résultats
-				this.ecritureResultat(finalResults);
+//				this.ecritureResultat(finalResults);
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
@@ -94,30 +95,6 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 		return finalResults;
 	}
 
-	private void splitPdf(final Path path){
-		try {
-			File inFile= path.toFile();
-			boolean isPdf = checkIsPdfFile(inFile);
-			if(isPdf && inFile.isFile()) {
-				PdfDocument pdfDoc = new PdfDocument(new PdfReader(inFile.getPath()));
-				int nbPages = pdfDoc.getNumberOfPages();
-				String fileName = inFile.getName().split(".pdf")[0];
-
-				for (int page = 1; page <= nbPages; page++) {
-					String name = this.tempDir + "//" + fileName + "_" + page + ".pdf";
-					PdfDocument newPdfDoc = new PdfDocument(new PdfWriter(name));
-					pdfDoc.copyPagesTo(page,page, newPdfDoc);
-					newPdfDoc.close();
-
-				}
-				pdfDoc.close();
-			}
-		} catch (TikaException e) {
-			LOGGER.error("Erreur lors du traitement du fichier", e);
-		} catch (IOException e) {
-			LOGGER.error("Erreur lors du traitement du fichier", e);
-		}
-	}
 
 	/**
 	 * Traitement multithread à l'aide des Future
@@ -129,9 +106,10 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private ResultatPdf traitement(File file) {
 		ResultatPdf result = new ResultatPdf();
 		try {
-			boolean isPdf = checkIsPdfFile(file);
-			if (isPdf) {
+			boolean isPng = this.generateImageService.checkIfPng(file);
+			if (isPng) {
 				// traitement principal
+				LOGGER.debug("Lancement du traiement du fichier {}", file.getPath());
 				result = this.transformService.extract(file);
 			}
 		} catch (TikaException e) {
@@ -143,19 +121,6 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	}
 
 
-	private boolean checkIsPdfFile(File file) throws TikaException, IOException {
-		boolean isPdf = false;
-		if(file != null) {
-			InputStream stream = new FileInputStream(file);
-			InputStream bufferedInputstream = new BufferedInputStream(stream);
-			MediaType fileInfo = this.getFileInfo(file.getName(), bufferedInputstream);
-			if (this.APPLICATION_PNG.equals(fileInfo.getBaseType())) {
-				LOGGER.warn("Le fichier n'est pas traité car il doit être au format " + APPLICATION_PNG + " : " + file.getPath());
-				isPdf = true;
-			}
-		}
-        return isPdf;
-	}
 
 	private void ecritureResultat(List<ResultatPdf> resultList) throws IOException {
 
@@ -170,21 +135,5 @@ public class ReaderFileServiceImpl implements ReaderFileService {
         }
 	}
 
-	/**
-	 * Méthode utilisant apache Tika pour récupérer les infos du fichier :
-	 * mimetype, charset ....
-	 * 
-	 * @param fileName
-	 * @param stream
-	 * @return
-	 * @throws TikaException
-	 * @throws IOException
-	 */
-	private MediaType getFileInfo(final String fileName, final InputStream stream) throws TikaException, IOException {
-		TikaConfig tika = new TikaConfig();
-		Metadata metadata = new Metadata();
-		metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
-		return tika.getDetector().detect(stream, metadata);
-	}
 
 }

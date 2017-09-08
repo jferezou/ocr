@@ -11,6 +11,7 @@ import com.perso.utils.CompositionObj;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +27,8 @@ import com.perso.utils.Zone;
 public class TransformServiceImpl implements TransformService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransformServiceImpl.class);
 
-	private static final String DEUX_POINTS=":";
-	private static final String PAGE_SEPARATEUR = "----page-separator----";
-
-	@Value("${ocr.options}")
-	private String options;
+    @Value("${dossier.tesseract}")
+    private String tesseractDir;
 
 	@Autowired
 	private ListeFleursConfig listeFleurs;
@@ -39,57 +37,39 @@ public class TransformServiceImpl implements TransformService {
 	/**
 	 * Permet de reconnaitre le texte
 	 */
-	public ResultatPdf extract(final File pdfFile) throws IOException {
-		LOGGER.info("Début du traitement du fichier {}", pdfFile.getPath());
-		
-//		Ocr.setUp(); // one time setup
-		
+	public ResultatPdf extract(final File pngFile) throws IOException {
+		LOGGER.info("Début du traitement du fichier {}", pngFile.getPath());
 
-		Zone zoneEchantillon = new Zone(new Point(540, 114), new Point(807, 140));
+		Zone zoneEchantillon = new Zone(new Point(1646, 330), new Point(2448, 416));
 		LOGGER.info("zoneEchantillon : {}", zoneEchantillon.toString());
-		
-		Zone zone1 = new Zone(new Point(500, 370), new Point(800, 837));
+
+		Zone zone1 = new Zone(new Point(1562, 1110), new Point(2402, 2568));
 		LOGGER.info("Zone1 : {}", zone1.toString());
-		
-		Zone zoneInterpretation = new Zone(new Point(0, 795), new Point(800, 1150));
+
+		Zone zoneInterpretation = new Zone(new Point(0, 2562), new Point(2414, 3000));
 		LOGGER.info("ZoneInterpretation : {}", zoneInterpretation.toString());
 
-		String zoneEchantillonValue = this.zoneReading(pdfFile, zoneEchantillon);
-		String zone1Value = this.zoneReading(pdfFile, zone1);
-		String zoneInterpretationValue = this.zoneReading(pdfFile, zoneInterpretation);
+		String zoneEchantillonValue = this.zoneReading(pngFile, zoneEchantillon);
+		String zone1Value = this.zoneReading(pngFile, zone1);
+		String zoneInterpretationValue = this.zoneReading(pngFile, zoneInterpretation);
 
 		ResultatPdf result = new ResultatPdf();
-        result.setPdfFileName(pdfFile.getName());
-        result.setPdfFilePath(pdfFile.getPath());
-        String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
-        zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
-        zoneEchantillonValueTempName = zoneEchantillonValueTempName.replace("\n","");
+
+        String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
+        result.setPdfFileName(baseName);
+        result.setPdfFilePath(pngFile.getParentFile()+"/"+baseName);
+        String zoneEchantillonValueTempName = this.fillEchantillon(zoneEchantillonValue);
         result.setEchantillon(zoneEchantillonValueTempName);
 
-        String[] tempZone1 = zone1Value.split("\n");
+        List<CompositionObj> compositionList = this.fillComposition(zone1Value);
+        this.fillInterpretation(zoneInterpretationValue, compositionList);
 
-        List<CompositionObj> compositionList = new ArrayList<>();
-        for (int j = 0 ; j < tempZone1.length ;j++) {
-            if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
-                CompositionObj zoneObj = new CompositionObj();
-                boolean valid = false;
-                for(String valeurPossible : this.listeFleurs.getFleurs()) {
-                    String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase());
-                    String currentValueTemp = StringUtils.stripAccents(tempZone1[j].toLowerCase());
-                    if(tempP.equals(currentValueTemp)) {
-                        zoneObj.setValue(valeurPossible);
-                        valid = true;
-                    }
-                }
+        result.setCompositions(compositionList);
+		LOGGER.info("Fin du traitement du fichier {}", pngFile.getName());
+		return result;
+	}
 
-                if(!valid) {
-                    zoneObj.setValue(tempZone1[j]);
-                }
-                zoneObj.setValid(valid);
-                compositionList.add(zoneObj);
-            }
-        }
-
+    private void fillInterpretation(String zoneInterpretationValue, List<CompositionObj> compositionList) {
         // on repere la ligne d'interpretation (il doit y avoir des % et des ,)
         final String[] splitedInterpretationLine =  zoneInterpretationValue.split("\n");
 
@@ -106,10 +86,23 @@ public class TransformServiceImpl implements TransformService {
                 for (int i = 0 ; i < splitedLine.length ;i++) {
                     String currentValue = splitedLine[i];
                     LOGGER.debug("currentValue = {}", currentValue);
+                    currentValue = StringUtils.stripStart(currentValue, " ");
+                    currentValue = StringUtils.stripEnd(currentValue, " ");
                     int lastSpaceIndex = currentValue.lastIndexOf(" ");
                     LOGGER.debug("lastIndex = {}", lastSpaceIndex);
                     if(lastSpaceIndex > -1) {
                         String name = currentValue.substring(0, lastSpaceIndex);
+                        name = name.replace(".", "");
+                        name = StringUtils.stripStart(name, " ");
+                        name = StringUtils.stripEnd(name, " ");
+                        if(name.length() > 4) {
+                            for(String fleur : this.listeFleurs.getFleurs()) {
+                                if(fleur.toLowerCase().contains(name)) {
+                                    name = fleur;
+                                }
+                            }
+                        }
+
                         LOGGER.debug("name = {}", name);
                         String percentValue = currentValue.substring(lastSpaceIndex, currentValue.length());
 
@@ -137,20 +130,52 @@ public class TransformServiceImpl implements TransformService {
         for (CompositionObj comp : compositionList) {
             comp.calculateType();
         }
-        result.setCompositions(compositionList);
-		LOGGER.info("Fin du traitement du fichier {}", pdfFile.getName());
-		return result;
-	}
+    }
 
-	
-	private String zoneReading(final File pdfDoc, final Zone zone) {
+    private List<CompositionObj> fillComposition(String zone1Value) {
+        String[] tempZone1 = zone1Value.split("\n");
+
+        List<CompositionObj> compositionList = new ArrayList<>();
+        for (int j = 0 ; j < tempZone1.length ;j++) {
+            if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
+                CompositionObj zoneObj = new CompositionObj();
+                boolean valid = false;
+                for(String valeurPossible : this.listeFleurs.getFleurs()) {
+                    String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase());
+                    String currentValueTemp = StringUtils.stripAccents(tempZone1[j].replace("ﬂ","fl").toLowerCase());
+                    if(tempP.equals(currentValueTemp)) {
+                        zoneObj.setValue(valeurPossible);
+                        valid = true;
+                    }
+                }
+
+                if(!valid) {
+                    zoneObj.setValue(tempZone1[j]);
+                }
+                zoneObj.setValid(valid);
+                compositionList.add(zoneObj);
+            }
+        }
+        return compositionList;
+    }
+
+    private String fillEchantillon(String zoneEchantillonValue) {
+        String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
+        zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
+        zoneEchantillonValueTempName = zoneEchantillonValueTempName.replace("\n","");
+        return zoneEchantillonValueTempName;
+    }
+
+
+    private String zoneReading(final File doc, final Zone zone) {
+	    LOGGER.debug("Debut traitement ocr fichier {} pour la zone {}", doc.getPath(), zone);
         ITesseract instance = new Tesseract();
         String result= "";
         try {
             instance.setLanguage("fra");
-            instance.setDatapath("D:\\dev\\ocr\\src\\main\\resources\\tessdata");
-//            instance.setTessVariable("tessedit_char_whitelist", "ACPBZRT960847152");
-//            instance.setTessVariable("tessedit_char_blacklist", "æ");
+            instance.setDatapath(this.tesseractDir);
+            instance.setTessVariable("tessedit_char_whitelist", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZçéèêﬂ0123456789%./");
+//            instance.setTessVariable("tessedit_char_blacklist", "|’œ'");
 //            instance.setTessVariable("load_system_dawg", "false");
 //            instance.setTessVariable("load_freq_dawg", "false");
 //            instance.setTessVariable("user_words_suffix", "user-words");
@@ -161,14 +186,11 @@ public class TransformServiceImpl implements TransformService {
             config.add("quiet");
             instance.setConfigs(config);
             Rectangle rect = new Rectangle(zone.getDebut().getX(), zone.getDebut().getY(), zone.getWidth(), zone.getHeigth());
-            result = instance.doOCR(pdfDoc, rect);
+            result = instance.doOCR(doc, rect);
         } catch (TesseractException e) {
             LOGGER.error("erreur",e);
         }
-//		Ocr ocr = new Ocr(); // create a new OCR engine
-//		ocr.startEngine(Ocr.LANGUAGE_FRA, Ocr.SPEED_SLOW);
-//		// int pageIndex, int startX, int startY, int width, int height
-//		String s = ocr.recognize(pdfDoc, -1, zone.getDebut().getX(), zone.getDebut().getY(), zone.getWidth(), zone.getHeigth(), Ocr.RECOGNIZE_TYPE_TEXT, Ocr.OUTPUT_FORMAT_PLAINTEXT,this.options);
+        LOGGER.debug("Debut traitement ocr fichier {} pour la zone {}", doc.getPath(), zone);
 		return result;
 	}
 }

@@ -10,7 +10,7 @@ public class Point {
 	private int x;
 	
 	private int y;
-	private final static double MULTIPLIER = 3.064;
+	private final static double MULTIPLIER = 1;
 
 	public Point(int x, int y) {
 		super();
