@@ -1,5 +1,5 @@
 dossier:
-  entrant: D:\\dev\\ocr\\src\\main\\resources\\com\\perso\\
+  entrant: D:\\dev\\ocr\\input\\
   temporaire: D:\\dev\\temp
 fichier:
   resultat: D:\\dev\\ocr\\src\\main\\resources\\com\\Result.csv

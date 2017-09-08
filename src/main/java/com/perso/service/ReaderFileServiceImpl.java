@@ -1,7 +1,5 @@
 package com.perso.service;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,15 +7,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.xobject.PdfImageXObject;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -31,14 +25,12 @@ import com.perso.exception.FichierInvalideException;
 import com.perso.utils.CSVUtils;
 import com.perso.utils.ResultatPdf;
 
-import javax.imageio.ImageIO;
-
 @Service("ReaderFileService")
 public class ReaderFileServiceImpl implements ReaderFileService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileServiceImpl.class);
 	
-	private MediaType APPLICATION_PDF = MediaType.parse("application/pdf");
+	private MediaType APPLICATION_PNG = MediaType.parse("image/png");
 
 	@Value("${dossier.entrant}")
 	private String filePath;
@@ -47,6 +39,8 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	@Value("${dossier.temporaire}")
 	private String tempDir;
 
+	@Autowired
+	private GenerateImageService generateImageService;
 
 	@Autowired
 	TransformService transformService;
@@ -84,10 +78,11 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 					}
 				}
 
-				// on lance un traitement parallèle
+				// on lance un traitement
 				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
-				Function<Path, ResultatPdf> myfunction = (a -> this.traitement(a));
-				finalResults = IntStream.range(0, pathsTemp.size()).filter(index -> Files.isRegularFile(pathsTemp.get(index))).mapToObj(i -> myfunction.apply(pathsTemp.get(i))).collect(Collectors.toList());
+				List<File> pngFileList = pathsTemp.stream().map(path -> this.generateImageService.generatePng(path)).collect(Collectors.toList());
+
+				finalResults = pngFileList.stream().map(i -> this.traitement(i)).collect(Collectors.toList());
 
 				// on ecrit les résultats
 				this.ecritureResultat(finalResults);
@@ -127,16 +122,14 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	/**
 	 * Traitement multithread à l'aide des Future
 	 * 
-	 * @param path
+	 * @param file
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	private ResultatPdf traitement(Path path) {
+	private ResultatPdf traitement(File file) {
 		ResultatPdf result = new ResultatPdf();
 		try {
-			File file = path.toFile();
 			boolean isPdf = checkIsPdfFile(file);
-
 			if (isPdf) {
 				// traitement principal
 				result = this.transformService.extract(file);
@@ -151,14 +144,16 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 
 	private boolean checkIsPdfFile(File file) throws TikaException, IOException {
-		boolean isPdf = true;
-		InputStream stream = new FileInputStream(file);
-		InputStream bufferedInputstream = new BufferedInputStream(stream);
-		MediaType fileInfo = this.getFileInfo(file.getName(), bufferedInputstream);
-		if (!this.APPLICATION_PDF.equals(fileInfo.getBaseType())) {
-            LOGGER.warn("Le fichier n'est pas traité car il doit être au format " + APPLICATION_PDF + " : " + file.getPath());
-            isPdf = false;
-        }
+		boolean isPdf = false;
+		if(file != null) {
+			InputStream stream = new FileInputStream(file);
+			InputStream bufferedInputstream = new BufferedInputStream(stream);
+			MediaType fileInfo = this.getFileInfo(file.getName(), bufferedInputstream);
+			if (this.APPLICATION_PNG.equals(fileInfo.getBaseType())) {
+				LOGGER.warn("Le fichier n'est pas traité car il doit être au format " + APPLICATION_PNG + " : " + file.getPath());
+				isPdf = true;
+			}
+		}
         return isPdf;
 	}
 
