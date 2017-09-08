@@ -1,7 +1,9 @@
 package com.perso.config;
 
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 
 @Import({
         CXFConfiguration.class,
@@ -22,5 +24,4 @@ public class ServicesExposesConfiguration {
     public JAXRSServerFactoryBean getRESTPublishedServices(final RESTPublisher publisher) {
         return publisher.publish(RESTPublisher.DEFAULT_NS,RestOcr.class);
     }
-
 }

@@ -48,13 +48,10 @@ public class RestOcr {
         } catch (FichierInvalideException | TikaException | IOException e) {
             LOGGER.error("", e);
         }
-//        String myValue = "{\"resultats\":[{\"id\":1,\"pdfFilePath\":\"170703171333_0001_2_1.pdf\",\"echantillon\":\"Troyes P212CR969 8/06/17\",\"compositions\":[{\"value\":\"Papaver\",\"percentage\":58.3,\"type\":\"Dominant\",\"valid\":false},{\"value\":\"Sainfoin\",\"percentage\":20.4,\"type\":\"Accompagnement\",\"valid\":false},{\"value\":\"Phacêlie\",\"percentage\":10.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Tamaris\",\"percentage\":3.4,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Seringat\",\"percentage\":3.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Rèéda\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Tilleul\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Nerprun\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Sedum\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Trèfle blanc\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Aigremnine eupatoire\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Luzerne\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false},{\"value\":\"Sumac\",\"percentage\":0.0,\"type\":\"Isolé\",\"valid\":false}]}]}";
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        responseBuilder.entity(myValue);
         responseBuilder.entity(response);
         responseBuilder.status(200);
         responseBuilder.header("Content-Type", "application/json;charset=utf-8");
-        responseBuilder.header("Access-Control-Allow-Origin", "*");
 
         // Réponse du service
         return responseBuilder.build();
@@ -68,16 +65,27 @@ public class RestOcr {
 
         File file = new File(tempDir+"\\"+pdfName);
 
-//        Response.ResponseBuilder response = Response.ok(file);
-//        response.header("Access-Control-Allow-Origin", "*");
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         responseBuilder.entity(file);
         responseBuilder.status(200);
-        responseBuilder.header("Access-Control-Allow-Origin", "*");
 
         // Réponse du service
         return responseBuilder.build();
 
+    }
+
+    @POST
+    @Path("/save")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ServiceMethod
+    public Response sauvegarder(final String data)  throws InvalidFormatException {
+
+
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity("");
+        responseBuilder.status(200);
+        // Réponse du service
+        return responseBuilder.build();
     }
 
     /**

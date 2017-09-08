@@ -52,7 +52,6 @@ targetCompatibility = 1.8
 dependencies {
     compile group: 'org.apache.tika', name: 'tika-core', version:'1.14'
     compile group: 'com.itextpdf', name: 'itext7-core', version:'7.0.2'
-    compile group: 'com.asprise.ocr', name: 'java-ocr-api', version:'15.3.0.3'
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1'
     compile("org.springframework.boot:spring-boot-starter-web"){
         exclude module: "spring-boot-starter-logging"
@@ -114,4 +113,5 @@ dependencies {
     compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.7')
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security')
     compile group: 'org.ghost4j', name: 'ghost4j', version: '1.0.1'
+    compile(group: 'com.google.guava', name: 'guava', version: '19.0')
 }

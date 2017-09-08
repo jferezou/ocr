@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.asprise.ocr.Ocr;
 import com.perso.utils.Point;
 import com.perso.utils.ResultatPdf;
 import com.perso.utils.Zone;
@@ -57,7 +56,7 @@ public class TransformServiceImpl implements TransformService {
 
         String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
         result.setPdfFileName(baseName);
-        result.setPdfFilePath(pngFile.getParentFile()+"/"+baseName);
+        result.setPdfFilePath(pngFile.getParentFile()+"\\"+baseName);
         String zoneEchantillonValueTempName = this.fillEchantillon(zoneEchantillonValue);
         result.setEchantillon(zoneEchantillonValueTempName);
 
