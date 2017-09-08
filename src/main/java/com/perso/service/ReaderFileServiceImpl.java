@@ -34,8 +34,6 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 	@Value("${dossier.entrant}")
 	private String filePath;
-	@Value("${fichier.resultat}")
-	private String fichierResultat;
 	@Value("${dossier.temporaire}")
 	private String tempDir;
 
@@ -85,8 +83,6 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 				finalResults = pngFileList.stream().filter(myFile -> myFile.isFile()).map(pngFile -> this.traitement(pngFile)).collect(Collectors.toList());
 
-				// on ecrit les résultats
-//				this.ecritureResultat(finalResults);
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
@@ -120,20 +116,6 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 		return result;
 	}
 
-
-
-	private void ecritureResultat(List<ResultatPdf> resultList) throws IOException {
-
-		try (final FileWriter fw = new FileWriter(this.fichierResultat)) {
-			fw.append("sep=;");
-			fw.append("\n");
-            CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Composition","Pourcentage", "Type"));
-            // on écrit les résultats dans le fichier
-			for (ResultatPdf resultatPdf : resultList) {
-					CSVUtils.writeResult(fw, resultatPdf);
-			}
-        }
-	}
 
 
 }
