@@ -5,6 +5,7 @@ import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
 import com.perso.service.ReaderFileService;
 import com.perso.service.TransformServiceImpl;
+import com.perso.service.UpdatedValuesService;
 import com.perso.utils.ResponseTraitement;
 import com.perso.utils.ResultatPdf;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
@@ -33,6 +34,8 @@ public class RestOcr {
     private String tempDir;
     @Autowired
     ReaderFileService readerFileService;
+    @Autowired
+    UpdatedValuesService updatedValuesService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileService.class);
 
     @GET
@@ -80,7 +83,7 @@ public class RestOcr {
     @ServiceMethod
     public Response sauvegarder(final String data)  throws InvalidFormatException {
 
-
+        this.updatedValuesService.parseAndSave(data);
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         responseBuilder.entity("");
         responseBuilder.status(200);
