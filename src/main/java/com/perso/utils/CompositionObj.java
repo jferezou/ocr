@@ -29,7 +29,7 @@ public class CompositionObj implements Serializable {
             this.type = "Accompagnement";
         }
         else {
-            this.type = "Isolé";
+            this.type = "Isole";
         }
 
 
