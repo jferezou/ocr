@@ -103,6 +103,7 @@ public class RestOcr {
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         String disposition = "attachment; fileName=resultat.csv";
         responseBuilder.header("Content-Disposition", disposition);
+        responseBuilder.header("Content-Type", "text/csv;charset=windows-1252");
         responseBuilder.entity(csv);
         responseBuilder.status(200);
 
