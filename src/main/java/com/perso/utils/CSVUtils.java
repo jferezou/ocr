@@ -1,10 +1,8 @@
 package com.perso.utils;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class CSVUtils {
 
@@ -12,20 +10,15 @@ public class CSVUtils {
 
 
 
-    public static void writeResult(final Writer fw, final ResultatPdf resultatPdf)  throws IOException {
-
+    public static String writeResult(final ResultatPdf resultatPdf)  throws IOException {
 
         final String echantillon = resultatPdf.getEchantillon();
+        StringBuilder result = new StringBuilder();
         for(CompositionObj cptObj : resultatPdf.getCompositions()) {
-            writeLine(fw, Arrays.asList(echantillon, cptObj.getValue(), cptObj.getPercentage().toString(), cptObj.getType()));
+            result.append(writeLine(Arrays.asList(echantillon, cptObj.getValue(), cptObj.getPercentage().toString(), cptObj.getType()),'"'));
         }
+        return result.toString();
     }
-
-    public static void writeLine(Writer w, List<String> values) throws IOException {
-        writeLine(w, values, '"');
-    }
-
-
     //https://tools.ietf.org/html/rfc4180
     private static String followCVSformat(String value) {
 
@@ -37,7 +30,7 @@ public class CSVUtils {
 
     }
 
-    public static void writeLine(Writer w, List<String> values, char customQuote) throws IOException {
+    public static String writeLine( List<String> values, char customQuote) throws IOException {
 
         boolean first = true;
         StringBuilder sb = new StringBuilder();
@@ -54,9 +47,7 @@ public class CSVUtils {
             first = false;
         }
         sb.append("\n");
-        w.append(sb.toString());
-
-
+        return sb.toString();
     }
 
 }

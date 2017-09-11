@@ -91,6 +91,26 @@ public class RestOcr {
         return responseBuilder.build();
     }
 
+
+    @GET
+    @Path("/getcsv")
+    @Produces("text/csv")
+    @ServiceMethod
+    public Response getCsvFile() {
+
+        String csv = this.updatedValuesService.getCsv();
+
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        String disposition = "attachment; fileName=resultat.csv";
+        responseBuilder.header("Content-Disposition", disposition);
+        responseBuilder.entity(csv);
+        responseBuilder.status(200);
+
+        // Réponse du service
+        return responseBuilder.build();
+
+    }
+
     /**
      * Retourne des données
      *

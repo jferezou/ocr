@@ -18,8 +18,6 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
     private Map<Integer, ResultatPdf> valeursEnregistrees = new HashMap<>();
 
-    @Value("${fichier.resultat}")
-    private String fichierResultat;
     @Override
     public void parseAndSave(final String value) {
 
@@ -54,28 +52,26 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
         this.valeursEnregistrees.put(id,result);
 
+    }
+
+
+    @Override
+    public String getCsv() {
+        StringBuilder exportedCsv = new StringBuilder();
         try {
-            this.ecritureResultat(this.valeursEnregistrees.values());
-        } catch (IOException e) {
-            LOGGER.error("erreur",e);
-        }
+        exportedCsv.append("sep=;");
+        exportedCsv.append("\n");
+        exportedCsv.append(CSVUtils.writeLine(Arrays.asList("Echantillon", "Composition","Pourcentage", "Type"),'"'));
 
+        // on écrit les résultats dans le fichier
+        for (ResultatPdf resultatPdf : this.valeursEnregistrees.values()) {
+            exportedCsv.append(CSVUtils.writeResult(resultatPdf));
+        }
+    } catch (IOException e) {
+        LOGGER.error("erreur",e);
     }
 
-
-
-
-
-    private void ecritureResultat(Collection<ResultatPdf> resultList) throws IOException {
-
-        try (final FileWriter fw = new FileWriter(this.fichierResultat)) {
-            fw.append("sep=;");
-            fw.append("\n");
-            CSVUtils.writeLine(fw, Arrays.asList("Echantillon", "Composition","Pourcentage", "Type"));
-            // on écrit les résultats dans le fichier
-            for (ResultatPdf resultatPdf : resultList) {
-                CSVUtils.writeResult(fw, resultatPdf);
-            }
-        }
+        return exportedCsv.toString();
     }
+
 }
