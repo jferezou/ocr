@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.perso.config.ListeFleursConfig;
 import com.perso.utils.CompositionObj;
@@ -85,18 +87,22 @@ public class TransformServiceImpl implements TransformService {
                 for (int i = 0 ; i < splitedLine.length ;i++) {
                     String currentValue = splitedLine[i];
                     LOGGER.debug("currentValue = {}", currentValue);
-                    currentValue = StringUtils.stripStart(currentValue, " ");
-                    currentValue = StringUtils.stripEnd(currentValue, " ");
-                    int lastSpaceIndex = currentValue.lastIndexOf(" ");
-                    LOGGER.debug("lastIndex = {}", lastSpaceIndex);
+                    // on supprime tous les espaces
+                    currentValue = currentValue.replace(" ","");
+                    // Dans le cas du 1er caractère, on le supprime
+                    if(i ==0 && currentValue.length() > 1) {
+                        currentValue = currentValue.substring(1);
+                        LOGGER.debug("Debut de ligne, le 1er caractère est supprimé : {}", currentValue);
+                    }
+                    // on recupere l'indexe du 1er digit
+                    int lastSpaceIndex = this.getfirstdigitIndex(currentValue);
                     if(lastSpaceIndex > -1) {
                         String name = currentValue.substring(0, lastSpaceIndex);
                         name = name.replace(".", "");
-                        name = StringUtils.stripStart(name, " ");
-                        name = StringUtils.stripEnd(name, " ");
-                        if(name.length() > 4) {
+                        name = StringUtils.trim(name);
+                        if(name.length() > 2) {
                             for(String fleur : this.listeFleurs.getFleurs()) {
-                                if(fleur.toLowerCase().contains(name)) {
+                                if(fleur.toLowerCase().replace(" ","").contains(name)) {
                                     name = fleur;
                                 }
                             }
@@ -108,13 +114,17 @@ public class TransformServiceImpl implements TransformService {
                         double percent = 0;
                         try {
                             percent = Double.parseDouble(percentValue.replace(" ",""));
+                            // tant qu'on est supérieur à 100
+                            while (percent > 100) {
+                                percent = percent / 10;
+                            }
+                            LOGGER.debug("Poucentage : {}", percent);
                         }
                         catch(NumberFormatException e) {
                             LOGGER.warn("Erreur de parsing du nombre {}",percentValue);
                         }
                         String tempName = StringUtils.stripAccents(name.toLowerCase());
-                        tempName = StringUtils.stripStart(tempName, " ");
-                        tempName = StringUtils.stripEnd(tempName, " ");
+                        tempName = StringUtils.trim(tempName);
                         for (CompositionObj comp : compositionList) {
                             if (StringUtils.stripAccents(comp.getValue().toLowerCase()).equals(tempName)) {
                                 comp.setPercentage(percent);
@@ -131,6 +141,20 @@ public class TransformServiceImpl implements TransformService {
         }
     }
 
+    private int getfirstdigitIndex(final String stringValue) {
+        Pattern pattern = Pattern.compile("^\\D*(\\d)");
+        Matcher matcher = pattern.matcher(stringValue);
+        matcher.find();
+        int value = -1;
+        try {
+            value = matcher.start(1);
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            LOGGER.error("Erreur lors de la récupération du 1er digit pour : "+ stringValue, e);
+        }
+        LOGGER.debug("Index du 1er digit de la chaîne {} : {}", stringValue, value);
+        return value;
+    }
+
     private List<CompositionObj> fillComposition(String zone1Value) {
         String[] tempZone1 = zone1Value.split("\n");
 
@@ -140,8 +164,8 @@ public class TransformServiceImpl implements TransformService {
                 CompositionObj zoneObj = new CompositionObj();
                 boolean valid = false;
                 for(String valeurPossible : this.listeFleurs.getFleurs()) {
-                    String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase());
-                    String currentValueTemp = StringUtils.stripAccents(tempZone1[j].replace("ﬂ","fl").toLowerCase());
+                    String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase().replace(" ",""));
+                    String currentValueTemp = StringUtils.stripAccents(tempZone1[j].replace("ﬂ","fl").replace(" ","").toLowerCase());
                     if(tempP.equals(currentValueTemp)) {
                         zoneObj.setValue(valeurPossible);
                         valid = true;
