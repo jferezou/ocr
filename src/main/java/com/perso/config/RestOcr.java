@@ -3,14 +3,17 @@ package com.perso.config;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
+import com.perso.service.PdfService;
 import com.perso.service.ReaderFileService;
 import com.perso.service.TransformServiceImpl;
 import com.perso.service.UpdatedValuesService;
+import com.perso.utils.EstimateTime;
 import com.perso.utils.ResponseTraitement;
 import com.perso.utils.ResultatPdf;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.PDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,8 @@ public class RestOcr {
     ReaderFileService readerFileService;
     @Autowired
     UpdatedValuesService updatedValuesService;
+    @Autowired
+    PdfService pdfService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileService.class);
 
     @GET
@@ -106,6 +111,25 @@ public class RestOcr {
         responseBuilder.header("Content-Type", "text/csv;charset=windows-1252");
         responseBuilder.entity(csv);
         responseBuilder.status(200);
+
+        // Réponse du service
+        return responseBuilder.build();
+
+    }
+
+
+    @GET
+    @Path("/estimatetime")
+    @Produces("text/csv")
+    @ServiceMethod
+    public Response estimateTime() {
+
+        EstimateTime estimateTime = this.pdfService.estimateTime();
+
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity(estimateTime);
+        responseBuilder.status(200);
+        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
 
         // Réponse du service
         return responseBuilder.build();

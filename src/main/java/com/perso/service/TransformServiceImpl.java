@@ -49,6 +49,14 @@ public class TransformServiceImpl implements TransformService {
 
 		Zone zoneInterpretation = new Zone(new Point(0, 2562), new Point(2414, 3000));
 		LOGGER.info("ZoneInterpretation : {}", zoneInterpretation.toString());
+//        Zone zoneEchantillon = new Zone(new Point(2744, 576), new Point(4060, 688));
+//        LOGGER.info("zoneEchantillon : {}", zoneEchantillon.toString());
+//
+//        Zone zone1 = new Zone(new Point(2600, 1860), new Point(4044, 4204));
+//        LOGGER.info("Zone1 : {}", zone1.toString());
+//
+//        Zone zoneInterpretation = new Zone(new Point(0, 4268), new Point(3872, 5000));
+//		LOGGER.info("ZoneInterpretation : {}", zoneInterpretation.toString());
 
 		String zoneEchantillonValue = this.zoneReading(pngFile, zoneEchantillon);
 		String zone1Value = this.zoneReading(pngFile, zone1);
@@ -213,7 +221,7 @@ public class TransformServiceImpl implements TransformService {
         } catch (TesseractException e) {
             LOGGER.error("erreur",e);
         }
-        LOGGER.debug("Debut traitement ocr fichier {} pour la zone {}", doc.getPath(), zone);
+        LOGGER.debug("Fin traitement ocr fichier {} pour la zone {}", doc.getPath(), zone);
 		return result;
 	}
 }
