@@ -17,7 +17,7 @@ public class StringUtilsOcr {
         try {
             value = matcher.start(1);
         } catch (IllegalStateException | IndexOutOfBoundsException e) {
-            LOGGER.error("Erreur lors de la récupération du 1er digit pour : "+ stringValue, e);
+            LOGGER.warn("Erreur lors de la récupération du 1er digit pour : {}",stringValue);
         }
         LOGGER.debug("Index du 1er digit de la chaîne {} : {}", stringValue, value);
         return value;

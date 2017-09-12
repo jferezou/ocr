@@ -7,9 +7,7 @@ import com.perso.service.PdfService;
 import com.perso.service.ReaderFileService;
 import com.perso.service.TransformServiceImpl;
 import com.perso.service.UpdatedValuesService;
-import com.perso.utils.EstimateTime;
-import com.perso.utils.ResponseTraitement;
-import com.perso.utils.ResultatPdf;
+import com.perso.utils.*;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.apache.tika.exception.TikaException;
@@ -72,10 +70,11 @@ public class RestOcr {
     @ServiceMethod
     public Response lancerTraitement2()  throws InvalidFormatException {
 
-        ResponseTraitement response = new ResponseTraitement();
+        ResponseT2List response = new ResponseT2List();
         try {
-            List<ResultatPdf> results = this.readerFileService.readAndLaunchT2();
-            response.setResultats(results);
+            List<ResponseTraitement2> liste = this.readerFileService.readAndLaunchT2();
+            response.setResultats(liste);
+
         } catch (FichierInvalideException | TikaException | IOException e) {
             LOGGER.error("", e);
         }

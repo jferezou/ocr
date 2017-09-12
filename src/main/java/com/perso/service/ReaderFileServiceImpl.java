@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.perso.utils.ResponseTraitement2;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -98,12 +99,11 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 
 	@Override
-	public List<ResultatPdf> readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
+	public List<ResponseTraitement2> readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement t2");
 		// Vérifie que le fichier existe
 		File file = new File(this.inputDirectory);
-		String fileName = file.getName();
-		List<ResultatPdf> finalResults = new ArrayList<>();
+		List<ResponseTraitement2> response = new ArrayList<>();
 		if (!file.exists()) {
 			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.inputDirectory);
 		}
@@ -115,13 +115,13 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			// on lance un traitement
 			List<Path> pathsTemp = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
 
-			finalResults = pathsTemp.stream()
+			response = pathsTemp.stream()
 					.filter(myPath -> Files.isRegularFile(myPath))
 					.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
 					.map(pdfFile -> this.traitementT2Service.extraire(pdfFile))
 					.collect(Collectors.toList());
 		}
-		return finalResults;
+		return response;
 	}
 
 

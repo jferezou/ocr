@@ -193,12 +193,6 @@ public class TransformServiceImpl implements TransformService {
             instance.setLanguage("fra");
             instance.setDatapath(this.tesseractDir);
             instance.setTessVariable("tessedit_char_whitelist", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZçéèêﬂ0123456789%./");
-//            instance.setTessVariable("tessedit_char_blacklist", "|’œ'");
-//            instance.setTessVariable("load_system_dawg", "false");
-//            instance.setTessVariable("load_freq_dawg", "false");
-//            instance.setTessVariable("user_words_suffix", "user-words");
-//            instance.setTessVariable("user_patterns_suffix", "user-patterns");
-//            instance.setTessVariable("", "bazaar");
             List<String> config = new ArrayList<>();
             config.add("bazaar");
             config.add("quiet");

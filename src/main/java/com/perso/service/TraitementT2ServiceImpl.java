@@ -35,15 +35,14 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraitementT2ServiceImpl.class);
     private final int taillePage = 840;
-    private List<Traitement2Obj> gmsList;
-    private List<Traitement2Obj> lmsList;
+    private static GmsElementList GMSLISTELEMENT = new GmsElementList();
+    private static LmsElementList LMSLISTELEMENT = new LmsElementList();
 
     @Override
-    public ResultatPdf extraire(Path path) {
+    public ResponseTraitement2 extraire(Path path) {
         LOGGER.debug("Début traitement fichier : {}", path);
-
-        this.gmsList = new ArrayList<>();
-        this.lmsList = new ArrayList<>();
+        ResponseTraitement2 responseTraitement2 = new ResponseTraitement2();
+        responseTraitement2.setPdfPath(path.toString());
         PdfDocument pdfDoc = null;
         try {
             pdfDoc = new PdfDocument(new PdfReader(path.toString()));
@@ -73,22 +72,22 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
                 resultat = resultat.replace("A","(A)");
                 resultat = resultat.replaceAll("(?m)^\\s", "");
                 String[] resultatSplit = resultat.split("\n");
-                List<Traitement2Obj> currentList = this.lmsList;
-                boolean isGmt = false;
-                for(int lineIndex = 0; lineIndex < resultat.length(); lineIndex ++) {
+                List<Traitement2Obj> currentList = responseTraitement2.getLmsList();
+                boolean isGms = false;
+                for(int lineIndex = 0; lineIndex < resultatSplit.length; lineIndex ++) {
                     String line = resultatSplit[lineIndex];
                     if(line.contains("LMS - LC-MSMS - Primoris accredited")) {
-                        currentList = this.lmsList;
-                        isGmt = false;
+                        currentList = responseTraitement2.getLmsList();
+                        isGms = false;
                         LOGGER.debug("Passage liste LMS");
                     }
                     else if(line.contains("GMS - GC-MSMS - Primoris accredited")) {
-                        currentList = this.gmsList;
-                        isGmt = true;
+                        currentList = responseTraitement2.getGmsList();
+                        isGms = true;
                         LOGGER.debug("Passage liste GMS");
                     }
                     else {
-                        currentList.add(this.traitementLigne(line, isGmt));
+                        currentList.add(this.traitementLigne(line, isGms));
                     }
                 }
 
@@ -103,9 +102,8 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
                 pdfDoc.close();
             }
         }
-
         LOGGER.debug("Fin traitement fichier : {}", path);
-        return null;
+        return responseTraitement2;
     }
 
 
@@ -124,13 +122,30 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
         }
         // on cherche la valeur dans nos tables
         else {
-
+            String value = StringUtils.trim(line);
+            double pourcentage = -1;
+            if(isGmt) {
+                pourcentage = getPourcentageFromElement(value, GMSLISTELEMENT);
+            }
+            else {
+                pourcentage = getPourcentageFromElement(value, LMSLISTELEMENT);
+            }
+            traitementObj.setValue(value);
+            traitementObj.setPourcentage(pourcentage);
+            traitementObj.setTrace(true);
         }
 
         LOGGER.debug("Objet généré : {}", traitementObj);
         return traitementObj;
     }
 
+    private double getPourcentageFromElement(String value, ElementList elementList) {
+        double pourcentage = -1;
+        if (elementList.getValues().containsKey(value)) {
+            pourcentage = elementList.getValues().get(value);
+        }
+        return pourcentage;
+    }
 
 
     private String getReference(final PdfPage pdfPage, final Zone zoneReference) {
