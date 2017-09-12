@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.print.attribute.standard.Media;
 import java.awt.*;
@@ -32,7 +33,7 @@ public class GenerateImageServiceImpl implements GenerateImageService {
     private static final int DPI=300;
     private final MediaType imagePng=MediaType.parse("image/png");
 
-    @Autowired
+    @Resource
     private FileServiceImpl fileServiceImpl;
     @Override
     public File generatePng(Path path) {

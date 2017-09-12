@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,7 +35,7 @@ public class PdfServiceImpl implements PdfService {
 
     @Value("${dossier.entrant}")
     private String filePath;
-    @Autowired
+    @Resource
     private FileServiceImpl fileServiceImpl;
 
 

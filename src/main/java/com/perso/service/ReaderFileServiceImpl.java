@@ -5,25 +5,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.perso.exception.FichierInvalideException;
-import com.perso.utils.CSVUtils;
 import com.perso.utils.ResultatPdf;
+
+import javax.annotation.Resource;
 
 @Service("ReaderFileService")
 public class ReaderFileServiceImpl implements ReaderFileService {
@@ -33,42 +27,42 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private MediaType APPLICATION_PNG = MediaType.parse("image/png");
 
 	@Value("${dossier.entrant}")
-	private String filePath;
+	private String inputDirectory;
 	@Value("${dossier.temporaire}")
-	private String tempDir;
+	private String tempDirectory;
 
-	@Autowired
+	@Resource
 	private GenerateImageService generateImageService;
 
-	@Autowired
+	@Resource
 	private PdfService pdfService;
 
-	@Autowired
+	@Resource
 	TransformService transformService;
 
-	@Autowired
+	@Resource
 	TraitementT2Service traitementT2Service;
 
 	@Override
 	public List<ResultatPdf> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
 		// Vérifie que le fichier existe
-		File file = new File(this.filePath);
+		File file = new File(this.inputDirectory);
 		String fileName = file.getName();
 		List<ResultatPdf> finalResults = new ArrayList<>();
 		if (!file.exists()) {
-			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.filePath);
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.inputDirectory);
 		}
 		// Vérifie que ce n'est pas un répertoire
 		else if (!file.isDirectory()) {
-			throw new FichierInvalideException("Ce doit être un répertoire : " + this.filePath);
+			throw new FichierInvalideException("Ce doit être un répertoire : " + this.inputDirectory);
 		}
 		// verifie que ce soit bien un txt
 		else {
 			// on recupère la liste de fichiers
-			List<Path> paths = Files.walk(Paths.get(this.filePath)).collect(Collectors.toList());
+			List<Path> paths = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
 
-			File tempsDir = new File(this.tempDir);
+			File tempsDir = new File(this.tempDirectory);
 			if(tempsDir.isDirectory()) {
 				// on supprime le contenu du temp dir
 				for(File fileTemp : tempsDir.listFiles()) {
@@ -81,7 +75,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				}
 
 				// on lance un traitement
-				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
+				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDirectory)).collect(Collectors.toList());
 				List<File> pngFileList = pathsTemp.stream()
 						.filter(myPath -> Files.isRegularFile(myPath))
 						.map(path -> this.generateImageService.generatePng(path))
@@ -95,7 +89,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 			}
 			else {
-				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
+				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
 		return finalResults;
@@ -105,41 +99,27 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 	@Override
 	public List<ResultatPdf> readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
-		LOGGER.info("Début du traitement");
+		LOGGER.info("Début du traitement t2");
 		// Vérifie que le fichier existe
-		File file = new File(this.filePath);
+		File file = new File(this.inputDirectory);
 		String fileName = file.getName();
 		List<ResultatPdf> finalResults = new ArrayList<>();
 		if (!file.exists()) {
-			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.filePath);
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.inputDirectory);
 		}
 		// Vérifie que ce n'est pas un répertoire
 		else if (!file.isDirectory()) {
-			throw new FichierInvalideException("Ce doit être un répertoire : " + this.filePath);
+			throw new FichierInvalideException("Ce doit être un répertoire : " + this.inputDirectory);
 		}
-		// verifie que ce soit bien un txt
 		else {
+			// on lance un traitement
+			List<Path> pathsTemp = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
 
-			File tempsDir = new File(this.tempDir);
-			if(tempsDir.isDirectory()) {
-				// on supprime le contenu du temp dir
-				for(File fileTemp : tempsDir.listFiles()) {
-					fileTemp.delete();
-				}
-
-				// on lance un traitement
-				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
-
-				finalResults = pathsTemp.stream()
-						.filter(myPath -> Files.isRegularFile(myPath))
-						.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
-						.map(pdfFile -> this.traitementT2Service.extraire(pdfFile))
-						.collect(Collectors.toList());
-
-			}
-			else {
-				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
-			}
+			finalResults = pathsTemp.stream()
+					.filter(myPath -> Files.isRegularFile(myPath))
+					.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
+					.map(pdfFile -> this.traitementT2Service.extraire(pdfFile))
+					.collect(Collectors.toList());
 		}
 		return finalResults;
 	}

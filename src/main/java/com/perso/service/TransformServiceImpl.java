@@ -9,7 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.perso.config.ListeFleursConfig;
-import com.perso.utils.CompositionObj;
+import com.perso.utils.*;
+import com.perso.utils.Point;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -20,18 +21,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.perso.utils.Point;
-import com.perso.utils.ResultatPdf;
-import com.perso.utils.Zone;
 
-@Service("transformService")
+import javax.annotation.Resource;
+
+@Service
 public class TransformServiceImpl implements TransformService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TransformServiceImpl.class);
 
     @Value("${dossier.tesseract}")
     private String tesseractDir;
 
-	@Autowired
+	@Resource
 	private ListeFleursConfig listeFleurs;
 
 	@Override
@@ -103,7 +103,7 @@ public class TransformServiceImpl implements TransformService {
                         LOGGER.debug("Debut de ligne, le 1er caractère est supprimé : {}", currentValue);
                     }
                     // on recupere l'indexe du 1er digit
-                    int lastSpaceIndex = this.getfirstdigitIndex(currentValue);
+                    int lastSpaceIndex = StringUtilsOcr.getfirstdigitIndex(currentValue);
                     if(lastSpaceIndex > -1) {
                         String name = currentValue.substring(0, lastSpaceIndex);
                         name = name.replace(".", "");
@@ -149,19 +149,6 @@ public class TransformServiceImpl implements TransformService {
         }
     }
 
-    private int getfirstdigitIndex(final String stringValue) {
-        Pattern pattern = Pattern.compile("^\\D*(\\d)");
-        Matcher matcher = pattern.matcher(stringValue);
-        matcher.find();
-        int value = -1;
-        try {
-            value = matcher.start(1);
-        } catch (IllegalStateException | IndexOutOfBoundsException e) {
-            LOGGER.error("Erreur lors de la récupération du 1er digit pour : "+ stringValue, e);
-        }
-        LOGGER.debug("Index du 1er digit de la chaîne {} : {}", stringValue, value);
-        return value;
-    }
 
     private List<CompositionObj> fillComposition(String zone1Value) {
         String[] tempZone1 = zone1Value.split("\n");
