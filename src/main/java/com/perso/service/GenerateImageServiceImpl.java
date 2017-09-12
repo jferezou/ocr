@@ -55,12 +55,6 @@ public class GenerateImageServiceImpl implements GenerateImageService {
             for (int iPage = 0; iPage < images.size(); iPage++) {
                 ImageIO.write((RenderedImage) images.get(iPage), EXTENSION, targetFile );
             }
-
-//            BufferedImage bufferedImage = ImageIO.read(targetFile);
-//
-//            float scaleFactor = 2.0f;
-//            RescaleOp op = new RescaleOp(scaleFactor, 20.0f, null);
-//            op.filter(bufferedImage, null);
         } catch (IOException | DocumentException | RendererException e) {
             LOGGER.error("Erreur lors de la generation du png", e);
         }
@@ -69,8 +63,13 @@ public class GenerateImageServiceImpl implements GenerateImageService {
 
 
     @Override
-    public boolean checkIfPng(final File file) throws TikaException, IOException {
-        boolean isPng = this.fileServiceImpl.checkFileType(file, this.imagePng);
+    public boolean checkIfPng(final File file) {
+        boolean isPng = false;
+        try {
+            isPng = this.fileServiceImpl.checkFileType(file, this.imagePng);
+        } catch (TikaException | IOException e) {
+           LOGGER.error("Erreur",e);
+        }
         return isPng;
     }
 }

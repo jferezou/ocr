@@ -65,6 +65,29 @@ public class RestOcr {
         return responseBuilder.build();
     }
 
+
+    @GET
+    @Path("/t2")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ServiceMethod
+    public Response lancerTraitement2()  throws InvalidFormatException {
+
+        ResponseTraitement response = new ResponseTraitement();
+        try {
+            List<ResultatPdf> results = this.readerFileService.readAndLaunchT2();
+            response.setResultats(results);
+        } catch (FichierInvalideException | TikaException | IOException e) {
+            LOGGER.error("", e);
+        }
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity(response);
+        responseBuilder.status(200);
+        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
+
+        // Réponse du service
+        return responseBuilder.build();
+    }
+
     @GET
     @Path("/getpdf")
     @Produces("application/pdf")

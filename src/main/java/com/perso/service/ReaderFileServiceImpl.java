@@ -46,6 +46,9 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	@Autowired
 	TransformService transformService;
 
+	@Autowired
+	TraitementT2Service traitementT2Service;
+
 	@Override
 	public List<ResultatPdf> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
@@ -79,9 +82,16 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 				// on lance un traitement
 				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
-				List<File> pngFileList = pathsTemp.stream().filter(myPath -> Files.isRegularFile(myPath)).map(path -> this.generateImageService.generatePng(path)).collect(Collectors.toList());
+				List<File> pngFileList = pathsTemp.stream()
+						.filter(myPath -> Files.isRegularFile(myPath))
+						.map(path -> this.generateImageService.generatePng(path))
+						.collect(Collectors.toList());
 
-				finalResults = pngFileList.stream().filter(myFile -> myFile.isFile()).map(pngFile -> this.traitement(pngFile)).collect(Collectors.toList());
+				finalResults = pngFileList.stream()
+						.filter(myFile -> myFile.isFile())
+						.filter(myFile -> this.generateImageService.checkIfPng(myFile))
+						.map(pngFile -> this.transformService.extract(pngFile))
+						.collect(Collectors.toList());
 
 			}
 			else {
@@ -92,28 +102,46 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	}
 
 
-	/**
-	 * Traitement multithread à l'aide des Future
-	 * 
-	 * @param file
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	private ResultatPdf traitement(File file) {
-		ResultatPdf result = new ResultatPdf();
-		try {
-			boolean isPng = this.generateImageService.checkIfPng(file);
-			if (isPng) {
-				// traitement principal
-				LOGGER.debug("Lancement du traiement du fichier {}", file.getPath());
-				result = this.transformService.extract(file);
-			}
-		} catch (TikaException e) {
-			LOGGER.error("Erreur lors du traitement du fichier", e);
-		} catch (IOException e) {
-			LOGGER.error("Erreur lors du traitement du fichier", e);
+
+	@Override
+	public List<ResultatPdf> readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
+		LOGGER.info("Début du traitement");
+		// Vérifie que le fichier existe
+		File file = new File(this.filePath);
+		String fileName = file.getName();
+		List<ResultatPdf> finalResults = new ArrayList<>();
+		if (!file.exists()) {
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.filePath);
 		}
-		return result;
+		// Vérifie que ce n'est pas un répertoire
+		else if (!file.isDirectory()) {
+			throw new FichierInvalideException("Ce doit être un répertoire : " + this.filePath);
+		}
+		// verifie que ce soit bien un txt
+		else {
+
+			File tempsDir = new File(this.tempDir);
+			if(tempsDir.isDirectory()) {
+				// on supprime le contenu du temp dir
+				for(File fileTemp : tempsDir.listFiles()) {
+					fileTemp.delete();
+				}
+
+				// on lance un traitement
+				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDir)).collect(Collectors.toList());
+
+				finalResults = pathsTemp.stream()
+						.filter(myPath -> Files.isRegularFile(myPath))
+						.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
+						.map(pdfFile -> this.traitementT2Service.extraire(pdfFile))
+						.collect(Collectors.toList());
+
+			}
+			else {
+				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDir);
+			}
+		}
+		return finalResults;
 	}
 
 

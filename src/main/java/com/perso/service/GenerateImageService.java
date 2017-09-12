@@ -9,5 +9,5 @@ import java.nio.file.Path;
 public interface GenerateImageService {
 
     File generatePng(final Path path);
-    boolean checkIfPng(final File file) throws TikaException, IOException;
+    boolean checkIfPng(final File file);
 }

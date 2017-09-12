@@ -38,7 +38,7 @@ public class TransformServiceImpl implements TransformService {
 	/**
 	 * Permet de reconnaitre le texte
 	 */
-	public ResultatPdf extract(final File pngFile) throws IOException {
+	public ResultatPdf extract(final File pngFile) {
 		LOGGER.info("Début du traitement du fichier {}", pngFile.getPath());
 
 		Zone zoneEchantillon = new Zone(new Point(1646, 330), new Point(2448, 416));

@@ -38,9 +38,15 @@ public class PdfServiceImpl implements PdfService {
     private FileServiceImpl fileServiceImpl;
 
 
-    private boolean checkIfPdf(final File file) throws TikaException, IOException {
-        boolean isPdf = this.fileServiceImpl.checkFileType(file, this.applicationPdf);
-        return isPdf;
+     @Override
+    public boolean checkIfPdf(final File file) {
+         boolean isPdf = false;
+         try {
+             isPdf = this.fileServiceImpl.checkFileType(file, this.applicationPdf);
+         } catch (TikaException | IOException e) {
+             LOGGER.error("Erreur",e);
+         }
+         return isPdf;
     }
 
     @Override
@@ -63,7 +69,7 @@ public class PdfServiceImpl implements PdfService {
                     }
                     pdfDoc.close();
                 }
-            } catch (TikaException | IOException e) {
+            } catch (IOException e) {
                 LOGGER.error("Erreur lors du traitement du fichier", e);
             }
         }
@@ -88,12 +94,12 @@ public class PdfServiceImpl implements PdfService {
                         }
                 }
             }
-        } catch (TikaException | IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Erreur lors du traitement du fichier", e);
         }
 
         EstimateTime estimateTime = new EstimateTime();
-        estimateTime.setMinutes(Math.round((nbPage * 6)/60)+1);
+        estimateTime.setMinutes(Math.round((nbPage * 8)/60)+1);
         date = DateUtils.addMinutes(date, estimateTime.getMinutes());
         DateFormat df = new SimpleDateFormat("HH:mm:ss");
         estimateTime.setEstimatedDate(df.format(date));
