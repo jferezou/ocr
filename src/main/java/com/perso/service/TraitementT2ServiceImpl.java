@@ -14,6 +14,7 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.FilteredTextEventListener;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy;
 import com.perso.utils.*;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,10 +43,14 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
     public ResponseTraitement2 extraire(Path path) {
         LOGGER.debug("Début traitement fichier : {}", path);
         ResponseTraitement2 responseTraitement2 = new ResponseTraitement2();
-        responseTraitement2.setPdfPath(path.toString());
+        responseTraitement2.setPdfFilePath(path.toString());
+
+        responseTraitement2.setPdfName(path.getFileName().toString());
         PdfDocument pdfDoc = null;
+        PdfReader reader = null;
         try {
-            pdfDoc = new PdfDocument(new PdfReader(path.toString()));
+            reader = new PdfReader(path.toString());
+            pdfDoc = new PdfDocument(reader);
 
             // en point depuis le coin en bas à gauche
             // les valeurs recuperee de gimp sont en point du coin en haut à gauche
@@ -53,6 +58,7 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
             Zone zoneReference = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
             LOGGER.info("ZoneInterpretation : {}", zoneReference.toString());
             String reference = this.getReference(pdfDoc.getFirstPage(), zoneReference);
+            responseTraitement2.setReference(reference);
             LOGGER.debug("Reference : {}", reference);
 
             int totalPage = pdfDoc.getNumberOfPages();
@@ -100,6 +106,13 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
         } finally {
             if(pdfDoc != null) {
                 pdfDoc.close();
+            }
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    LOGGER.error("erreur",e);
+                }
             }
         }
         LOGGER.debug("Fin traitement fichier : {}", path);

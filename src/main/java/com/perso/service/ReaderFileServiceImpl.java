@@ -1,9 +1,7 @@
 package com.perso.service;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -112,14 +110,34 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			throw new FichierInvalideException("Ce doit être un répertoire : " + this.inputDirectory);
 		}
 		else {
+			List<Path> paths = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
+			File tempsDir = new File(this.tempDirectory);
+			if(tempsDir.isDirectory()) {
+				// on supprime le contenu du temp dir
+				for(File fileTemp : tempsDir.listFiles()) {
+					fileTemp.delete();
+				}
+
+				// pour chaque fichier, on les split en page dans le temp dir
+				for(Path path : paths) {
+					if(Files.isRegularFile(path)) {
+						Path targetDir = Paths.get(this.tempDirectory+"\\"+path.getFileName());
+						Files.copy(path, targetDir, StandardCopyOption.REPLACE_EXISTING);
+					}
+				}
 			// on lance un traitement
-			List<Path> pathsTemp = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
+			List<Path> pathsTemp = Files.walk(Paths.get(this.tempDirectory)).collect(Collectors.toList());
 
 			response = pathsTemp.stream()
 					.filter(myPath -> Files.isRegularFile(myPath))
 					.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
 					.map(pdfFile -> this.traitementT2Service.extraire(pdfFile))
 					.collect(Collectors.toList());
+
+			}
+			else {
+				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
+			}
 		}
 		return response;
 	}
