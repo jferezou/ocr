@@ -18,14 +18,13 @@ public class FileServiceImpl implements FileService {
     public boolean checkFileType(final File file, final MediaType fileType) throws TikaException, IOException {
         boolean isCorrect = false;
         if(file != null) {
-            InputStream stream = new FileInputStream(file);
-            InputStream bufferedInputstream = new BufferedInputStream(stream);
-            MediaType fileInfo = this.getFileInfo(file.getName(), bufferedInputstream);
-            if (fileType.equals(fileInfo.getBaseType())) {
-                isCorrect = true;
-            }
-            else {
-                LOGGER.warn("Le fichier n'est pas traité car il doit être au format " + fileType + " : " + file.getPath());
+            try (final InputStream stream = new FileInputStream(file); final InputStream bufferedInputstream = new BufferedInputStream(stream)){
+                MediaType fileInfo = this.getFileInfo(file.getName(), bufferedInputstream);
+                if (fileType.equals(fileInfo.getBaseType())) {
+                    isCorrect = true;
+                } else {
+                    LOGGER.warn("Le fichier n'est pas traité car il doit être au format " + fileType + " : " + file.getPath());
+                }
             }
         }
         return isCorrect;
