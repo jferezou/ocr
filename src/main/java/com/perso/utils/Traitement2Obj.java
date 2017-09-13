@@ -10,7 +10,7 @@ import lombok.ToString;
 public class Traitement2Obj {
 
     private String value;
-    private double pourcentage;
+    private Double pourcentage;
     private boolean trace;
 
     public Traitement2Obj() {

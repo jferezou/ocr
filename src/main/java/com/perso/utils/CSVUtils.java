@@ -19,6 +19,21 @@ public class CSVUtils {
         }
         return result.toString();
     }
+
+
+    public static String writeResult(final ResponseTraitement2 responseTraitement2)  throws IOException {
+
+        final String reference = responseTraitement2.getReference();
+        StringBuilder result = new StringBuilder();
+        for(Traitement2Obj cptObj : responseTraitement2.getGmsList()) {
+            result.append(writeLine(Arrays.asList(reference, cptObj.getValue(), cptObj.getPourcentage().toString(), "GMS"),'"'));
+        }
+        for(Traitement2Obj cptObj : responseTraitement2.getLmsList()) {
+            result.append(writeLine(Arrays.asList(reference, cptObj.getValue(), cptObj.getPourcentage().toString(), "LMS"),'"'));
+        }
+        return result.toString();
+    }
+
     //https://tools.ietf.org/html/rfc4180
     private static String followCVSformat(String value) {
 

@@ -118,6 +118,20 @@ public class RestOcr {
         return responseBuilder.build();
     }
 
+    @POST
+    @Path("/savet2")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ServiceMethod
+    public Response sauvegardert2(final String data)  throws InvalidFormatException {
+
+        this.updatedValuesService.parseAndSavet2(data);
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity("");
+        responseBuilder.status(200);
+        // Réponse du service
+        return responseBuilder.build();
+    }
+
 
     @GET
     @Path("/getcsv")
@@ -126,6 +140,27 @@ public class RestOcr {
     public Response getCsvFile() {
 
         String csv = this.updatedValuesService.getCsv();
+
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        String disposition = "attachment; fileName=resultat.csv";
+        responseBuilder.header("Content-Disposition", disposition);
+        responseBuilder.header("Content-Type", "text/csv;charset=windows-1252");
+        responseBuilder.entity(csv);
+        responseBuilder.status(200);
+
+        // Réponse du service
+        return responseBuilder.build();
+
+    }
+
+
+    @GET
+    @Path("/getcsvt2")
+    @Produces("text/csv")
+    @ServiceMethod
+    public Response getCsvFileT2() {
+
+        String csv = this.updatedValuesService.getCsvt2();
 
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         String disposition = "attachment; fileName=resultat.csv";
