@@ -1,7 +1,8 @@
 dossier:
-  entrant: D:\\dev\\ocr\\input\\
-  temporaire: D:\\dev\\temp
-  tesseract: D:\\dev\\ocr\\src\\main\\resources\\tessdata
+  parent: D:\\developpement
+  entrant: ${dossier.parent}\\ocr\\input\\
+  temporaire: ${dossier.parent}\\temp
+  tesseract: ${dossier.parent}\\ocr\\src\\main\\resources\\tessdata
 liste:
   fleurs:
     - Phacélie
