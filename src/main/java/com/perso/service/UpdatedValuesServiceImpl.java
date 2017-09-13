@@ -94,7 +94,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         }
 
         result.setGmsList(gmsList);
-        result.setGmsList(lmsList);
+        result.setLmsList(lmsList);
 
         this.valeursEnregistreest2.put(id,result);
 

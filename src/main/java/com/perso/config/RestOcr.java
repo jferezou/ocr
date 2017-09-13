@@ -3,10 +3,7 @@ package com.perso.config;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
-import com.perso.service.PdfService;
-import com.perso.service.ReaderFileService;
-import com.perso.service.TransformServiceImpl;
-import com.perso.service.UpdatedValuesService;
+import com.perso.service.*;
 import com.perso.utils.*;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.apache.cxf.jaxrs.impl.ResponseImpl;
@@ -19,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,21 +31,24 @@ public class RestOcr {
 
     @Value("${dossier.temporaire}")
     private String tempDir;
-    @Autowired
+    @Resource
     ReaderFileService readerFileService;
-    @Autowired
+    @Resource
     UpdatedValuesService updatedValuesService;
-    @Autowired
+    @Resource
     PdfService pdfService;
+    @Resource
+    FileService fileService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileService.class);
 
-    @GET
+    @POST
     @Path("/t1")
     @Produces(MediaType.APPLICATION_JSON)
     @ServiceMethod
-    public Response lancerTraitement()  throws InvalidFormatException {
+    public Response lancerTraitement(final String data)  throws InvalidFormatException {
 
         ResponseTraitement response = new ResponseTraitement();
+        List<String> files = this.fileService.getFilesPath(data);
         try {
             List<ResultatPdf> results = this.readerFileService.readAndLaunch();
             response.setResultats(results);
@@ -64,13 +65,14 @@ public class RestOcr {
     }
 
 
-    @GET
+    @POST
     @Path("/t2")
     @Produces(MediaType.APPLICATION_JSON)
     @ServiceMethod
-    public Response lancerTraitement2()  throws InvalidFormatException {
+    public Response lancerTraitement2(final String data)  throws InvalidFormatException {
 
         ResponseT2List response = new ResponseT2List();
+        List<String> files = this.fileService.getFilesPath(data);
         try {
             List<ResponseTraitement2> liste = this.readerFileService.readAndLaunchT2();
             response.setResultats(liste);
