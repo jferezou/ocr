@@ -151,4 +151,20 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         this.valeursEnregistreest2.clear();
     }
 
+    @Override
+    public void fillT1Map(List<ResultatPdf> newValues) {
+        for(ResultatPdf resultatPdf : newValues) {
+            this.valeursEnregistrees.put(resultatPdf.getId(), resultatPdf);
+        }
+    }
+
+    @Override
+    public void fillT2Map(List<ResponseTraitement2> newValues) {
+        for(ResponseTraitement2 responseTraitement2 : newValues) {
+            this.valeursEnregistreest2.put(responseTraitement2.getId(), responseTraitement2);
+        }
+
+    }
+
+
 }

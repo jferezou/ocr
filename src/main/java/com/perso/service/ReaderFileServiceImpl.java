@@ -45,6 +45,8 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 	@Resource
 	TraitementT2Service traitementT2Service;
+	@Resource
+	UpdatedValuesService updatedValuesService;
 
 	@Override
 	public List<ResultatPdf> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
@@ -95,6 +97,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
+		this.updatedValuesService.fillT1Map(finalResults);
 		return finalResults;
 	}
 
@@ -144,6 +147,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
+		this.updatedValuesService.fillT2Map(response);
 		return response;
 	}
 
