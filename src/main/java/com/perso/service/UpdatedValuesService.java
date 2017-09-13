@@ -6,4 +6,6 @@ public interface UpdatedValuesService {
     void parseAndSavet2(final String value);
     String getCsv();
     String getCsvt2();
+    void cleanT1Map();
+    void cleanT2Map();
 }

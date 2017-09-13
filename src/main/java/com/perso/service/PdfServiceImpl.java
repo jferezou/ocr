@@ -32,6 +32,10 @@ public class PdfServiceImpl implements PdfService {
     private MediaType applicationPdf = MediaType.parse("application/pdf");
     @Value("${dossier.temporaire}")
     private String tempDir;
+    @Value("${dossier.traitement1}")
+    private String traitement1Directory;
+    @Value("${dossier.traitement2}")
+    private String traitement2Directory;
 
     @Value("${dossier.entrant}")
     private String filePath;
@@ -78,12 +82,16 @@ public class PdfServiceImpl implements PdfService {
 
 
     @Override
-    public EstimateTime estimateTime() {
+    public EstimateTime estimateTime(final String multiplicateur, final boolean ist1) {
         int nbPage = 0;
         Date date = new Date();
         try {
             // on recupère la liste de fichiers
-            List<Path> paths = Files.walk(Paths.get(this.filePath)).collect(Collectors.toList());
+            String fileP = this.filePath+"\\"+this.traitement2Directory;
+            if(ist1) {
+                fileP = this.filePath+"\\"+this.traitement1Directory;
+            }
+            List<Path> paths = Files.walk(Paths.get(fileP)).collect(Collectors.toList());
             for (Path path : paths) {
                 if (Files.isRegularFile(path)) {
                         File inFile = path.toFile();
@@ -100,7 +108,8 @@ public class PdfServiceImpl implements PdfService {
         }
 
         EstimateTime estimateTime = new EstimateTime();
-        estimateTime.setMinutes(Math.round((nbPage * 8)/60)+1);
+        int mult = Integer.parseInt(multiplicateur);
+        estimateTime.setMinutes(Math.round((nbPage * mult)/60)+1);
         date = DateUtils.addMinutes(date, estimateTime.getMinutes());
         DateFormat df = new SimpleDateFormat("HH:mm:ss");
         estimateTime.setEstimatedDate(df.format(date));

@@ -29,6 +29,10 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private String inputDirectory;
 	@Value("${dossier.temporaire}")
 	private String tempDirectory;
+	@Value("${dossier.traitement1}")
+	private String traitement1Directory;
+	@Value("${dossier.traitement2}")
+	private String traitement2Directory;
 
 	@Resource
 	private GenerateImageService generateImageService;
@@ -45,21 +49,21 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	@Override
 	public List<ResultatPdf> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
+		String t1Dir = this.inputDirectory+"\\"+this.traitement1Directory;
 		// Vérifie que le fichier existe
-		File file = new File(this.inputDirectory);
-		String fileName = file.getName();
+		File file = new File(t1Dir);
 		List<ResultatPdf> finalResults = new ArrayList<>();
 		if (!file.exists()) {
-			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.inputDirectory);
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + t1Dir);
 		}
 		// Vérifie que ce n'est pas un répertoire
 		else if (!file.isDirectory()) {
-			throw new FichierInvalideException("Ce doit être un répertoire : " + this.inputDirectory);
+			throw new FichierInvalideException("Ce doit être un répertoire : " + t1Dir);
 		}
 		// verifie que ce soit bien un txt
 		else {
 			// on recupère la liste de fichiers
-			List<Path> paths = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
+			List<Path> paths = Files.walk(Paths.get(t1Dir)).collect(Collectors.toList());
 
 			File tempsDir = new File(this.tempDirectory);
 			if(tempsDir.isDirectory()) {
@@ -99,18 +103,19 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	@Override
 	public List<ResponseTraitement2> readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement t2");
+		String t2Dir = this.inputDirectory+"\\"+this.traitement2Directory;
 		// Vérifie que le fichier existe
-		File file = new File(this.inputDirectory);
+		File file = new File(t2Dir);
 		List<ResponseTraitement2> response = new ArrayList<>();
 		if (!file.exists()) {
-			throw new FichierInvalideException("Ce répertoire n'existe pas : " + this.inputDirectory);
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + t2Dir);
 		}
 		// Vérifie que ce n'est pas un répertoire
 		else if (!file.isDirectory()) {
-			throw new FichierInvalideException("Ce doit être un répertoire : " + this.inputDirectory);
+			throw new FichierInvalideException("Ce doit être un répertoire : " + t2Dir);
 		}
 		else {
-			List<Path> paths = Files.walk(Paths.get(this.inputDirectory)).collect(Collectors.toList());
+			List<Path> paths = Files.walk(Paths.get(t2Dir)).collect(Collectors.toList());
 			File tempsDir = new File(this.tempDirectory);
 			if(tempsDir.isDirectory()) {
 				// on supprime le contenu du temp dir

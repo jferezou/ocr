@@ -141,4 +141,14 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         return exportedCsv.toString();
     }
 
+    @Override
+    public void cleanT1Map() {
+        this.valeursEnregistrees.clear();
+    }
+
+    @Override
+    public void cleanT2Map() {
+        this.valeursEnregistreest2.clear();
+    }
+
 }

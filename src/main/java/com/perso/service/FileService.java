@@ -9,5 +9,4 @@ import java.util.List;
 
 public interface FileService {
     boolean checkFileType(final File file, final MediaType fileType) throws TikaException, IOException;
-    List<String> getFilesPath(final String data);
 }

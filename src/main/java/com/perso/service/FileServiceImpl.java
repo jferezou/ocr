@@ -51,19 +51,4 @@ public class FileServiceImpl implements FileService {
         metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
         return tika.getDetector().detect(stream, metadata);
     }
-
-    @Override
-    public List<String> getFilesPath(final String data) {
-        String[] splitValues = data.replace("{","").replace("}","").replace("\"","").split(",");
-        List<String> correspondance = new ArrayList<>();
-        for(int i =0; i< splitValues.length; i++) {
-            String line = splitValues[i];
-            String[] linesplited = line.split(":");
-            if(linesplited.length > 1) {
-                correspondance.add(StringUtils.trim(linesplited[1].replace("\n", "")));
-            }
-
-        }
-        return correspondance;
-    }
 }
