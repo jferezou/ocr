@@ -2,7 +2,7 @@ dossier:
   parent: D:\\developpement
   entrant: ${dossier.parent}\\ocr\\input\\
   temporaire: ${dossier.parent}\\temp
-  tesseract: ${dossier.parent}\\ocr\\src\\main\\resources\\tessdata
+  tesseract: src\\main\\resources\\tessdata
 liste:
   fleurs:
     - Phacélie
