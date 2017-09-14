@@ -1,8 +1,8 @@
 dossier:
-  parent: D:\\dev
+  parent: D:\\developpement
   entrant: ${dossier.parent}\\ocr\\input\\
   temporaire: ${dossier.parent}\\temp
-  tesseract: src\\main\\resources\\tessdata
+  tesseract: ${dossier.parent}\\ocr\\config\\tessdata
   traitement1: t1
   traitement2: t2
 liste:
