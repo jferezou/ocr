@@ -9,6 +9,5 @@ import java.nio.file.Path;
 
 public interface PdfService {
     void splitPdf(final Path path);
-    EstimateTime estimateTime(final String value, final boolean ist1);
     boolean checkIfPdf(final File file);
 }

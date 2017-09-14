@@ -1,5 +1,6 @@
-package com.perso.service;
+package com.perso.service.impl;
 
+import com.perso.service.GenerateImageService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
@@ -9,19 +10,14 @@ import org.ghost4j.renderer.RendererException;
 import org.ghost4j.renderer.SimpleRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
-import javax.print.attribute.standard.Media;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
-import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 

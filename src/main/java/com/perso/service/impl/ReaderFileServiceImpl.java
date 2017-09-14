@@ -1,4 +1,4 @@
-package com.perso.service;
+package com.perso.service.impl;
 
 import java.io.*;
 import java.nio.file.*;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.perso.service.*;
 import com.perso.utils.ResponseTraitement2;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
@@ -41,10 +42,10 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private PdfService pdfService;
 
 	@Resource
-	TransformService transformService;
+    TransformService transformService;
 
 	@Resource
-	TraitementT2Service traitementT2Service;
+    TraitementT2Service traitementT2Service;
 	@Resource
 	UpdatedValuesService updatedValuesService;
 

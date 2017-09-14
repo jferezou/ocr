@@ -39,7 +39,7 @@ public class RestOcr {
     @Resource
     UpdatedValuesService updatedValuesService;
     @Resource
-    PdfService pdfService;
+    EstimateTimeService estimateTimeService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileService.class);
 
     @GET
@@ -182,7 +182,7 @@ public class RestOcr {
     @ServiceMethod
     public Response estimateTime(@QueryParam("multiplicateur") final String multiplicateur, @QueryParam("ist1") final Boolean isT1) {
 
-        EstimateTime estimateTime = this.pdfService.estimateTime(multiplicateur, isT1);
+        EstimateTime estimateTime = this.estimateTimeService.estimateTime(multiplicateur, isT1);
 
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         responseBuilder.entity(estimateTime);

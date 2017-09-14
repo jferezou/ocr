@@ -1,6 +1,5 @@
 package com.perso.utils;
 
-import com.perso.service.TraitementT2ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

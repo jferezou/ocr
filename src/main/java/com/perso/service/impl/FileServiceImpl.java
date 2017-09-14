@@ -1,6 +1,6 @@
-package com.perso.service;
+package com.perso.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
+import com.perso.service.FileService;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -10,10 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class FileServiceImpl implements FileService {

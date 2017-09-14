@@ -1,14 +1,12 @@
-package com.perso.service;
+package com.perso.service.impl;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.perso.config.ListeFleursConfig;
+import com.perso.service.TransformService;
 import com.perso.utils.*;
 import com.perso.utils.Point;
 import net.sourceforge.tess4j.ITesseract;
@@ -18,7 +16,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
