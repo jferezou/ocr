@@ -4,6 +4,7 @@ import com.perso.utils.ResponseTraitement2;
 import com.perso.utils.ResultatPdf;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UpdatedValuesService {
 
@@ -13,6 +14,9 @@ public interface UpdatedValuesService {
     String getCsvt2();
     void cleanT1Map();
     void cleanT2Map();
-    void fillT1Map(List<ResultatPdf> newValues);
+    void fillT1Map(final List<ResultatPdf> newValues);
     void fillT2Map(final List<ResponseTraitement2> newValues);
+
+    Map<Integer, ResultatPdf> getValeursEnregistrees();
+    Map<Integer, ResponseTraitement2> getValeursEnregistreest2();
 }

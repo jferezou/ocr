@@ -5,19 +5,14 @@ import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
 import com.perso.service.*;
 import com.perso.utils.*;
+import com.perso.utils.response.ListPdfIdResponse;
+import com.perso.utils.response.ListResponse;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
-import org.apache.cxf.jaxrs.impl.ResponseImpl;
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.PDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.ws.rs.*;
@@ -25,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Service
@@ -48,9 +43,9 @@ public class RestOcr {
     @ServiceMethod
     public Response lancerTraitement()  throws InvalidFormatException {
         this.updatedValuesService.cleanT1Map();
-        ResponseTraitement response = new ResponseTraitement();
+        ListResponse response = new ListResponse();
         try {
-            List<ResultatPdf> results = this.readerFileService.readAndLaunch();
+            Set<ListPdfIdResponse> results = this.readerFileService.readAndLaunch();
             response.setResultats(results);
         } catch (FichierInvalideException | TikaException | IOException e) {
             LOGGER.error("", e);
@@ -71,9 +66,9 @@ public class RestOcr {
     @ServiceMethod
     public Response lancerTraitement2()  throws InvalidFormatException {
         this.updatedValuesService.cleanT2Map();
-        ResponseT2List response = new ResponseT2List();
+        ListResponse response = new ListResponse();
         try {
-            List<ResponseTraitement2> liste = this.readerFileService.readAndLaunchT2();
+            Set<ListPdfIdResponse> liste = this.readerFileService.readAndLaunchT2();
             response.setResultats(liste);
 
         } catch (FichierInvalideException | TikaException | IOException e) {
@@ -186,6 +181,43 @@ public class RestOcr {
 
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         responseBuilder.entity(estimateTime);
+        responseBuilder.status(200);
+        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
+
+        // Réponse du service
+        return responseBuilder.build();
+
+    }
+
+
+
+    @GET
+    @Path("/gett2")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ServiceMethod
+    public Response getT2Value(@QueryParam("id") final Integer key) {
+
+
+        ResponseTraitement2 resultat = this.updatedValuesService.getValeursEnregistreest2().get(key);
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity(resultat);
+        responseBuilder.status(200);
+        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
+
+        // Réponse du service
+        return responseBuilder.build();
+
+    }
+
+    @GET
+    @Path("/gett1")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ServiceMethod
+    public Response getT1Value(@QueryParam("id") final Integer key) {
+
+        ResultatPdf resultat = this.updatedValuesService.getValeursEnregistrees().get(key);
+        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+        responseBuilder.entity(resultat);
         responseBuilder.status(200);
         responseBuilder.header("Content-Type", "application/json;charset=utf-8");
 

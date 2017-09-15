@@ -3,11 +3,14 @@ package com.perso.service.impl;
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.perso.service.*;
 import com.perso.utils.ResponseTraitement2;
+import com.perso.utils.response.ListPdfIdResponse;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
@@ -50,7 +53,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	UpdatedValuesService updatedValuesService;
 
 	@Override
-	public List<ResultatPdf> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
+	public Set<ListPdfIdResponse> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
 		String t1Dir = this.inputDirectory+"\\"+this.traitement1Directory;
 		// Vérifie que le fichier existe
@@ -99,13 +102,20 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			}
 		}
 		this.updatedValuesService.fillT1Map(finalResults);
-		return finalResults;
+		Set<ListPdfIdResponse> returnValue = new HashSet<>();
+		for(ResultatPdf result : this.updatedValuesService.getValeursEnregistrees().values()) {
+			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
+			listPdfIdResponse.setId(result.getId());
+			listPdfIdResponse.setPdfFilePath(result.getPdfFilePath());
+			returnValue.add(listPdfIdResponse);
+		}
+		return returnValue;
 	}
 
 
 
 	@Override
-	public List<ResponseTraitement2> readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
+	public Set<ListPdfIdResponse>  readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement t2");
 		String t2Dir = this.inputDirectory+"\\"+this.traitement2Directory;
 		// Vérifie que le fichier existe
@@ -149,7 +159,14 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			}
 		}
 		this.updatedValuesService.fillT2Map(response);
-		return response;
+		Set<ListPdfIdResponse> returnValue = new HashSet<>();
+		for(ResponseTraitement2 result : this.updatedValuesService.getValeursEnregistreest2().values()) {
+			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
+			listPdfIdResponse.setId(result.getId());
+			listPdfIdResponse.setPdfFilePath(result.getPdfFilePath());
+			returnValue.add(listPdfIdResponse);
+		}
+		return returnValue;
 	}
 
 

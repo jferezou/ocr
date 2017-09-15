@@ -19,7 +19,6 @@ public class ResultatPdf implements Serializable {
 	private String pdfFileName;
 	private String echantillon;
 	private int id;
-	private boolean enregistre = false;
 	private List<CompositionObj> compositions;
 
 	public ResultatPdf() {

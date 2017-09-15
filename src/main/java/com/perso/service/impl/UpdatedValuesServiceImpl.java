@@ -2,6 +2,7 @@ package com.perso.service.impl;
 
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@Getter
 public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatedValuesServiceImpl.class);
 
@@ -37,13 +39,17 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         int index=0;
         while(correspondance.containsKey("nomcomposition"+index)) {
             String nomcomposition = correspondance.get("nomcomposition"+index);
-            double percentage = Double.parseDouble(correspondance.get("pourcentage"+index));
-            String type = correspondance.get("type"+index);
-            CompositionObj compo = new CompositionObj();
-            compo.setPercentage(percentage);
-            compo.setType(type);
-            compo.setValue(nomcomposition);
-            compoList.add(compo);
+            if(!nomcomposition.isEmpty()) {
+                double percentage = Double.parseDouble(correspondance.get("pourcentage" + index));
+                String type = correspondance.get("type" + index);
+                boolean isValid = Boolean.parseBoolean(correspondance.get("valid"+index));
+                CompositionObj compo = new CompositionObj();
+                compo.setPercentage(percentage);
+                compo.setType(type);
+                compo.setValue(nomcomposition);
+                compo.setValid(isValid);
+                compoList.add(compo);
+            }
             index ++;
         }
         result.setCompositions(compoList);
@@ -73,11 +79,15 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         int index=0;
         while(correspondance.containsKey("valuegms"+index)) {
             String nomcomposition = correspondance.get("valuegms"+index);
-            double percentage = Double.parseDouble(correspondance.get("pourcentagegms"+index));
-            Traitement2Obj compo = new Traitement2Obj();
-            compo.setPourcentage(percentage);
-            compo.setValue(nomcomposition);
-            gmsList.add(compo);
+            if(!nomcomposition.isEmpty()) {
+                double percentage = Double.parseDouble(correspondance.get("pourcentagegms" + index));
+                boolean isTrace = Boolean.parseBoolean(correspondance.get("tracegms"+index));
+                Traitement2Obj compo = new Traitement2Obj();
+                compo.setPourcentage(percentage);
+                compo.setValue(nomcomposition);
+                compo.setTrace(isTrace);
+                gmsList.add(compo);
+            }
             index ++;
         }
 
@@ -86,11 +96,15 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         index=0;
         while(correspondance.containsKey("valuelms"+index)) {
             String nomcomposition = correspondance.get("valuelms"+index);
-            double percentage = Double.parseDouble(correspondance.get("pourcentagelms"+index));
-            Traitement2Obj compo = new Traitement2Obj();
-            compo.setPourcentage(percentage);
-            compo.setValue(nomcomposition);
-            lmsList.add(compo);
+            if(!nomcomposition.isEmpty()) {
+                double percentage = Double.parseDouble(correspondance.get("pourcentagelms" + index));
+                boolean isTrace = Boolean.parseBoolean(correspondance.get("tracelms"+index));
+                Traitement2Obj compo = new Traitement2Obj();
+                compo.setPourcentage(percentage);
+                compo.setValue(nomcomposition);
+                compo.setTrace(isTrace);
+                lmsList.add(compo);
+            }
             index ++;
         }
 
