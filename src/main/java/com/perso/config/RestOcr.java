@@ -48,7 +48,7 @@ public class RestOcr {
             Set<ListPdfIdResponse> results = this.readerFileService.readAndLaunch();
             response.setResultats(results);
         } catch (FichierInvalideException | TikaException | IOException e) {
-            LOGGER.error("", e);
+            LOGGER.error("Erreur lors du traitement T1", e);
         }
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         responseBuilder.entity(response);
@@ -72,7 +72,7 @@ public class RestOcr {
             response.setResultats(liste);
 
         } catch (FichierInvalideException | TikaException | IOException e) {
-            LOGGER.error("", e);
+            LOGGER.error("Erreur lors du traitement T2", e);
         }
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
         responseBuilder.entity(response);
