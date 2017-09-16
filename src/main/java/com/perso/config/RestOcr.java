@@ -3,6 +3,7 @@ package com.perso.config;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
+import com.perso.exception.ParsingException;
 import com.perso.service.*;
 import com.perso.utils.*;
 import com.perso.utils.response.ListPdfIdResponse;
@@ -106,10 +107,18 @@ public class RestOcr {
     @ServiceMethod
     public Response sauvegarder(final String data)  throws InvalidFormatException {
 
-        this.updatedValuesService.parseAndSave(data);
+        int status = 200;
+        String body = "";
+        try {
+            this.updatedValuesService.parseAndSave(data);
+        } catch (ParsingException e) {
+            LOGGER.error("Erreur de parsing", e);
+            body = e.getMessage();
+            status = 500;
+        }
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-        responseBuilder.entity("");
-        responseBuilder.status(200);
+        responseBuilder.entity(body);
+        responseBuilder.status(status);
         // Réponse du service
         return responseBuilder.build();
     }
@@ -120,10 +129,18 @@ public class RestOcr {
     @ServiceMethod
     public Response sauvegardert2(final String data)  throws InvalidFormatException {
 
-        this.updatedValuesService.parseAndSavet2(data);
+        int status = 200;
+        String body = "";
+        try {
+            this.updatedValuesService.parseAndSavet2(data);
+        } catch (ParsingException e) {
+            LOGGER.error("Erreur de parsing", e);
+            body = e.getMessage();
+            status = 500;
+        }
         ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-        responseBuilder.entity("");
-        responseBuilder.status(200);
+        responseBuilder.entity(body);
+        responseBuilder.status(status);
         // Réponse du service
         return responseBuilder.build();
     }

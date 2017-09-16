@@ -1,5 +1,6 @@
 package com.perso.service;
 
+import com.perso.exception.ParsingException;
 import com.perso.utils.ResponseTraitement2;
 import com.perso.utils.ResultatPdf;
 
@@ -8,8 +9,8 @@ import java.util.Map;
 
 public interface UpdatedValuesService {
 
-    void parseAndSave(final String value);
-    void parseAndSavet2(final String value);
+    void parseAndSave(final String value) throws ParsingException;
+    void parseAndSavet2(final String value) throws ParsingException;
     String getCsv();
     String getCsvt2();
     void cleanT1Map();

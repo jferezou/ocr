@@ -1,8 +1,10 @@
 package com.perso.service.impl;
 
+import com.perso.exception.ParsingException;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,15 +21,9 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     private Map<Integer, ResponseTraitement2> valeursEnregistreest2 = new HashMap<>();
 
     @Override
-    public void parseAndSave(final String value) {
+    public void parseAndSave(final String value) throws ParsingException {
 
-        String[] splitValues = value.replace("{","").replace("}","").replace("\"","").split(",");
-        Map<String,String> correspondance = new HashMap<>();
-        for(int i =0; i< splitValues.length; i++) {
-            String line = splitValues[i];
-            String[] linesplited = line.split(":");
-            correspondance.put(linesplited[0], linesplited[1]);
-        }
+        Map<String, String> correspondance = this.parseStringToMap(value);
 
         ResultatPdf result = new ResultatPdf();
         int id = Integer.parseInt(correspondance.get("id"));
@@ -59,15 +55,9 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     }
     
     @Override
-    public void parseAndSavet2(final String value) {
+    public void parseAndSavet2(final String value)  throws ParsingException {
 
-        String[] splitValues = value.replace("{","").replace("}","").replace("\"","").split(",");
-        Map<String,String> correspondance = new HashMap<>();
-        for(int i =0; i< splitValues.length; i++) {
-            String line = splitValues[i];
-            String[] linesplited = line.split(":");
-            correspondance.put(linesplited[0], linesplited[1]);
-        }
+        Map<String, String> correspondance = this.parseStringToMap(value);
 
         ResponseTraitement2 result = new ResponseTraitement2();
         int id = Integer.parseInt(correspondance.get("id"));
@@ -113,6 +103,35 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
         this.valeursEnregistreest2.put(id,result);
 
+    }
+
+    private Map<String, String> parseStringToMap(String value) throws ParsingException {
+        int accoladeOuvrante = StringUtils.countMatches(value, "{");
+        if(accoladeOuvrante != 1) {
+            throw new ParsingException("Attention, { est un caractère interdit, enregistrement non pris en compte !");
+        }
+
+        int accoladeFermante = StringUtils.countMatches(value, "}");
+        if(accoladeFermante != 1) {
+            throw new ParsingException("Attention, } est un caractère interdit, enregistrement non pris en compte !");
+        }
+        String[] splitValues = value.replace("{","").replace("}","").replace("\"","").split(",");
+        Map<String,String> correspondance = new HashMap<>();
+        for(int i =0; i< splitValues.length; i++) {
+            String line = splitValues[i];
+            int deuxPointsCount = StringUtils.countMatches(line, ":");
+            String[] linesplited = line.split(":");
+            if(deuxPointsCount != 1) {
+                throw new ParsingException("Attention, : est un caractère interdit, enregistrement non pris en compte !");
+            }
+            if(linesplited.length == 2) {
+                correspondance.put(linesplited[0], linesplited[1]);
+            }
+            else {
+                correspondance.put(linesplited[0], "");
+            }
+        }
+        return correspondance;
     }
 
 
