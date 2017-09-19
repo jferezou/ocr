@@ -1,5 +1,10 @@
 package com.perso.utils;
 
+import com.perso.pojo.palynologie.Palynologie;
+import com.perso.pojo.palynologie.PalynologieDocument;
+import com.perso.pojo.residus.Residu;
+import com.perso.pojo.residus.ResidusDocument;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -10,25 +15,25 @@ public class CSVUtils {
 
 
 
-    public static String writeResult(final ResultatPdf resultatPdf)  throws IOException {
+    public static String writeResult(final PalynologieDocument palynologieDocument)  throws IOException {
 
-        final String echantillon = resultatPdf.getEchantillon();
+        final String echantillon = palynologieDocument.getEchantillon();
         StringBuilder result = new StringBuilder();
-        for(CompositionObj cptObj : resultatPdf.getCompositions()) {
+        for(Palynologie cptObj : palynologieDocument.getCompositions()) {
             result.append(writeLine(Arrays.asList(echantillon, cptObj.getValue(), cptObj.getPercentage().toString(), cptObj.getType()),'"'));
         }
         return result.toString();
     }
 
 
-    public static String writeResult(final ResponseTraitement2 responseTraitement2)  throws IOException {
+    public static String writeResult(final ResidusDocument residusDocument)  throws IOException {
 
-        final String reference = responseTraitement2.getReference();
+        final String reference = residusDocument.getReference();
         StringBuilder result = new StringBuilder();
-        for(Traitement2Obj cptObj : responseTraitement2.getGmsList()) {
+        for(Residu cptObj : residusDocument.getGmsList()) {
             result.append(writeLine(Arrays.asList(reference, cptObj.getValue(), cptObj.getPourcentage().toString(), "GMS"),'"'));
         }
-        for(Traitement2Obj cptObj : responseTraitement2.getLmsList()) {
+        for(Residu cptObj : residusDocument.getLmsList()) {
             result.append(writeLine(Arrays.asList(reference, cptObj.getValue(), cptObj.getPourcentage().toString(), "LMS"),'"'));
         }
         return result.toString();

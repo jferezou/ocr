@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.perso.config.ListeFleursConfig;
-import com.perso.service.TransformService;
+import com.perso.pojo.ocr.Zone;
+import com.perso.service.PalynologieExtractorService;
 import com.perso.utils.*;
-import com.perso.utils.Point;
+import com.perso.pojo.ocr.Point;
+import com.perso.pojo.palynologie.Palynologie;
+import com.perso.pojo.palynologie.PalynologieDocument;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -22,8 +25,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 @Service
-public class TransformServiceImpl implements TransformService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TransformServiceImpl.class);
+public class PalynologieExtractorServiceImpl implements PalynologieExtractorService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(PalynologieExtractorServiceImpl.class);
 
     @Value("${dossier.tesseract}")
     private String tesseractDir;
@@ -35,7 +38,7 @@ public class TransformServiceImpl implements TransformService {
 	/**
 	 * Permet de reconnaitre le texte
 	 */
-	public ResultatPdf extract(final File pngFile) {
+	public PalynologieDocument extract(final File pngFile) {
 		LOGGER.info("Début du traitement du fichier {}", pngFile.getPath());
 
 		Zone zoneEchantillon = new Zone(new Point(1646, 330), new Point(2448, 416));
@@ -59,7 +62,7 @@ public class TransformServiceImpl implements TransformService {
 		String zone1Value = this.zoneReading(pngFile, zone1);
 		String zoneInterpretationValue = this.zoneReading(pngFile, zoneInterpretation);
 
-		ResultatPdf result = new ResultatPdf();
+		PalynologieDocument result = new PalynologieDocument();
 
         String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
         result.setPdfFileName(baseName);
@@ -67,7 +70,7 @@ public class TransformServiceImpl implements TransformService {
         String zoneEchantillonValueTempName = this.fillEchantillon(zoneEchantillonValue);
         result.setEchantillon(zoneEchantillonValueTempName);
 
-        List<CompositionObj> compositionList = this.fillComposition(zone1Value);
+        List<Palynologie> compositionList = this.fillComposition(zone1Value);
         this.fillInterpretation(zoneInterpretationValue, compositionList);
 
         result.setCompositions(compositionList);
@@ -75,7 +78,7 @@ public class TransformServiceImpl implements TransformService {
 		return result;
 	}
 
-    private void fillInterpretation(String zoneInterpretationValue, List<CompositionObj> compositionList) {
+    private void fillInterpretation(String zoneInterpretationValue, List<Palynologie> compositionList) {
         // on repere la ligne d'interpretation (il doit y avoir des % et des ,)
         final String[] splitedInterpretationLine =  zoneInterpretationValue.split("\n");
 
@@ -130,7 +133,7 @@ public class TransformServiceImpl implements TransformService {
                         }
                         String tempName = StringUtils.stripAccents(name.toLowerCase());
                         tempName = StringUtils.trim(tempName);
-                        for (CompositionObj comp : compositionList) {
+                        for (Palynologie comp : compositionList) {
                             if (StringUtils.stripAccents(comp.getValue().toLowerCase()).equals(tempName)) {
                                 comp.setPercentage(percent);
                             }
@@ -141,19 +144,19 @@ public class TransformServiceImpl implements TransformService {
             }
         }
 
-        for (CompositionObj comp : compositionList) {
+        for (Palynologie comp : compositionList) {
             comp.calculateType();
         }
     }
 
 
-    private List<CompositionObj> fillComposition(String zone1Value) {
+    private List<Palynologie> fillComposition(String zone1Value) {
         String[] tempZone1 = zone1Value.split("\n");
 
-        List<CompositionObj> compositionList = new ArrayList<>();
+        List<Palynologie> compositionList = new ArrayList<>();
         for (int j = 0 ; j < tempZone1.length ;j++) {
             if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
-                CompositionObj zoneObj = new CompositionObj();
+                Palynologie zoneObj = new Palynologie();
                 boolean valid = false;
                 for(String valeurPossible : this.listeFleurs.getFleurs()) {
                     String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase().replace(" ",""));

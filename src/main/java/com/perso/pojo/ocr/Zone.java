@@ -1,4 +1,4 @@
-package com.perso.utils;
+package com.perso.pojo.ocr;
 
 public class Zone {
 

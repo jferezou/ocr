@@ -3,6 +3,10 @@ package com.perso.service.impl;
 import com.perso.exception.ParsingException;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
+import com.perso.pojo.palynologie.Palynologie;
+import com.perso.pojo.palynologie.PalynologieDocument;
+import com.perso.pojo.residus.Residu;
+import com.perso.pojo.residus.ResidusDocument;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,21 +21,21 @@ import java.util.*;
 public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatedValuesServiceImpl.class);
 
-    private Map<Integer, ResultatPdf> valeursEnregistrees = new HashMap<>();
-    private Map<Integer, ResponseTraitement2> valeursEnregistreest2 = new HashMap<>();
+    private Map<Integer, PalynologieDocument> valeursPalynologie = new HashMap<>();
+    private Map<Integer, ResidusDocument> valeursResidus = new HashMap<>();
 
     @Override
-    public void parseAndSave(final String value) throws ParsingException {
+    public void parseAndSavePalynologie(final String value) throws ParsingException {
 
         Map<String, String> correspondance = this.parseStringToMap(value);
 
-        ResultatPdf result = new ResultatPdf();
+        PalynologieDocument result = new PalynologieDocument();
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String echantillon = correspondance.get("echantillon");
         result.setEchantillon(echantillon);
 
-        List<CompositionObj> compoList = new ArrayList<>();
+        List<Palynologie> compoList = new ArrayList<>();
         int index=0;
         while(correspondance.containsKey("nomcomposition"+index)) {
             String nomcomposition = correspondance.get("nomcomposition"+index);
@@ -39,7 +43,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
                 double percentage = Double.parseDouble(correspondance.get("pourcentage" + index));
                 String type = correspondance.get("type" + index);
                 boolean isValid = Boolean.parseBoolean(correspondance.get("valid"+index));
-                CompositionObj compo = new CompositionObj();
+                Palynologie compo = new Palynologie();
                 compo.setPercentage(percentage);
                 compo.setType(type);
                 compo.setValue(nomcomposition);
@@ -50,29 +54,29 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         }
         result.setCompositions(compoList);
 
-        this.valeursEnregistrees.put(id,result);
+        this.valeursPalynologie.put(id,result);
 
     }
     
     @Override
-    public void parseAndSavet2(final String value)  throws ParsingException {
+    public void parseAndSaveResidus(final String value)  throws ParsingException {
 
         Map<String, String> correspondance = this.parseStringToMap(value);
 
-        ResponseTraitement2 result = new ResponseTraitement2();
+        ResidusDocument result = new ResidusDocument();
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String reference = correspondance.get("reference");
         result.setReference(reference);
 
-        List<Traitement2Obj> gmsList = new ArrayList<>();
+        List<Residu> gmsList = new ArrayList<>();
         int index=0;
         while(correspondance.containsKey("valuegms"+index)) {
             String nomcomposition = correspondance.get("valuegms"+index);
             if(!nomcomposition.isEmpty()) {
                 double percentage = Double.parseDouble(correspondance.get("pourcentagegms" + index));
                 boolean isTrace = Boolean.parseBoolean(correspondance.get("tracegms"+index));
-                Traitement2Obj compo = new Traitement2Obj();
+                Residu compo = new Residu();
                 compo.setPourcentage(percentage);
                 compo.setValue(nomcomposition);
                 compo.setTrace(isTrace);
@@ -82,14 +86,14 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         }
 
 
-        List<Traitement2Obj> lmsList = new ArrayList<>();
+        List<Residu> lmsList = new ArrayList<>();
         index=0;
         while(correspondance.containsKey("valuelms"+index)) {
             String nomcomposition = correspondance.get("valuelms"+index);
             if(!nomcomposition.isEmpty()) {
                 double percentage = Double.parseDouble(correspondance.get("pourcentagelms" + index));
                 boolean isTrace = Boolean.parseBoolean(correspondance.get("tracelms"+index));
-                Traitement2Obj compo = new Traitement2Obj();
+                Residu compo = new Residu();
                 compo.setPourcentage(percentage);
                 compo.setValue(nomcomposition);
                 compo.setTrace(isTrace);
@@ -101,7 +105,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setGmsList(gmsList);
         result.setLmsList(lmsList);
 
-        this.valeursEnregistreest2.put(id,result);
+        this.valeursResidus.put(id,result);
 
     }
 
@@ -136,7 +140,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
 
     @Override
-    public String getCsv() {
+    public String getCsvPalynologie() {
         StringBuilder exportedCsv = new StringBuilder();
         try {
         exportedCsv.append("sep=;");
@@ -144,8 +148,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         exportedCsv.append(CSVUtils.writeLine(Arrays.asList("Echantillon", "Composition","Pourcentage", "Type"),'"'));
 
         // on écrit les résultats dans le fichier
-        for (ResultatPdf resultatPdf : this.valeursEnregistrees.values()) {
-            exportedCsv.append(CSVUtils.writeResult(resultatPdf));
+        for (PalynologieDocument palynologieDocument : this.valeursPalynologie.values()) {
+            exportedCsv.append(CSVUtils.writeResult(palynologieDocument));
         }
     } catch (IOException e) {
         LOGGER.error("erreur",e);
@@ -156,7 +160,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
 
     @Override
-    public String getCsvt2() {
+    public String getCsvResidus() {
         StringBuilder exportedCsv = new StringBuilder();
         try {
             exportedCsv.append("sep=;");
@@ -164,8 +168,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
             exportedCsv.append(CSVUtils.writeLine(Arrays.asList("Reference", "Composition","Pourcentage", "Type"),'"'));
 
             // on écrit les résultats dans le fichier
-            for (ResponseTraitement2 responseTraitement2 : this.valeursEnregistreest2.values()) {
-                final String str = CSVUtils.writeResult(responseTraitement2);
+            for (ResidusDocument residusDocument : this.valeursResidus.values()) {
+                final String str = CSVUtils.writeResult(residusDocument);
                 exportedCsv.append(str);
             }
         } catch (IOException e) {
@@ -176,26 +180,26 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     }
 
     @Override
-    public void cleanT1Map() {
-        this.valeursEnregistrees.clear();
+    public void cleanPalynologieMap() {
+        this.valeursPalynologie.clear();
     }
 
     @Override
-    public void cleanT2Map() {
-        this.valeursEnregistreest2.clear();
+    public void cleanResidusMap() {
+        this.valeursResidus.clear();
     }
 
     @Override
-    public void fillT1Map(List<ResultatPdf> newValues) {
-        for(ResultatPdf resultatPdf : newValues) {
-            this.valeursEnregistrees.put(resultatPdf.getId(), resultatPdf);
+    public void fillPalynologieMap(List<PalynologieDocument> newValues) {
+        for(PalynologieDocument palynologieDocument : newValues) {
+            this.valeursPalynologie.put(palynologieDocument.getId(), palynologieDocument);
         }
     }
 
     @Override
-    public void fillT2Map(List<ResponseTraitement2> newValues) {
-        for(ResponseTraitement2 responseTraitement2 : newValues) {
-            this.valeursEnregistreest2.put(responseTraitement2.getId(), responseTraitement2);
+    public void fillResidusMap(List<ResidusDocument> newValues) {
+        for(ResidusDocument residusDocument : newValues) {
+            this.valeursResidus.put(residusDocument.getId(), residusDocument);
         }
 
     }

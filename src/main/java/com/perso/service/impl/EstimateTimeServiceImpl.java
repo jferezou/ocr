@@ -27,25 +27,25 @@ import java.util.stream.Collectors;
 public class EstimateTimeServiceImpl implements EstimateTimeService {
 
     @Value("${dossier.traitement1}")
-    private String traitement1Directory;
+    private String palynologieDir;
     @Value("${dossier.traitement2}")
-    private String traitement2Directory;
+    private String residusDir;
     @Value("${dossier.entrant}")
-    private String filePath;
+    private String dossierEntrant;
     @Resource
     PdfService pdfService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EstimateTimeServiceImpl.class);
 
     @Override
-    public EstimateTime estimateTime(final String multiplicateur, final boolean ist1) {
+    public EstimateTime estimateTime(final String multiplicateur, final boolean isPalynologie) {
         int nbPage = 0;
         Date date = new Date();
         try {
             // on recupère la liste de fichiers
-            String fileP = this.filePath+"\\"+this.traitement2Directory;
-            if(ist1) {
-                fileP = this.filePath+"\\"+this.traitement1Directory;
+            String fileP = this.dossierEntrant +"\\"+this.residusDir;
+            if(isPalynologie) {
+                fileP = this.dossierEntrant +"\\"+this.palynologieDir;
             }
             List<Path> paths = Files.walk(Paths.get(fileP)).collect(Collectors.toList());
             for (Path path : paths) {

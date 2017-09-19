@@ -1,4 +1,4 @@
-package com.perso.utils;
+package com.perso.pojo.ocr;
 
 import lombok.Getter;
 import lombok.Setter;

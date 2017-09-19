@@ -9,16 +9,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.perso.service.*;
-import com.perso.utils.ResponseTraitement2;
+import com.perso.pojo.residus.ResidusDocument;
 import com.perso.utils.response.ListPdfIdResponse;
 import org.apache.tika.exception.TikaException;
-import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.perso.exception.FichierInvalideException;
-import com.perso.utils.ResultatPdf;
+import com.perso.pojo.palynologie.PalynologieDocument;
 
 import javax.annotation.Resource;
 
@@ -26,17 +25,16 @@ import javax.annotation.Resource;
 public class ReaderFileServiceImpl implements ReaderFileService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileServiceImpl.class);
-	
-	private MediaType APPLICATION_PNG = MediaType.parse("image/png");
+
 
 	@Value("${dossier.entrant}")
-	private String inputDirectory;
+	private String dossierEntrant;
 	@Value("${dossier.temporaire}")
 	private String tempDirectory;
 	@Value("${dossier.traitement1}")
-	private String traitement1Directory;
+	private String palynologieDir;
 	@Value("${dossier.traitement2}")
-	private String traitement2Directory;
+	private String residusDir;
 
 	@Resource
 	private GenerateImageService generateImageService;
@@ -45,20 +43,20 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private PdfService pdfService;
 
 	@Resource
-    TransformService transformService;
+	PalynologieExtractorService palynologieExtractorService;
 
 	@Resource
-    TraitementT2Service traitementT2Service;
+	ResidusExtractorService residusExtractorService;
 	@Resource
 	UpdatedValuesService updatedValuesService;
 
 	@Override
-	public Set<ListPdfIdResponse> readAndLaunch() throws FichierInvalideException, TikaException, IOException {
+	public Set<ListPdfIdResponse> readAndLaunchPalynologie() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
-		String t1Dir = this.inputDirectory+"\\"+this.traitement1Directory;
+		String t1Dir = this.dossierEntrant +"\\"+this.palynologieDir;
 		// Vérifie que le fichier existe
 		File file = new File(t1Dir);
-		List<ResultatPdf> finalResults = new ArrayList<>();
+		List<PalynologieDocument> finalResults = new ArrayList<>();
 		if (!file.exists()) {
 			throw new FichierInvalideException("Ce répertoire n'existe pas : " + t1Dir);
 		}
@@ -93,7 +91,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				finalResults = pngFileList.stream()
 						.filter(myFile -> myFile.isFile())
 						.filter(myFile -> this.generateImageService.checkIfPng(myFile))
-						.map(pngFile -> this.transformService.extract(pngFile))
+						.map(pngFile -> this.palynologieExtractorService.extract(pngFile))
 						.collect(Collectors.toList());
 
 			}
@@ -101,9 +99,9 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
-		this.updatedValuesService.fillT1Map(finalResults);
+		this.updatedValuesService.fillPalynologieMap(finalResults);
 		Set<ListPdfIdResponse> returnValue = new HashSet<>();
-		for(ResultatPdf result : this.updatedValuesService.getValeursEnregistrees().values()) {
+		for(PalynologieDocument result : this.updatedValuesService.getValeursPalynologie().values()) {
 			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
 			listPdfIdResponse.setId(result.getId());
 			listPdfIdResponse.setPdfFilePath(result.getPdfFilePath());
@@ -115,12 +113,12 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 
 	@Override
-	public Set<ListPdfIdResponse>  readAndLaunchT2() throws FichierInvalideException, TikaException, IOException {
+	public Set<ListPdfIdResponse> readAndLaunchResidus() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement t2");
-		String t2Dir = this.inputDirectory+"\\"+this.traitement2Directory;
+		String t2Dir = this.dossierEntrant +"\\"+this.residusDir;
 		// Vérifie que le fichier existe
 		File file = new File(t2Dir);
-		List<ResponseTraitement2> response = new ArrayList<>();
+		List<ResidusDocument> response = new ArrayList<>();
 		if (!file.exists()) {
 			throw new FichierInvalideException("Ce répertoire n'existe pas : " + t2Dir);
 		}
@@ -150,7 +148,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			response = pathsTemp.stream()
 					.filter(myPath -> Files.isRegularFile(myPath))
 					.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
-					.map(pdfFile -> this.traitementT2Service.extraire(pdfFile))
+					.map(pdfFile -> this.residusExtractorService.extraire(pdfFile))
 					.collect(Collectors.toList());
 
 			}
@@ -158,9 +156,9 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
-		this.updatedValuesService.fillT2Map(response);
+		this.updatedValuesService.fillResidusMap(response);
 		Set<ListPdfIdResponse> returnValue = new HashSet<>();
-		for(ResponseTraitement2 result : this.updatedValuesService.getValeursEnregistreest2().values()) {
+		for(ResidusDocument result : this.updatedValuesService.getValeursResidus().values()) {
 			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
 			listPdfIdResponse.setId(result.getId());
 			listPdfIdResponse.setPdfFilePath(result.getPdfFilePath());

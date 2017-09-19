@@ -1,19 +1,18 @@
 package com.perso.service.impl;
 
-import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.canvas.parser.EventType;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
-import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
-import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
 import com.itextpdf.kernel.pdf.canvas.parser.filter.TextRegionEventFilter;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.FilteredTextEventListener;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy;
-import com.perso.service.TraitementT2Service;
+import com.perso.pojo.ocr.Point;
+import com.perso.pojo.ocr.Zone;
+import com.perso.pojo.residus.*;
+import com.perso.service.ResidusExtractorService;
 import com.perso.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,21 +27,21 @@ import java.util.List;
  * https://developers.itextpdf.com/examples/content-extraction-and-redaction/clone-parsing-pdfs
  */
 @Service
-public class TraitementT2ServiceImpl implements TraitementT2Service {
+public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TraitementT2ServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResidusExtractorServiceImpl.class);
     private final int taillePage = 840;
-    private static GmsElementList GMSLISTELEMENT = new GmsElementList();
-    private static LmsElementList LMSLISTELEMENT = new LmsElementList();
+    private GmsElementList gmsList = new GmsElementList();
+    private LmsElementList lmsList = new LmsElementList();
 
     @Override
-    public ResponseTraitement2 extraire(Path path) {
+    public ResidusDocument extraire(Path path) {
         LOGGER.debug("Début traitement fichier : {}", path);
-        ResponseTraitement2 responseTraitement2 = new ResponseTraitement2();
-        responseTraitement2.setPdfFilePath(path.toString());
+        ResidusDocument residusDocument = new ResidusDocument();
+        residusDocument.setPdfFilePath(path.toString());
 
-        responseTraitement2.setPdfName(path.getFileName().toString());
+        residusDocument.setPdfName(path.getFileName().toString());
         PdfDocument pdfDoc = null;
         PdfReader reader = null;
         try {
@@ -55,7 +54,7 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
             Zone zoneReference = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
             LOGGER.info("ZoneInterpretation : {}", zoneReference.toString());
             String reference = this.getReference(pdfDoc.getFirstPage(), zoneReference);
-            responseTraitement2.setReference(reference);
+            residusDocument.setReference(reference);
             LOGGER.debug("Reference : {}", reference);
 
             int totalPage = pdfDoc.getNumberOfPages();
@@ -75,17 +74,17 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
                 resultat = resultat.replace("A","(A)");
                 resultat = resultat.replaceAll("(?m)^\\s", "");
                 String[] resultatSplit = resultat.split("\n");
-                List<Traitement2Obj> currentList = responseTraitement2.getLmsList();
+                List<Residu> currentList = residusDocument.getLmsList();
                 boolean isGms = false;
                 for(int lineIndex = 0; lineIndex < resultatSplit.length; lineIndex ++) {
                     String line = resultatSplit[lineIndex];
                     if(line.contains("LMS - LC-MSMS - Primoris accredited")) {
-                        currentList = responseTraitement2.getLmsList();
+                        currentList = residusDocument.getLmsList();
                         isGms = false;
                         LOGGER.debug("Passage liste LMS");
                     }
                     else if(line.contains("GMS - GC-MSMS - Primoris accredited")) {
-                        currentList = responseTraitement2.getGmsList();
+                        currentList = residusDocument.getGmsList();
                         isGms = true;
                         LOGGER.debug("Passage liste GMS");
                     }
@@ -113,13 +112,13 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
             }
         }
         LOGGER.debug("Fin traitement fichier : {}", path);
-        return responseTraitement2;
+        return residusDocument;
     }
 
 
-    private Traitement2Obj traitementLigne(final String line, boolean isGmt) {
+    private Residu traitementLigne(final String line, boolean isGmt) {
         LOGGER.debug("traitement ligne nettoyé : {}", line);
-        Traitement2Obj traitementObj = new Traitement2Obj();
+        Residu traitementObj = new Residu();
         int firstDigit = StringUtilsOcr.getfirstdigitIndex(line);
         // il y a une valeur
         if(firstDigit > 0) {
@@ -135,10 +134,10 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
             String value = StringUtils.trim(line);
             double pourcentage = -1;
             if(isGmt) {
-                pourcentage = getPourcentageFromElement(value, GMSLISTELEMENT);
+                pourcentage = getPourcentageFromElement(value, gmsList);
             }
             else {
-                pourcentage = getPourcentageFromElement(value, LMSLISTELEMENT);
+                pourcentage = getPourcentageFromElement(value, lmsList);
             }
             traitementObj.setValue(value);
             traitementObj.setPourcentage(pourcentage);
@@ -163,26 +162,5 @@ public class TraitementT2ServiceImpl implements TraitementT2Service {
         TextRegionEventFilter regionFilter = new TextRegionEventFilter(rect);
         ITextExtractionStrategy strategy = new FilteredTextEventListener(new LocationTextExtractionStrategy(), regionFilter);
         return PdfTextExtractor.getTextFromPage(pdfPage, strategy);
-    }
-
-
-    class FontFilter extends TextRegionEventFilter {
-        public FontFilter(Rectangle filterRect) {
-            super(filterRect);
-        }
-
-        @Override
-        public boolean accept(IEventData data, EventType type) {
-            if (type.equals(EventType.RENDER_TEXT)) {
-                TextRenderInfo renderInfo = (TextRenderInfo) data;
-
-                PdfFont font = renderInfo.getFont();
-                if (null != font) {
-                    String fontName = font.getFontProgram().getFontNames().getFontName();
-                    return true;//fontName.endsWith("Bold") || fontName.endsWith("Oblique");
-                }
-            }
-            return false;
-        }
     }
 }

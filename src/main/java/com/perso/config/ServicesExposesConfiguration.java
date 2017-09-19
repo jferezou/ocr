@@ -1,5 +1,8 @@
 package com.perso.config;
 
+import com.perso.config.restConfig.CommonRest;
+import com.perso.config.restConfig.PalynologieRest;
+import com.perso.config.restConfig.ResidusRest;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +25,6 @@ public class ServicesExposesConfiguration {
      */
     @Bean(name = "jaxrs")
     public JAXRSServerFactoryBean getRESTPublishedServices(final RESTPublisher publisher) {
-        return publisher.publish(RESTPublisher.DEFAULT_NS,RestOcr.class);
+        return publisher.publish(RESTPublisher.DEFAULT_NS, PalynologieRest.class, ResidusRest.class, CommonRest.class);
     }
 }

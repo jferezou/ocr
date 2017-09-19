@@ -1,4 +1,4 @@
-package com.perso.utils;
+package com.perso.pojo.palynologie;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ResultatPdf implements Serializable {
+public class PalynologieDocument implements Serializable {
 
 	private static int IDENTIFIANT = 0;
 
@@ -19,9 +19,9 @@ public class ResultatPdf implements Serializable {
 	private String pdfFileName;
 	private String echantillon;
 	private int id;
-	private List<CompositionObj> compositions;
+	private List<Palynologie> compositions;
 
-	public ResultatPdf() {
+	public PalynologieDocument() {
 		IDENTIFIANT++;
 		this.id = new Integer(IDENTIFIANT);
 	}

@@ -1,4 +1,4 @@
-package com.perso.utils;
+package com.perso.pojo.residus;
 
 public class LmsElementList extends ElementList {
 

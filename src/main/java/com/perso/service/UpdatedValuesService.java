@@ -1,23 +1,22 @@
 package com.perso.service;
 
 import com.perso.exception.ParsingException;
-import com.perso.utils.ResponseTraitement2;
-import com.perso.utils.ResultatPdf;
+import com.perso.pojo.residus.ResidusDocument;
+import com.perso.pojo.palynologie.PalynologieDocument;
 
 import java.util.List;
 import java.util.Map;
 
 public interface UpdatedValuesService {
 
-    void parseAndSave(final String value) throws ParsingException;
-    void parseAndSavet2(final String value) throws ParsingException;
-    String getCsv();
-    String getCsvt2();
-    void cleanT1Map();
-    void cleanT2Map();
-    void fillT1Map(final List<ResultatPdf> newValues);
-    void fillT2Map(final List<ResponseTraitement2> newValues);
-
-    Map<Integer, ResultatPdf> getValeursEnregistrees();
-    Map<Integer, ResponseTraitement2> getValeursEnregistreest2();
+    void parseAndSavePalynologie(final String value) throws ParsingException;
+    void parseAndSaveResidus(final String value) throws ParsingException;
+    String getCsvPalynologie();
+    String getCsvResidus();
+    void cleanPalynologieMap();
+    void cleanResidusMap();
+    void fillPalynologieMap(final List<PalynologieDocument> newValues);
+    void fillResidusMap(final List<ResidusDocument> newValues);
+    Map<Integer, PalynologieDocument> getValeursPalynologie();
+    Map<Integer, ResidusDocument> getValeursResidus();
 }
