@@ -41,11 +41,6 @@ public class CommonRest {
 
         File file = new File(tempDir+"\\"+pdfName);
 
-//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        responseBuilder.entity(file);
-//        responseBuilder.status(200);
-
-        // Réponse du service
         return Response.ok(file).build();
 
     }
@@ -59,12 +54,6 @@ public class CommonRest {
 
         EstimateTime estimateTime = this.estimateTimeService.estimateTime(multiplicateur, isT1);
 
-//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        responseBuilder.entity(estimateTime);
-//        responseBuilder.status(200);
-//        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
-
-        // Réponse du service
         return Response.ok(estimateTime).build();
 
     }

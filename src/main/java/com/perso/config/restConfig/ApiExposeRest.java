@@ -12,7 +12,6 @@ public interface ApiExposeRest {
     @GET
     @Path("/extraire")
     @Produces(MediaType.APPLICATION_JSON)
-    @ServiceMethod
     Response extraire()  throws InvalidFormatException;
 
 
@@ -20,22 +19,13 @@ public interface ApiExposeRest {
     @POST
     @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
-    @ServiceMethod
     Response sauvegarder(final String data)  throws InvalidFormatException;
 
 
 
     @GET
     @Path("/export/csv")
-    @Produces("text/csv")
-    @ServiceMethod
+    @Produces("text/csv; charset=windows-1252")
     Response getCsvFile();
 
-
-
-    @GET
-    @Path("/get/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ServiceMethod
-    Response getValue(@PathParam("id") final int key);
 }

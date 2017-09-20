@@ -52,14 +52,8 @@ public class ResidusRest implements ApiExposeRest {
             response.setResultats(liste);
 
         } catch (FichierInvalideException | TikaException | IOException e) {
-            LOGGER.error("Erreur lors du traitement T2", e);
+            LOGGER.error("Erreur lors e l'extraction résidus", e);
         }
-//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        responseBuilder.entity(response);
-//        responseBuilder.status(200);
-//        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
-
-        // Réponse du service
         return Response.ok(response).build();
     }
 
@@ -68,19 +62,11 @@ public class ResidusRest implements ApiExposeRest {
     @ServiceMethod
     public Response sauvegarder(final String data)  throws InvalidFormatException {
 
-//        int status = 200;
-//        String body = "";
         try {
             this.updatedValuesService.parseAndSaveResidus(data);
         } catch (ParsingException e) {
             LOGGER.error("Erreur de parsing", e);
-//            body = e.getMessage();
-//            status = 500;
         }
-//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        responseBuilder.entity(body);
-//        responseBuilder.status(status);
-        // Réponse du service
         return Response.ok().build();
     }
 
@@ -90,30 +76,19 @@ public class ResidusRest implements ApiExposeRest {
     public Response getCsvFile() {
 
         String csv = this.updatedValuesService.getCsvResidus();
-
-//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        String disposition = "attachment; fileName=resultat.csv";
-//        responseBuilder.header("Content-Disposition", disposition);
-//        responseBuilder.header("Content-Type", "text/csv;charset=windows-1252");
-//        responseBuilder.entity(csv);
-//        responseBuilder.status(200);
-
-        // Réponse du service
         return Response.ok(csv).build();
 
     }
 
-    @Override
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses({@ApiResponse(code = 200, message = "", response = ResidusDocument.class)})
     @ServiceMethod
+    @Path("/get/{id}")
     public Response getValue(@PathParam("id") final int key) {
 
 
         ResidusDocument resultat = this.updatedValuesService.getValeursResidus().get(key);
-//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-//        responseBuilder.entity(resultat);
-//        responseBuilder.status(200);
-//        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
 
         // Réponse du service
         return Response.ok(resultat).build();
