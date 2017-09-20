@@ -1,9 +1,2 @@
 server:
   address: localhost
-  port: 8081
-
-spring:
-  application:
-    name: ocr
-  session:
-    store-type: none

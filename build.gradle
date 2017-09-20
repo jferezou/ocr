@@ -15,6 +15,7 @@ configurations {
     apacheCommons
     springCommons
     javaxValidation
+    swagger
     all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
 }
 
@@ -42,7 +43,8 @@ repositories {
 ext {
     ver = [
             cxf  : '3.1.11',
-            log4j: '2.7'
+            log4j: '2.7',
+            springboot: '1.5.4.RELEASE'
     ]
 }
 
@@ -52,24 +54,28 @@ targetCompatibility = 1.8
 dependencies {
     compile group: 'org.apache.tika', name: 'tika-core', version:'1.14'
     compile group: 'com.itextpdf', name: 'itext7-core', version:'7.0.2'
-    compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1'
-    compile("org.springframework.boot:spring-boot-starter-web"){
-        exclude module: "spring-boot-starter-logging"
-        exclude module: "logback-classic"
-    }
-    compile("org.springframework.boot:spring-boot-starter-actuator"){
-        exclude module: "spring-boot-starter-logging"
-        exclude module: "logback-classic"
-    }
+
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator')
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2')
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-hateoas')
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: ver.springBootVersion)
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security')
+//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc')
+    compile(group: 'org.springframework.boot', name: 'spring-boot-tools', version: ver.springBootVersion)
+//    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-jta-atomikos')
+
 
     compile(group: 'javax.servlet', name: 'javax.servlet-api', version:'3.1.0')
+    swagger(group: 'org.apache.cxf', name: 'cxf-rt-rs-service-description-swagger', version: '3.1.11')
+    swagger(group: 'io.swagger', name: 'swagger-annotations', version: '1.5.13')
+
 
     lombok(group: 'org.projectlombok', name: 'lombok', version: '1.16.16')
 
     cxf(group: 'org.apache.cxf', name: 'cxf-core', version: ver.cxf)
     cxf(group: 'org.apache.cxf', name: 'cxf-rt-transports-http', version: ver.cxf)
     cxf(group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxrs', version: ver.cxf)
-    cxf(group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: ver.cxf)
+//    cxf(group: 'org.apache.cxf', name: 'cxf-rt-frontend-jaxws', version: ver.cxf)
     cxf(group: 'org.apache.cxf', name: 'cxf-rt-rs-client', version: ver.cxf)
     cxf(group: 'org.apache.cxf.xjc-utils', name: 'cxf-xjc-runtime', version: '3.1.0')
 
@@ -97,7 +103,7 @@ dependencies {
 
     javaxValidation(group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final')
     javaxValidation(group: 'org.hibernate', name: 'hibernate-validator', version: '5.4.1.Final')
-    javaxValidation(group: 'org.glassfish.web', name: 'el-impl', version: '2.2')
+//    javaxValidation(group: 'org.glassfish.web', name: 'el-impl', version: '2.2')
 
     compile (group: 'net.sourceforge.tess4j', name: 'tess4j', version: '3.4.0'){
         exclude module: "logback-classic"
@@ -109,9 +115,10 @@ dependencies {
     compile(configurations.apacheCommons)
     compile(configurations.springCommons)
     compile(configurations.javaxValidation)
+    compile(configurations.swagger)
+
     compile(group: 'org.yaml', name: 'snakeyaml', version: '1.14')
     compile(group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.8.7')
-    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-security')
     compile group: 'org.ghost4j', name: 'ghost4j', version: '1.0.1'
     compile(group: 'com.google.guava', name: 'guava', version: '19.0')
 }

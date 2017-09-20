@@ -21,3 +21,11 @@ webapp:
   url:
     contextRoot: /ocr
     services:  ${webapp.url.contextRoot}/services
+
+management:
+  context-path: /management
+  security:
+    enabled: false
+endpoints:
+  shutdown:
+    enabled: true

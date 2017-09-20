@@ -7,6 +7,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class ListResponse {
+public class ListPdfResponse {
     Set<ListPdfIdResponse> resultats;
 }

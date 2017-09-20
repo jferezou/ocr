@@ -7,7 +7,10 @@ import com.perso.service.ReaderFileService;
 import com.perso.service.UpdatedValuesService;
 import com.perso.pojo.residus.ResidusDocument;
 import com.perso.utils.response.ListPdfIdResponse;
-import com.perso.utils.response.ListResponse;
+import com.perso.utils.response.ListPdfResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
@@ -25,6 +28,7 @@ import java.util.Set;
 @Consumes(MediaType.APPLICATION_JSON)
 @Service
 @Path("/residus")
+@Api(tags = "Résidus")
 public class ResidusRest implements ApiExposeRest {
 
     @Value("${dossier.temporaire}")
@@ -37,9 +41,10 @@ public class ResidusRest implements ApiExposeRest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileService.class);
 
     @Override
+    @ApiResponses({@ApiResponse(code = 200, message = "", response = ListPdfResponse.class)})
     public Response extraire()  throws InvalidFormatException {
         this.updatedValuesService.cleanResidusMap();
-        ListResponse response = new ListResponse();
+        ListPdfResponse response = new ListPdfResponse();
         try {
             Set<ListPdfIdResponse> liste = this.readerFileService.readAndLaunchResidus();
             response.setResultats(liste);
@@ -47,63 +52,66 @@ public class ResidusRest implements ApiExposeRest {
         } catch (FichierInvalideException | TikaException | IOException e) {
             LOGGER.error("Erreur lors du traitement T2", e);
         }
-        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-        responseBuilder.entity(response);
-        responseBuilder.status(200);
-        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
+//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+//        responseBuilder.entity(response);
+//        responseBuilder.status(200);
+//        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
 
         // Réponse du service
-        return responseBuilder.build();
+        return Response.ok(response).build();
     }
 
     @Override
+    @ApiResponses({@ApiResponse(code = 200, message = "", response = String.class)})
     public Response sauvegarder(final String data)  throws InvalidFormatException {
 
-        int status = 200;
-        String body = "";
+//        int status = 200;
+//        String body = "";
         try {
             this.updatedValuesService.parseAndSaveResidus(data);
         } catch (ParsingException e) {
             LOGGER.error("Erreur de parsing", e);
-            body = e.getMessage();
-            status = 500;
+//            body = e.getMessage();
+//            status = 500;
         }
-        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-        responseBuilder.entity(body);
-        responseBuilder.status(status);
+//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+//        responseBuilder.entity(body);
+//        responseBuilder.status(status);
         // Réponse du service
-        return responseBuilder.build();
+        return Response.ok().build();
     }
 
     @Override
+    @ApiResponses({@ApiResponse(code = 200, message = "", response = String.class)})
     public Response getCsvFile() {
 
         String csv = this.updatedValuesService.getCsvResidus();
 
-        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-        String disposition = "attachment; fileName=resultat.csv";
-        responseBuilder.header("Content-Disposition", disposition);
-        responseBuilder.header("Content-Type", "text/csv;charset=windows-1252");
-        responseBuilder.entity(csv);
-        responseBuilder.status(200);
+//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+//        String disposition = "attachment; fileName=resultat.csv";
+//        responseBuilder.header("Content-Disposition", disposition);
+//        responseBuilder.header("Content-Type", "text/csv;charset=windows-1252");
+//        responseBuilder.entity(csv);
+//        responseBuilder.status(200);
 
         // Réponse du service
-        return responseBuilder.build();
+        return Response.ok(csv).build();
 
     }
 
     @Override
+    @ApiResponses({@ApiResponse(code = 200, message = "", response = ResidusDocument.class)})
     public Response getValue(@PathParam("id") final int key) {
 
 
         ResidusDocument resultat = this.updatedValuesService.getValeursResidus().get(key);
-        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
-        responseBuilder.entity(resultat);
-        responseBuilder.status(200);
-        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
+//        ResponseBuilderImpl responseBuilder = new ResponseBuilderImpl();
+//        responseBuilder.entity(resultat);
+//        responseBuilder.status(200);
+//        responseBuilder.header("Content-Type", "application/json;charset=utf-8");
 
         // Réponse du service
-        return responseBuilder.build();
+        return Response.ok(resultat).build();
 
     }
 

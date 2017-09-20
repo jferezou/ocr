@@ -39,7 +39,7 @@ public class RestConfiguration extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(restPrefix + "/traitement*").permitAll();
+                .antMatchers(restPrefix + "/palynologie/**",restPrefix + "/residus/**",restPrefix + "/swagger.*").permitAll();
         // @formatter:on
     }
 }
