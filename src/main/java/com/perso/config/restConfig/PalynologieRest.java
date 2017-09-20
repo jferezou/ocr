@@ -1,6 +1,7 @@
 package com.perso.config.restConfig;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.perso.annotation.ServiceMethod;
 import com.perso.exception.FichierInvalideException;
 import com.perso.exception.ParsingException;
 import com.perso.service.*;
@@ -40,6 +41,7 @@ public class PalynologieRest implements ApiExposeRest{
 
     @Override
     @ApiResponses({@ApiResponse(code = 200, message = "", response = ListPdfResponse.class)})
+    @ServiceMethod
     public Response extraire()  throws InvalidFormatException {
         this.updatedValuesService.cleanPalynologieMap();
         ListPdfResponse response = new ListPdfResponse();
@@ -62,6 +64,7 @@ public class PalynologieRest implements ApiExposeRest{
 
     @Override
     @ApiResponses({@ApiResponse(code = 200, message = "", response = String.class)})
+    @ServiceMethod
     public Response sauvegarder(final String data)  throws InvalidFormatException {
 
 //        int status = 200;
@@ -82,6 +85,7 @@ public class PalynologieRest implements ApiExposeRest{
 
     @Override
     @ApiResponses({@ApiResponse(code = 200, message = "", response = String.class)})
+    @ServiceMethod
     public Response getCsvFile() {
 
         String csv = this.updatedValuesService.getCsvPalynologie();
@@ -100,6 +104,7 @@ public class PalynologieRest implements ApiExposeRest{
 
     @Override
     @ApiResponses({@ApiResponse(code = 200, message = "", response = PalynologieDocument.class)})
+    @ServiceMethod
     public Response getValue(@PathParam("id") final int key) {
 
         PalynologieDocument resultat = this.updatedValuesService.getValeursPalynologie().get(key);

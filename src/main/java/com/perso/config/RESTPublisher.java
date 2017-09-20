@@ -3,6 +3,8 @@ package com.perso.config;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -69,6 +71,8 @@ public class RESTPublisher {
             serverFactory.setBus(bus);
             serverFactory.setServiceBeans(beans);
             serverFactory.setStart(true);
+            serverFactory.getInInterceptors().add(new LoggingInInterceptor());
+            serverFactory.getOutInterceptors().add(new LoggingOutInterceptor());
             // configuration du provider Json
             JacksonJsonProvider provider = new JacksonJsonProvider();
             serverFactory.setProvider(provider);

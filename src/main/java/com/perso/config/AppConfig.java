@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @Import({
+        OcrConfiguration.class,
         ServicesExposesConfiguration.class,
         WebMainConfiguration.class,
         SpringSecurityConfiguration.class})
