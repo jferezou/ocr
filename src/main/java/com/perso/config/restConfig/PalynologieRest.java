@@ -74,8 +74,12 @@ public class PalynologieRest implements ApiExposeRest{
 
         String csv = this.updatedValuesService.getCsvPalynologie();
 
+
+        String disposition = "attachment; fileName=extractionPalynologie.csv";
+        Response response = Response.ok(csv).build();
+        response.getHeaders().add("Content-Disposition", disposition);
         // Réponse du service
-        return Response.ok(csv).build();
+        return response;
 
     }
 

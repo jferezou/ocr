@@ -52,7 +52,7 @@ public class ResidusRest implements ApiExposeRest {
             response.setResultats(liste);
 
         } catch (FichierInvalideException | TikaException | IOException e) {
-            LOGGER.error("Erreur lors e l'extraction résidus", e);
+            LOGGER.error("Erreur lors du traitement T2", e);
         }
         return Response.ok(response).build();
     }
@@ -76,7 +76,13 @@ public class ResidusRest implements ApiExposeRest {
     public Response getCsvFile() {
 
         String csv = this.updatedValuesService.getCsvResidus();
-        return Response.ok(csv).build();
+
+        String disposition = "attachment; fileName=extractionResidus.csv";
+        Response response = Response.ok(csv).build();
+        response.getHeaders().add("Content-Disposition", disposition);
+
+        // Réponse du service
+        return response;
 
     }
 
