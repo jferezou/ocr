@@ -4,6 +4,7 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.perso.service.PdfService;
+import com.perso.utils.AggregatePdf;
 import com.perso.utils.EstimateTime;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.exception.TikaException;
@@ -91,6 +92,7 @@ public class PdfServiceImpl implements PdfService {
 
     @Override
     public void deletePages(final Path path) {
+         LOGGER.debug("Suppression pages document {}", path.getFileName());
         int pageToremove = 5;
         PdfDocument pdfDoc = null;
         PdfDocument newPdfDoc = null;
@@ -123,12 +125,13 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public File createPdf(final Collection<Path> paths) {
+    public File createPdf(final List<AggregatePdf> aggregatePdfs) {
         String name = this.tempDir + "//pdfResultat.pdf";
         PdfDocument newPdfDoc = null;
         try {
             newPdfDoc = new PdfDocument(new PdfWriter(name));
-            for(Path path : paths) {
+            for(AggregatePdf aggregatePdf : aggregatePdfs) {
+                Path path = aggregatePdf.getPath();
                 PdfDocument pdfDoc = null;
                 if (Files.isRegularFile(path)) {
                     try {

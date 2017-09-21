@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.perso.service.*;
 import com.perso.pojo.residus.ResidusDocument;
+import com.perso.utils.AggregatePdf;
 import com.perso.utils.response.ListPdfIdResponse;
 import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
@@ -171,7 +172,6 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 		String residusDir = this.dossierEntrant +"\\"+this.residusDir;
 		// Vérifie que le fichier existe
 		File file = new File(residusDir);
-		Map<Date, Path> pdfMap = new LinkedHashMap<>();
 		if (!file.exists()) {
 			throw new FichierInvalideException("Ce répertoire n'existe pas : " + residusDir);
 		}
@@ -194,16 +194,13 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				// on lance un traitement
 				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDirectory)).collect(Collectors.toList());
 
-				pdfMap = pathsTemp.stream()
+				List<AggregatePdf> pdfList = pathsTemp.stream()
 						.filter(myPath -> Files.isRegularFile(myPath))
 						.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
-						.collect(Collectors.toMap(pdfFile -> this.residusExtractorService.extraireDate(pdfFile), pdfFile -> pdfFile));
+						.map(pdfFile -> this.residusExtractorService.extraireDate(pdfFile)).collect(Collectors.toList());
+				Collections.sort(pdfList);
 
-				Map<Date, Path> sortedByDate = pdfMap.entrySet().stream()
-						.sorted(Map.Entry.comparingByKey())
-						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-								(oldValue, newValue) -> oldValue, LinkedHashMap::new));
-				pdfResultFile = this.pdfService.createPdf(sortedByDate.values());
+				pdfResultFile = this.pdfService.createPdf(pdfList);
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);

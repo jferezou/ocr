@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             // donc (x1,y1) et (x2,y2) => (x1, taillePage - y2) et (x2, taillePage - y1)
             Zone zoneReference = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
             LOGGER.info("ZoneInterpretation : {}", zoneReference.toString());
-            String reference = this.getReference(pdfDoc.getFirstPage(), zoneReference);
+            String reference = this.extractValue(pdfDoc.getFirstPage(), zoneReference);
             residusDocument.setReference(reference);
             LOGGER.debug("Reference : {}", reference);
 
@@ -65,7 +67,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             LOGGER.info("zoneResultat : {}", zoneResultat.toString());
             // on parcours de la page 2 à la page total - 5
             for(int page = 2; page <= totalPage - 5 ; page ++) {
-                String resultat = this.getReference(pdfDoc.getPage(page), zoneResultat);
+                String resultat = this.extractValue(pdfDoc.getPage(page), zoneResultat);
                 LOGGER.debug("Resultat : {}", resultat);
                 resultat = resultat.replace("trace found", "");
                 resultat = resultat.replace("Autres non détectables (<LC)", "");
@@ -118,9 +120,45 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
 
     @Override
-    public Date extraireDate(Path path) {
-
-        return new Date();
+    public AggregatePdf extraireDate(Path path) {
+    LOGGER.debug("Traitement fichier : {}", path.getFileName());
+        // donc (x1,y1) et (x2,y2) => (x1, taillePage - y2) et (x2, taillePage - y1)
+//        Zone zoneDate = new Zone(new Point(120, this.taillePage - 402), new Point(278, this.taillePage - 390));
+        Zone zoneDate = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
+        LOGGER.info("ZoneInterpretation : {}", zoneDate.toString());
+        Date debut = null;
+        PdfDocument pdfDoc = null;
+        PdfReader reader = null;
+        try {
+            reader = new PdfReader(path.toString());
+            pdfDoc = new PdfDocument(reader);
+            String dates = this.extractValue(pdfDoc.getFirstPage(), zoneDate);
+            LOGGER.debug("Dates = {}", dates);
+            String[] dateList = dates.split("-");
+            String periodeDebut = dateList[3];
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            debut = sdf.parse(periodeDebut);
+            LOGGER.debug("debut : {}", debut);
+        }
+        catch (IOException | ParseException e) {
+                LOGGER.error("Erreur", e);
+            }
+        finally {
+                if(pdfDoc != null) {
+                    pdfDoc.close();
+                }
+                if(reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        LOGGER.error("erreur",e);
+                    }
+                }
+            }
+        AggregatePdf aggregatePdf = new AggregatePdf();
+        aggregatePdf.setDate(debut);
+        aggregatePdf.setPath(path);
+        return aggregatePdf;
     }
 
 
@@ -165,7 +203,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     }
 
 
-    private String getReference(final PdfPage pdfPage, final Zone zoneReference) {
+    private String extractValue(final PdfPage pdfPage, final Zone zoneReference) {
         Rectangle rect = new Rectangle(zoneReference.getDebut().getX(), zoneReference.getDebut().getY(), zoneReference.getWidth(), zoneReference.getHeigth());
         TextRegionEventFilter regionFilter = new TextRegionEventFilter(rect);
         ITextExtractionStrategy strategy = new FilteredTextEventListener(new LocationTextExtractionStrategy(), regionFilter);

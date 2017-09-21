@@ -91,7 +91,7 @@ public class ResidusRest implements ApiExposeRest {
     @ServiceMethod
     @Path("/pdf/aggregate")
     @Produces("application/pdf")
-    public Response splitPdf() {
+    public Response aggregatePdf() {
         File file = null;
         try {
             file = this.readerFileService.readAndLaunchAggregatePdf();
