@@ -1,5 +1,6 @@
 package com.perso.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -16,4 +17,5 @@ public interface ReaderFileService {
 
 
 	Set<ListPdfIdResponse> readAndLaunchResidus() throws FichierInvalideException,TikaException, IOException ;
+	File readAndLaunchAggregatePdf() throws FichierInvalideException, TikaException, IOException;
 }

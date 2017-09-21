@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,19 +51,28 @@ public class PdfServiceImpl implements PdfService {
     @Override
     public void splitPdf(final Path path) {
         if (Files.isRegularFile(path)) {
+            PdfDocument pdfDoc = null;
             try {
                 File inFile = path.toFile();
                 boolean isPdf = this.checkIfPdf(inFile);
                 if (isPdf && inFile.isFile()) {
-                    PdfDocument pdfDoc = new PdfDocument(new PdfReader(inFile.getPath()));
+                    pdfDoc = new PdfDocument(new PdfReader(inFile.getPath()));
                     int nbPages = pdfDoc.getNumberOfPages();
                     String fileName = inFile.getName().split(".pdf")[0];
 
                     for (int page = 1; page <= nbPages; page++) {
                         String name = this.tempDir + "//" + fileName + "_" + page + ".pdf";
-                        PdfDocument newPdfDoc = new PdfDocument(new PdfWriter(name));
-                        pdfDoc.copyPagesTo(page, page, newPdfDoc);
-                        newPdfDoc.close();
+                        PdfDocument newPdfDoc = null;
+                        try {
+                            newPdfDoc = new PdfDocument(new PdfWriter(name));
+                            pdfDoc.copyPagesTo(page, page, newPdfDoc);
+                            newPdfDoc.close();
+                        }
+                        finally {
+                            if(newPdfDoc != null) {
+                                newPdfDoc.close();
+                            }
+                        }
 
                     }
                     pdfDoc.close();
@@ -70,7 +80,87 @@ public class PdfServiceImpl implements PdfService {
             } catch (IOException e) {
                 LOGGER.error("Erreur lors du traitement du fichier", e);
             }
+            finally {
+                if(pdfDoc != null) {
+                    pdfDoc.close();
+                }
+            }
         }
+    }
+
+
+    @Override
+    public void deletePages(final Path path) {
+        int pageToremove = 5;
+        PdfDocument pdfDoc = null;
+        PdfDocument newPdfDoc = null;
+        if (Files.isRegularFile(path)) {
+            try {
+                File inFile = path.toFile();
+                boolean isPdf = this.checkIfPdf(inFile);
+                if (isPdf && inFile.isFile()) {
+                    pdfDoc = new PdfDocument(new PdfReader(inFile.getPath()));
+                    int nbPages = pdfDoc.getNumberOfPages();
+
+                    String name = this.tempDir + "//" + inFile.getName();
+                    newPdfDoc = new PdfDocument(new PdfWriter(name));
+                    for (int page = 1; page <= nbPages - pageToremove; page++) {
+                        pdfDoc.copyPagesTo(page, page, newPdfDoc);
+                    }
+                }
+            } catch (IOException e) {
+                LOGGER.error("Erreur lors du traitement du fichier", e);
+            }
+            finally {
+                if(pdfDoc != null) {
+                    pdfDoc.close();
+                }
+                if(newPdfDoc != null) {
+                    newPdfDoc.close();
+                }
+            }
+        }
+    }
+
+    @Override
+    public File createPdf(final Collection<Path> paths) {
+        String name = this.tempDir + "//pdfResultat.pdf";
+        PdfDocument newPdfDoc = null;
+        try {
+            newPdfDoc = new PdfDocument(new PdfWriter(name));
+            for(Path path : paths) {
+                PdfDocument pdfDoc = null;
+                if (Files.isRegularFile(path)) {
+                    try {
+                        File inFile = path.toFile();
+                        boolean isPdf = this.checkIfPdf(inFile);
+                        if (isPdf && inFile.isFile()) {
+                            pdfDoc = new PdfDocument(new PdfReader(inFile.getPath()));
+                            int nbPages = pdfDoc.getNumberOfPages();
+
+                            for (int page = 1; page <= nbPages; page++) {
+                                pdfDoc.copyPagesTo(page, page, newPdfDoc);
+                            }
+                        }
+                    } catch (IOException e) {
+                        LOGGER.error("Erreur lors du traitement du fichier", e);
+                    } finally {
+                        if (pdfDoc != null) {
+                            pdfDoc.close();
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error("Erreur lors du traitement du fichier", e);
+        }
+        finally {
+            if (newPdfDoc != null) {
+                newPdfDoc.close();
+            }
+        }
+
+        return new File(name);
     }
 
 

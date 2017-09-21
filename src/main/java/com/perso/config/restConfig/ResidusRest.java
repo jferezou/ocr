@@ -12,7 +12,6 @@ import com.perso.utils.response.ListPdfResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import javax.annotation.Resource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -79,6 +79,28 @@ public class ResidusRest implements ApiExposeRest {
 
         String disposition = "attachment; fileName=extractionResidus.csv";
         Response response = Response.ok(csv).build();
+        response.getHeaders().add("Content-Disposition", disposition);
+
+        // Réponse du service
+        return response;
+
+    }
+
+    @GET
+    @ApiResponses({@ApiResponse(code = 200, message = "", response = File.class)})
+    @ServiceMethod
+    @Path("/pdf/aggregate")
+    @Produces("application/pdf")
+    public Response splitPdf() {
+        File file = null;
+        try {
+            file = this.readerFileService.readAndLaunchAggregatePdf();
+        } catch (FichierInvalideException |TikaException | IOException e) {
+            LOGGER.error("erreur" ,e);
+        }
+
+        String disposition = "attachment; fileName=resultatPdf.pdf";
+        Response response = Response.ok(file).build();
         response.getHeaders().add("Content-Disposition", disposition);
 
         // Réponse du service

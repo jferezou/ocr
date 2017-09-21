@@ -2,10 +2,7 @@ package com.perso.service.impl;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.perso.service.*;
@@ -21,7 +18,7 @@ import com.perso.pojo.palynologie.PalynologieDocument;
 
 import javax.annotation.Resource;
 
-@Service("ReaderFileService")
+@Service
 public class ReaderFileServiceImpl implements ReaderFileService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReaderFileServiceImpl.class);
@@ -53,21 +50,21 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	@Override
 	public Set<ListPdfIdResponse> readAndLaunchPalynologie() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
-		String t1Dir = this.dossierEntrant +"\\"+this.palynologieDir;
+		String palynologieDir = this.dossierEntrant +"\\"+this.palynologieDir;
 		// Vérifie que le fichier existe
-		File file = new File(t1Dir);
+		File file = new File(palynologieDir);
 		List<PalynologieDocument> finalResults = new ArrayList<>();
 		if (!file.exists()) {
-			throw new FichierInvalideException("Ce répertoire n'existe pas : " + t1Dir);
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + palynologieDir);
 		}
 		// Vérifie que ce n'est pas un répertoire
 		else if (!file.isDirectory()) {
-			throw new FichierInvalideException("Ce doit être un répertoire : " + t1Dir);
+			throw new FichierInvalideException("Ce doit être un répertoire : " + palynologieDir);
 		}
 		// verifie que ce soit bien un txt
 		else {
 			// on recupère la liste de fichiers
-			List<Path> paths = Files.walk(Paths.get(t1Dir)).collect(Collectors.toList());
+			List<Path> paths = Files.walk(Paths.get(palynologieDir)).collect(Collectors.toList());
 
 			File tempsDir = new File(this.tempDirectory);
 			if(tempsDir.isDirectory()) {
@@ -114,20 +111,20 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 	@Override
 	public Set<ListPdfIdResponse> readAndLaunchResidus() throws FichierInvalideException, TikaException, IOException {
-		LOGGER.info("Début du traitement t2");
-		String t2Dir = this.dossierEntrant +"\\"+this.residusDir;
+		LOGGER.info("Début du traitement résidus");
+		String residusDir = this.dossierEntrant +"\\"+this.residusDir;
 		// Vérifie que le fichier existe
-		File file = new File(t2Dir);
+		File file = new File(residusDir);
 		List<ResidusDocument> response = new ArrayList<>();
 		if (!file.exists()) {
-			throw new FichierInvalideException("Ce répertoire n'existe pas : " + t2Dir);
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + residusDir);
 		}
 		// Vérifie que ce n'est pas un répertoire
 		else if (!file.isDirectory()) {
-			throw new FichierInvalideException("Ce doit être un répertoire : " + t2Dir);
+			throw new FichierInvalideException("Ce doit être un répertoire : " + residusDir);
 		}
 		else {
-			List<Path> paths = Files.walk(Paths.get(t2Dir)).collect(Collectors.toList());
+			List<Path> paths = Files.walk(Paths.get(residusDir)).collect(Collectors.toList());
 			File tempsDir = new File(this.tempDirectory);
 			if(tempsDir.isDirectory()) {
 				// on supprime le contenu du temp dir
@@ -167,6 +164,51 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 		return returnValue;
 	}
 
+	@Override
+	public File readAndLaunchAggregatePdf() throws FichierInvalideException, TikaException, IOException {
+		LOGGER.info("Début du traitement résidus");
+		File pdfResultFile = null;
+		String residusDir = this.dossierEntrant +"\\"+this.residusDir;
+		// Vérifie que le fichier existe
+		File file = new File(residusDir);
+		Map<Date, Path> pdfMap = new LinkedHashMap<>();
+		if (!file.exists()) {
+			throw new FichierInvalideException("Ce répertoire n'existe pas : " + residusDir);
+		}
+		// Vérifie que ce n'est pas un répertoire
+		else if (!file.isDirectory()) {
+			throw new FichierInvalideException("Ce doit être un répertoire : " + residusDir);
+		}
+		else {
+			List<Path> paths = Files.walk(Paths.get(residusDir)).collect(Collectors.toList());
+			File tempsDir = new File(this.tempDirectory);
+			if(tempsDir.isDirectory()) {
+				// on supprime le contenu du temp dir
+				for(File fileTemp : tempsDir.listFiles()) {
+					fileTemp.delete();
+				}
 
+				// pour chaque fichier, on supprime les 5 dernieres pages et on le met dans le temps dir
+				paths.stream().filter(path -> Files.isRegularFile(path)).forEach(path -> this.pdfService.deletePages(path));
 
+				// on lance un traitement
+				List<Path> pathsTemp = Files.walk(Paths.get(this.tempDirectory)).collect(Collectors.toList());
+
+				pdfMap = pathsTemp.stream()
+						.filter(myPath -> Files.isRegularFile(myPath))
+						.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
+						.collect(Collectors.toMap(pdfFile -> this.residusExtractorService.extraireDate(pdfFile), pdfFile -> pdfFile));
+
+				Map<Date, Path> sortedByDate = pdfMap.entrySet().stream()
+						.sorted(Map.Entry.comparingByKey())
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+				pdfResultFile = this.pdfService.createPdf(sortedByDate.values());
+			}
+			else {
+				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
+			}
+		}
+		return pdfResultFile;
+	}
 }

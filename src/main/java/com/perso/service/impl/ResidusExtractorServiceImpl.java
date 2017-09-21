@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -113,6 +114,13 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         }
         LOGGER.debug("Fin traitement fichier : {}", path);
         return residusDocument;
+    }
+
+
+    @Override
+    public Date extraireDate(Path path) {
+
+        return new Date();
     }
 
 
