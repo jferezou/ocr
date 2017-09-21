@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 @Service
 public class EstimateTimeServiceImpl implements EstimateTimeService {
 
-    @Value("${dossier.traitement1}")
+    @Value("${dossier.palynologie}")
     private String palynologieDir;
-    @Value("${dossier.traitement2}")
+    @Value("${dossier.residus}")
     private String residusDir;
     @Value("${dossier.entrant}")
     private String dossierEntrant;

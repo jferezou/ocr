@@ -50,9 +50,9 @@ public class CommonRest {
     @Produces(MediaType.APPLICATION_JSON)
     @ServiceMethod
     @ApiResponses({@ApiResponse(code = 200, message = "", response = EstimateTime.class)})
-    public Response estimateTime(@QueryParam("multiplicateur") final String multiplicateur, @QueryParam("ist1") final Boolean isT1) {
+    public Response estimateTime(@QueryParam("multiplicateur") final String multiplicateur, @QueryParam("isPalynologie") final Boolean isPalynologie) {
 
-        EstimateTime estimateTime = this.estimateTimeService.estimateTime(multiplicateur, isT1);
+        EstimateTime estimateTime = this.estimateTimeService.estimateTime(multiplicateur, isPalynologie);
 
         return Response.ok(estimateTime).build();
 

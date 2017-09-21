@@ -52,7 +52,7 @@ public class ResidusRest implements ApiExposeRest {
             response.setResultats(liste);
 
         } catch (FichierInvalideException | TikaException | IOException e) {
-            LOGGER.error("Erreur lors du traitement T2", e);
+            LOGGER.error("Erreur lors du traitement résidus", e);
         }
         return Response.ok(response).build();
     }

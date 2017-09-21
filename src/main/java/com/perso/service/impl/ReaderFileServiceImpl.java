@@ -28,9 +28,9 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	private String dossierEntrant;
 	@Value("${dossier.temporaire}")
 	private String tempDirectory;
-	@Value("${dossier.traitement1}")
+	@Value("${dossier.palynologie}")
 	private String palynologieDir;
-	@Value("${dossier.traitement2}")
+	@Value("${dossier.residus}")
 	private String residusDir;
 
 	@Resource
