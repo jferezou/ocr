@@ -42,6 +42,8 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     public ResidusDocument extraire(Path path) {
         LOGGER.debug("Début traitement fichier : {}", path);
         ResidusDocument residusDocument = new ResidusDocument();
+        residusDocument.setGmsDataList(new GmsElementList().toList());
+        residusDocument.setLmsDataList(new LmsElementList().toList());
         residusDocument.setPdfFilePath(path.toString());
 
         residusDocument.setPdfName(path.getFileName().toString());

@@ -1,6 +1,9 @@
 package com.perso.service.impl;
 
+import com.perso.config.ListeFleursConfig;
 import com.perso.exception.ParsingException;
+import com.perso.pojo.residus.GmsElementList;
+import com.perso.pojo.residus.LmsElementList;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
 import com.perso.pojo.palynologie.Palynologie;
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
 
@@ -23,6 +27,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
     private Map<Integer, PalynologieDocument> valeursPalynologie = new HashMap<>();
     private Map<Integer, ResidusDocument> valeursResidus = new HashMap<>();
+    @Resource
+    private ListeFleursConfig listeFleurs;
 
     @Override
     public void parseAndSavePalynologie(final String value) throws ParsingException {
@@ -30,6 +36,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         Map<String, String> correspondance = this.parseStringToMap(value);
 
         PalynologieDocument result = new PalynologieDocument();
+        result.setFleurs(this.listeFleurs.getFleurs());
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String echantillon = correspondance.get("echantillon");
@@ -64,6 +71,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         Map<String, String> correspondance = this.parseStringToMap(value);
 
         ResidusDocument result = new ResidusDocument();
+        result.setGmsDataList(new GmsElementList().toList());
+        result.setLmsDataList(new LmsElementList().toList());
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String reference = correspondance.get("reference");

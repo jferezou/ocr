@@ -23,4 +23,7 @@ public class ResidusDocument {
         IDENTIFIANT++;
         this.id = new Integer(IDENTIFIANT);
     }
+
+    private List<DataListItem> lmsDataList;
+    private List<DataListItem> gmsDataList;
 }

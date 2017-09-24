@@ -63,6 +63,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
 		String zoneInterpretationValue = this.zoneReading(pngFile, zoneInterpretation);
 
 		PalynologieDocument result = new PalynologieDocument();
+		result.setFleurs(this.listeFleurs.getFleurs());
 
         String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
         result.setPdfFileName(baseName);

@@ -25,4 +25,6 @@ public class PalynologieDocument implements Serializable {
 		IDENTIFIANT++;
 		this.id = new Integer(IDENTIFIANT);
 	}
+
+	private List<String> fleurs;
 }
