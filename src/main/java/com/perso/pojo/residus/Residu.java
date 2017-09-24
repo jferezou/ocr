@@ -12,8 +12,10 @@ public class Residu {
     private String value;
     private Double pourcentage;
     private boolean trace;
+    private boolean erreur;
 
     public Residu() {
         this.trace = false;
+        this.erreur = false;
     }
 }

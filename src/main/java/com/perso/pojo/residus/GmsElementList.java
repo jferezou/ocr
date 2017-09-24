@@ -95,7 +95,7 @@ public class GmsElementList extends ElementList {
         this.values.put("ethalfluralin (A)",0.01);
         this.values.put("ethion (A)",0.01);
         this.values.put("ethofumesate (A)",0.01);
-        this.values.put("ethofumesate (sum of ethofumesate and the metabolite 2,3-dihydro3,3-dimethyl-2-oxobenzofuran-5-yl methane sulphonate expressed as ethofumesate) (A)",0.01);
+        this.values.put("ethofumesate (sum of ethofumesate and the metabolite 2,3-dihydro-3,3-dimethyl-2-oxobenzofuran-5-yl methane sulphonate expressed as ethofumesate) (A)",0.01);
         this.values.put("ethofumesate-2-keto (A)",0.01);
         this.values.put("ethoprophos (A)",0.01);
         this.values.put("etofenprox (A)",0.01);

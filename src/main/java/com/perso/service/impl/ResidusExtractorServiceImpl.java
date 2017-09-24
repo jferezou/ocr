@@ -171,9 +171,16 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             String value = line.substring(0, firstDigit);
             value = StringUtils.trim(value);
 
-            double pourcentage = Double.parseDouble(line.substring(firstDigit,line.length()).replace(",","."));
-            traitementObj.setValue(value);
-            traitementObj.setPourcentage(pourcentage);
+            try {
+                double pourcentage = Double.parseDouble(line.substring(firstDigit, line.length()).replace(",", "."));
+                traitementObj.setValue(value);
+                traitementObj.setPourcentage(pourcentage);
+            }
+            catch(NumberFormatException e) {
+                LOGGER.error("Erreur", e);
+                traitementObj.setErreur(true);
+            }
+
         }
         // on cherche la valeur dans nos tables
         else {
@@ -188,6 +195,11 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             traitementObj.setValue(value);
             traitementObj.setPourcentage(pourcentage);
             traitementObj.setTrace(true);
+        }
+
+        // enfin on verifie que l'élément existe bien dans nos listes, sinon on le mets enb erreur :
+        if (!gmsList.getValues().containsKey(traitementObj.getValue()) && !lmsList.getValues().containsKey(traitementObj.getValue())) {
+            traitementObj.setErreur(true);
         }
 
         LOGGER.debug("Objet généré : {}", traitementObj);
