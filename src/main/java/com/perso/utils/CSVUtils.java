@@ -2,7 +2,7 @@ package com.perso.utils;
 
 import com.perso.pojo.palynologie.Palynologie;
 import com.perso.pojo.palynologie.PalynologieDocument;
-import com.perso.pojo.residus.Residu;
+import com.perso.pojo.residus.Molecule;
 import com.perso.pojo.residus.ResidusDocument;
 
 import java.io.IOException;
@@ -30,10 +30,10 @@ public class CSVUtils {
 
         final String reference = residusDocument.getReference();
         StringBuilder result = new StringBuilder();
-        for(Residu cptObj : residusDocument.getGmsList()) {
+        for(Molecule cptObj : residusDocument.getMoleculesGms()) {
             result.append(writeLine(Arrays.asList(reference, cptObj.getValue(), cptObj.getPourcentage().toString(), "GMS"),'"'));
         }
-        for(Residu cptObj : residusDocument.getLmsList()) {
+        for(Molecule cptObj : residusDocument.getMoleculesLms()) {
             result.append(writeLine(Arrays.asList(reference, cptObj.getValue(), cptObj.getPourcentage().toString(), "LMS"),'"'));
         }
         return result.toString();
