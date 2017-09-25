@@ -2,13 +2,13 @@ package com.perso.service.impl;
 
 import com.perso.config.ListeFleursConfig;
 import com.perso.exception.ParsingException;
-import com.perso.pojo.residus.GmsElementList;
-import com.perso.pojo.residus.LmsElementList;
+import com.perso.pojo.residus.MoleculesGmsList;
+import com.perso.pojo.residus.MoleculesLmsList;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
 import com.perso.pojo.palynologie.Palynologie;
 import com.perso.pojo.palynologie.PalynologieDocument;
-import com.perso.pojo.residus.Residu;
+import com.perso.pojo.residus.Molecule;
 import com.perso.pojo.residus.ResidusDocument;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -71,21 +71,21 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         Map<String, String> correspondance = this.parseStringToMap(value);
 
         ResidusDocument result = new ResidusDocument();
-        result.setGmsDataList(new GmsElementList().toList());
-        result.setLmsDataList(new LmsElementList().toList());
+        result.setGmsDataList(new MoleculesGmsList().toList());
+        result.setLmsDataList(new MoleculesLmsList().toList());
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String reference = correspondance.get("reference");
         result.setReference(reference);
 
-        List<Residu> gmsList = new ArrayList<>();
+        List<Molecule> gmsList = new ArrayList<>();
         int index=0;
         while(correspondance.containsKey("valuegms"+index)) {
             String nomcomposition = correspondance.get("valuegms"+index);
             if(!nomcomposition.isEmpty()) {
                 double percentage = Double.parseDouble(correspondance.get("pourcentagegms" + index));
                 boolean isTrace = Boolean.parseBoolean(correspondance.get("tracegms"+index));
-                Residu compo = new Residu();
+                Molecule compo = new Molecule();
                 compo.setPourcentage(percentage);
                 compo.setValue(nomcomposition);
                 compo.setTrace(isTrace);
@@ -95,14 +95,14 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         }
 
 
-        List<Residu> lmsList = new ArrayList<>();
+        List<Molecule> lmsList = new ArrayList<>();
         index=0;
         while(correspondance.containsKey("valuelms"+index)) {
             String nomcomposition = correspondance.get("valuelms"+index);
             if(!nomcomposition.isEmpty()) {
                 double percentage = Double.parseDouble(correspondance.get("pourcentagelms" + index));
                 boolean isTrace = Boolean.parseBoolean(correspondance.get("tracelms"+index));
-                Residu compo = new Residu();
+                Molecule compo = new Molecule();
                 compo.setPourcentage(percentage);
                 compo.setValue(nomcomposition);
                 compo.setTrace(isTrace);
@@ -111,8 +111,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
             index ++;
         }
 
-        result.setGmsList(gmsList);
-        result.setLmsList(lmsList);
+        result.setMoleculesGms(gmsList);
+        result.setMoleculesLms(lmsList);
 
         this.valeursResidus.put(id,result);
 

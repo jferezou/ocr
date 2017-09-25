@@ -9,17 +9,19 @@ import java.util.List;
 @Getter
 @Setter
 public class ResidusDocument {
-    private List<Residu> gmsList;
-    private List<Residu> lmsList;
+    private List<Molecule> moleculesGms;
+    private List<Molecule> moleculesLms;
     private String pdfFilePath;
     private String pdfName;
     private String reference;
+    private String certificatAnalyses;
+    private double poids;
     private int id;
     private static int IDENTIFIANT = 0;
 
     public ResidusDocument() {
-        this.gmsList = new ArrayList<>();
-        this.lmsList = new ArrayList<>();
+        this.moleculesGms = new ArrayList<>();
+        this.moleculesLms = new ArrayList<>();
         IDENTIFIANT++;
         this.id = new Integer(IDENTIFIANT);
     }

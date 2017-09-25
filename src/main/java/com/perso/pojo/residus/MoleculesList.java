@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public abstract class ElementList {
+public abstract class MoleculesList {
 
     protected Map<String, Double> values;
 
-    public ElementList(){
+    public MoleculesList(){
         this.values=new HashMap<>();
         this.fillMap();
     }

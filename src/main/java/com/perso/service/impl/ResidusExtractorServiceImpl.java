@@ -35,15 +35,15 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResidusExtractorServiceImpl.class);
     private final int taillePage = 840;
-    private GmsElementList gmsList = new GmsElementList();
-    private LmsElementList lmsList = new LmsElementList();
+    private MoleculesGmsList gmsList = new MoleculesGmsList();
+    private MoleculesLmsList lmsList = new MoleculesLmsList();
 
     @Override
     public ResidusDocument extraire(Path path) {
         LOGGER.debug("Début traitement fichier : {}", path);
         ResidusDocument residusDocument = new ResidusDocument();
-        residusDocument.setGmsDataList(new GmsElementList().toList());
-        residusDocument.setLmsDataList(new LmsElementList().toList());
+        residusDocument.setGmsDataList(new MoleculesGmsList().toList());
+        residusDocument.setLmsDataList(new MoleculesLmsList().toList());
         residusDocument.setPdfFilePath(path.toString());
 
         residusDocument.setPdfName(path.getFileName().toString());
@@ -59,8 +59,20 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             Zone zoneReference = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
             LOGGER.info("ZoneInterpretation : {}", zoneReference.toString());
             String reference = this.extractValue(pdfDoc.getFirstPage(), zoneReference);
-            residusDocument.setReference(reference);
             LOGGER.debug("Reference : {}", reference);
+            residusDocument.setReference(reference);
+
+            Zone zoneCertificatAnalyse = new Zone(new Point(0, this.taillePage - 148), new Point(157, this.taillePage - 127));
+            LOGGER.info("ZoneInterpretation : {}", zoneCertificatAnalyse.toString());
+            String certificatAnalyse = this.extractValue(pdfDoc.getFirstPage(), zoneCertificatAnalyse);
+            LOGGER.debug("certificatAnalyse : {}", certificatAnalyse);
+            residusDocument.setCertificatAnalyses(certificatAnalyse);
+
+            Zone zonePoids = new Zone(new Point(408, this.taillePage - 312), new Point(493, this.taillePage - 301));
+            LOGGER.info("ZoneInterpretation : {}", zoneCertificatAnalyse.toString());
+            double poids = getPoids(pdfDoc, zonePoids);
+            LOGGER.debug("poids : {}", poids);
+            residusDocument.setPoids(poids);
 
             int totalPage = pdfDoc.getNumberOfPages();
             LOGGER.debug("totalPage : {}", totalPage);
@@ -79,17 +91,17 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                 resultat = resultat.replace("A","(A)");
                 resultat = resultat.replaceAll("(?m)^\\s", "");
                 String[] resultatSplit = resultat.split("\n");
-                List<Residu> currentList = residusDocument.getLmsList();
+                List<Molecule> currentList = residusDocument.getMoleculesLms();
                 boolean isGms = false;
                 for(int lineIndex = 0; lineIndex < resultatSplit.length; lineIndex ++) {
                     String line = resultatSplit[lineIndex];
                     if(line.contains("LMS - LC-MSMS - Primoris accredited")) {
-                        currentList = residusDocument.getLmsList();
+                        currentList = residusDocument.getMoleculesLms();
                         isGms = false;
                         LOGGER.debug("Passage liste LMS");
                     }
                     else if(line.contains("GMS - GC-MSMS - Primoris accredited")) {
-                        currentList = residusDocument.getGmsList();
+                        currentList = residusDocument.getMoleculesGms();
                         isGms = true;
                         LOGGER.debug("Passage liste GMS");
                     }
@@ -118,6 +130,19 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         }
         LOGGER.debug("Fin traitement fichier : {}", path);
         return residusDocument;
+    }
+
+    private double getPoids(PdfDocument pdfDoc, Zone zonePoids) {
+        String poidsString = this.extractValue(pdfDoc.getFirstPage(), zonePoids);
+        poidsString = poidsString.replace(",",".");
+        double poids = 0.0;
+        try {
+            poids = Double.parseDouble(poidsString);
+        }
+        catch (NumberFormatException e) {
+            LOGGER.error("Erreur de formatage du poids",e);
+        }
+        return poids;
     }
 
 
@@ -164,9 +189,9 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     }
 
 
-    private Residu traitementLigne(final String line, boolean isGmt) {
+    private Molecule traitementLigne(final String line, boolean isGmt) {
         LOGGER.debug("traitement ligne nettoyé : {}", line);
-        Residu traitementObj = new Residu();
+        Molecule traitementObj = new Molecule();
         int firstDigit = StringUtilsOcr.getfirstdigitIndex(line);
         // il y a une valeur
         if(firstDigit > 0) {
@@ -208,10 +233,10 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         return traitementObj;
     }
 
-    private double getPourcentageFromElement(String value, ElementList elementList) {
+    private double getPourcentageFromElement(String value, MoleculesList moleculesList) {
         double pourcentage = -1;
-        if (elementList.getValues().containsKey(value)) {
-            pourcentage = elementList.getValues().get(value);
+        if (moleculesList.getValues().containsKey(value)) {
+            pourcentage = moleculesList.getValues().get(value);
         }
         return pourcentage;
     }

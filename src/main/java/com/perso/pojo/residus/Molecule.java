@@ -7,14 +7,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Residu {
+public class Molecule {
 
     private String value;
     private Double pourcentage;
     private boolean trace;
     private boolean erreur;
 
-    public Residu() {
+    public Molecule() {
         this.trace = false;
         this.erreur = false;
     }

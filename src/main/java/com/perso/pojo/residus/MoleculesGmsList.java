@@ -1,6 +1,6 @@
 package com.perso.pojo.residus;
 
-public class GmsElementList extends ElementList {
+public class MoleculesGmsList extends MoleculesList {
 
     @Override
     protected void fillMap() {
