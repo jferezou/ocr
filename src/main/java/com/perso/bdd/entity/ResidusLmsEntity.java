@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @ToString
-@Table(schema = "schema_name_opm", name = "residus_lms")
+@Table(schema = "public", name = "residus_lms")
 public class ResidusLmsEntity implements Serializable {
     /**
      * serialVersionUID
@@ -30,11 +30,12 @@ public class ResidusLmsEntity implements Serializable {
     @Column(name = "taux")
     private Double taux;
 
-    @Column(name = "identifiant", nullable = false)
-    private String identifiant;
-
     @ManyToOne
     @JoinColumn(name = "id_molecule_lms", referencedColumnName = "id", nullable = false)
     private MoleculesLmsEntity moleculeLms;
+
+    @ManyToOne
+    @JoinColumn(name = "residus_document_id", referencedColumnName = "id", nullable = false)
+    private ResidusDocumentEntity residusDocument;
 
 }

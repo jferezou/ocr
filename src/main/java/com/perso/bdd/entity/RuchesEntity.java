@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @ToString
-@Table(schema = "schema_name_opm", name = "ruches", uniqueConstraints = {@UniqueConstraint(columnNames={"nom"})})
+@Table(schema = "public", name = "ruches", uniqueConstraints = {@UniqueConstraint(columnNames={"nom"})})
 public class RuchesEntity implements Serializable {
     /**
      * serialVersionUID
@@ -29,9 +29,6 @@ public class RuchesEntity implements Serializable {
 
     @Column(name = "nom", nullable = false)
     private String nom;
-
-    @Column(name = "identifiant", nullable = false)
-    private String identifiant;
 
 
     @ManyToOne

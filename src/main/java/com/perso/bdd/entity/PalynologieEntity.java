@@ -3,6 +3,7 @@ package com.perso.bdd.entity;
 import com.perso.bdd.entity.parametrage.FleursEntity;
 import com.perso.bdd.entity.parametrage.RuchierEntity;
 import com.perso.bdd.entity.parametrage.TypeEntity;
+import com.perso.pojo.palynologie.PalynologieDocument;
 import lombok.Data;
 import lombok.ToString;
 
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @ToString
-@Table(schema = "schema_name_opm", name = "palynologie")
+@Table(schema = "public", name = "palynologie")
 public class PalynologieEntity implements Serializable {
     /**
      * serialVersionUID
@@ -40,5 +41,10 @@ public class PalynologieEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_type", referencedColumnName = "id", nullable = false)
     private TypeEntity type;
+
+
+    @ManyToOne
+    @JoinColumn(name = "palynologie_document_id", referencedColumnName = "id", nullable = false)
+    private PalynologieDocumentEntity palynologieDocument;
 
 }

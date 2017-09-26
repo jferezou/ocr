@@ -39,7 +39,7 @@ datasource:
     password: pwdocr
     maxPoolSize: 10
     minPoolSize: 3
-    testQuery: select 1 from dual
+    testQuery: SELECT 1
     url: jdbc:postgresql://${datasource.ocr.host}:${datasource.ocr.port}/${datasource.ocr.dbname}
     jdbcDialect: org.hibernate.dialect.PostgreSQLDialect
 hibernate:
