@@ -12,7 +12,8 @@ CREATE TABLE param_matrice
   nom						  		VARCHAR(200)	NOT NULL,
   identifiant						VARCHAR(1)		NOT NULL,
 
-  CONSTRAINT pk_param_matrice PRIMARY KEY (id)
+  CONSTRAINT pk_param_matrice PRIMARY KEY (id),
+  CONSTRAINT uk_param_matrice_identifiant UNIQUE (identifiant)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_matrice TO usrocr;
@@ -42,7 +43,8 @@ CREATE TABLE param_ruchier
   telephone							VARCHAR(200)	NULL,
   correspondance       INT4 NOT NULL,
 
-  CONSTRAINT pk_param_ruchier PRIMARY KEY (id)
+  CONSTRAINT pk_param_ruchier PRIMARY KEY (id),
+  CONSTRAINT uk_param_ruchier_correspondancet UNIQUE (correspondance)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_ruchier TO usrocr;
@@ -64,7 +66,8 @@ CREATE TABLE param_molecules_gms
   nom						  		VARCHAR(2000)	NOT NULL,
   valeurTrace						float8			NOT NULL,
 
-  CONSTRAINT pk_param_molecules_gms PRIMARY KEY (id)
+  CONSTRAINT pk_param_molecules_gms PRIMARY KEY (id),
+  CONSTRAINT uk_param_molecules_nom UNIQUE (nom)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_gms TO usrocr;
@@ -86,7 +89,8 @@ CREATE TABLE param_molecules_lms
   nom						  		VARCHAR(2000)	NOT NULL,
   valeurTrace						float8			NOT NULL,
 
-  CONSTRAINT pk_param_molecules_lms PRIMARY KEY (id)
+  CONSTRAINT pk_param_molecules_lms PRIMARY KEY (id),
+  CONSTRAINT uk_param_molecules_nom UNIQUE (nom)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_lms TO usrocr;
@@ -131,7 +135,8 @@ CREATE TABLE param_type
   id		            		INT8			  NOT NULL default nextval('seq_param_type_id'),
   valeur						  	VARCHAR(200)	  NOT NULL,
 
-  CONSTRAINT pk_param_type PRIMARY KEY (id)
+  CONSTRAINT pk_param_type PRIMARY KEY (id),
+  CONSTRAINT uk_param_type_valeur UNIQUE (valeur)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_type TO usrocr;
@@ -150,7 +155,7 @@ GRANT usage on SEQUENCE seq_palynologie_id to usrocr;
 CREATE TABLE palynologie
 (
   id		            		INT8			  NOT NULL default nextval('seq_palynologie_id'),
-  poucentage						float8	  NOT NULL,
+  pourcentage						float8	  NOT NULL,
   id_fleur  						INT8			  NOT NULL,
   id_type               INT8       NOT NULL,
 
@@ -223,7 +228,8 @@ CREATE TABLE param_famille
   id		            		INT8			  NOT NULL default nextval('seq_param_famille_id'),
   nom						  	VARCHAR(200)	  NOT NULL,
 
-  CONSTRAINT pk_param_famille PRIMARY KEY (id)
+  CONSTRAINT pk_param_famille PRIMARY KEY (id),
+  CONSTRAINT uk_famille_nom UNIQUE (nom)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_famille TO usrocr;
@@ -246,6 +252,7 @@ CREATE TABLE param_espece
   famille_id						  	INT8	  NOT NULL,
 
   CONSTRAINT pk_param_espece PRIMARY KEY (id),
+  CONSTRAINT uk_espece_nom UNIQUE (nom),
   CONSTRAINT fk_param_famille foreign key (famille_id) REFERENCES param_famille(id)
 );
 
@@ -270,6 +277,7 @@ CREATE TABLE param_fleurs
   espece_id						  	INT8	  NOT NULL,
 
   CONSTRAINT pk_param_fleurs PRIMARY KEY (id),
+  CONSTRAINT uk_fleur_nom UNIQUE (nom),
   CONSTRAINT fk_param_espece foreign key (espece_id) REFERENCES param_espece(id)
 );
 

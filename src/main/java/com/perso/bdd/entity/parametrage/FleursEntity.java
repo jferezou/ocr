@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @ToString
-@Table(schema = "schema_name_opm", name = "param_fleurs")
+@Table(schema = "schema_name_opm", name = "param_fleurs", uniqueConstraints = {@UniqueConstraint(columnNames={"nom"})})
 public class FleursEntity implements Serializable {
     /**
      * serialVersionUID

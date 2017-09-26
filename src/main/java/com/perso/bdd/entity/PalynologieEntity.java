@@ -29,8 +29,8 @@ public class PalynologieEntity implements Serializable {
     private Long id;
 
 
-    @Column(name = "poucentage", nullable = false)
-    private Double poucentage;
+    @Column(name = "pourcentage", nullable = false)
+    private Double pourcentage;
 
 
     @ManyToOne
