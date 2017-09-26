@@ -51,7 +51,7 @@ public class RucheDaoImpl extends HibernateDao implements RucheDao {
      * @return
      */
     @Override
-    public RuchesEntity getRuchesByName(final String rucheName) {
+    public RuchesEntity getRuchesByName(final String rucheName) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from RuchesEntity where nom=:rucheName");
         requete.setParameter("rucheName", rucheName);
 
@@ -60,8 +60,6 @@ public class RucheDaoImpl extends HibernateDao implements RucheDao {
         try {
             ruchesEntity = (RuchesEntity) requete.getSingleResult();
         } catch (NonUniqueResultException nonUniqueException) {
-            LOGGER.debug("Pas de ruche trouvée avec le nom : {}" + rucheName);
-        } catch (NoResultException noResultException) {
             LOGGER.debug("Pas de ruche trouvée avec le nom : {}" + rucheName);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
