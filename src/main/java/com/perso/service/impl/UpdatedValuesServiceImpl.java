@@ -3,6 +3,8 @@ package com.perso.service.impl;
 import com.perso.bdd.dao.ParamFleursDao;
 import com.perso.bdd.dao.ParamMoleculesGmsDao;
 import com.perso.bdd.dao.ParamMoleculesLmsDao;
+import com.perso.bdd.entity.PalynologieDocumentEntity;
+import com.perso.bdd.entity.ResidusDocumentEntity;
 import com.perso.bdd.entity.parametrage.FleursEntity;
 import com.perso.exception.ParsingException;
 import com.perso.service.UpdatedValuesService;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -53,6 +57,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setId(id);
         String echantillon = correspondance.get("echantillon");
         result.setEchantillon(echantillon);
+        String appelationDemandeur = correspondance.get("appelationDemandeur");
+        result.setAppelationDemandeur(appelationDemandeur);
 
         List<Palynologie> compoList = new ArrayList<>();
         int index=0;
@@ -74,6 +80,36 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setCompositions(compoList);
 
         this.valeursPalynologie.put(id,result);
+
+        // enregistrer BDD
+        String[] splitAppelationDemandeur = appelationDemandeur.split(" ");
+        if(splitAppelationDemandeur.length == 2) {
+            try {
+                String ident = splitAppelationDemandeur[0];
+
+
+                String dateS = splitAppelationDemandeur[1];
+                SimpleDateFormat spd = new SimpleDateFormat("dd/MM/yy");
+
+                String matrice = ident.substring(0,1);
+                String ruchier = ident.substring(1,2);
+                String ruche = ident.substring(2,6);
+
+                Date date = spd.parse(dateS);
+
+                PalynologieDocumentEntity palynodoc = new PalynologieDocumentEntity();
+                palynodoc.setDate(date);
+                palynodoc.setIdentifiant(ident);
+                palynodoc.setIdentifiantEchantillon(matrice+ruchier+ruche);
+                palynodoc.setNumeroEchantillon(Long.parseLong(echantillon));
+                palynodoc.setPdfName(result.getPdfFileName());
+//                palynodoc.setMatrice();
+//                palynodoc.setRuche();
+//                palynodoc.setRuchier();
+            } catch (ParseException e) {
+                LOGGER.error("Erreur de parsin de date",e);
+            }
+        }
 
     }
     

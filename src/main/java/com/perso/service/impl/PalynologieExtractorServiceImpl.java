@@ -45,8 +45,8 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
         this.generateListeFleurs();
 		LOGGER.info("Début du traitement du fichier {}", pngFile.getPath());
 
-		Zone zoneEchantillon = new Zone(new Point(1646, 330), new Point(2448, 416));
-		LOGGER.info("zoneEchantillon : {}", zoneEchantillon.toString());
+		Zone zoneAppelationDemandeur = new Zone(new Point(1646, 330), new Point(2448, 416));
+		LOGGER.info("zoneEchantillon : {}", zoneAppelationDemandeur.toString());
 
 		Zone zone1 = new Zone(new Point(1562, 1110), new Point(2402, 2568));
 		LOGGER.info("Zone1 : {}", zone1.toString());
@@ -62,18 +62,23 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
 //        Zone zoneInterpretation = new Zone(new Point(0, 4268), new Point(3872, 5000));
 //		LOGGER.info("ZoneInterpretation : {}", zoneInterpretation.toString());
 
-		String zoneEchantillonValue = this.zoneReading(pngFile, zoneEchantillon);
+        Zone zoneEchantillon = new Zone(new Point(324, 400), new Point(648, 465));
+        LOGGER.info("zoneEchantillon : {}", zoneEchantillon.toString());
+
+		String zoneAppelationDemandeurValue = this.zoneReading(pngFile, zoneAppelationDemandeur);
 		String zone1Value = this.zoneReading(pngFile, zone1);
 		String zoneInterpretationValue = this.zoneReading(pngFile, zoneInterpretation);
+		String zoneEchantillonValue = this.zoneReading(pngFile, zoneEchantillon);
 
 		PalynologieDocument result = new PalynologieDocument();
 		result.setFleurs(this.listeFleurs);
 
         String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
+        result.setEchantillon(zoneEchantillonValue);
         result.setPdfFileName(baseName);
         result.setPdfFilePath(pngFile.getParentFile()+"\\"+baseName);
-        String zoneEchantillonValueTempName = this.fillEchantillon(zoneEchantillonValue);
-        result.setEchantillon(zoneEchantillonValueTempName);
+        String zoneEchantillonValueTempName = this.fillAppelationDemandeur(zoneAppelationDemandeurValue);
+        result.setAppelationDemandeur(zoneEchantillonValueTempName);
 
         List<Palynologie> compositionList = this.fillComposition(zone1Value);
         this.fillInterpretation(zoneInterpretationValue, compositionList);
@@ -190,7 +195,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
         return compositionList;
     }
 
-    private String fillEchantillon(String zoneEchantillonValue) {
+    private String fillAppelationDemandeur(String zoneEchantillonValue) {
         String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
         zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
         zoneEchantillonValueTempName = zoneEchantillonValueTempName.replace("\n","");

@@ -18,6 +18,7 @@ public class PalynologieDocument implements Serializable {
 	private String pdfFilePath;
 	private String pdfFileName;
 	private String echantillon;
+	private String appelationDemandeur;
 	private int id;
 	private List<Palynologie> compositions;
 
