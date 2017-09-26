@@ -45,21 +45,6 @@ COMMENT ON TABLE param_ruchier IS 'Cette table le paramétrage pour les ruchiers
 
 
 
-CREATE SEQUENCE seq_param_fleurs_id;
-GRANT usage on SEQUENCE seq_param_fleurs_id to usrocr;
-CREATE TABLE param_fleurs
-(
-  id		            			INT8			NOT NULL default nextval('seq_param_fleurs_id'),
-  nom						  		VARCHAR(200)	NOT NULL,
-
-  CONSTRAINT pk_param_fleurs PRIMARY KEY (id)
-);
-
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_fleurs TO usrocr;
-
-COMMENT ON TABLE param_fleurs IS 'Cette table le paramétrage pour les fleurs.';
-
-
 CREATE SEQUENCE seq_param_molecules_gms_id;
 GRANT usage on SEQUENCE seq_param_molecules_gms_id to usrocr;
 CREATE TABLE param_molecules_gms
@@ -180,3 +165,55 @@ CREATE TABLE residus_lms
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE residus_lms TO usrocr;
 
 COMMENT ON TABLE residus_lms IS 'Residus LMS.';
+
+
+CREATE SEQUENCE seq_param_famille_id;
+GRANT usage on SEQUENCE seq_param_famille_id to usrocr;
+CREATE TABLE param_famille
+(
+  id		            		INT8			  NOT NULL default nextval('seq_param_famille_id'),
+  nom						  	VARCHAR(200)	  NOT NULL,
+
+  CONSTRAINT pk_param_famille PRIMARY KEY (id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_famille TO usrocr;
+
+COMMENT ON TABLE param_famille IS 'Paramétrage famille fleurs.';
+
+
+CREATE SEQUENCE seq_param_espece_id;
+GRANT usage on SEQUENCE seq_param_espece_id to usrocr;
+CREATE TABLE param_espece
+(
+  id		            		INT8			  NOT NULL default nextval('seq_param_espece_id'),
+  nom						  	VARCHAR(200)	  NOT NULL,
+  famille_id						  	INT8	  NOT NULL,
+
+  CONSTRAINT pk_param_espece PRIMARY KEY (id),
+  CONSTRAINT fk_param_famille foreign key (famille_id) REFERENCES param_famille(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_espece TO usrocr;
+
+COMMENT ON TABLE param_espece IS 'Paramétrage especes fleurs.';
+
+
+
+
+CREATE SEQUENCE seq_param_fleurs_id;
+GRANT usage on SEQUENCE seq_param_fleurs_id to usrocr;
+CREATE TABLE param_fleurs
+(
+  id		            			INT8			NOT NULL default nextval('seq_param_fleurs_id'),
+  nom						  		VARCHAR(200)	NOT NULL,
+  nom2						  		VARCHAR(200)	NULL,
+  espece_id						  	INT8	  NOT NULL,
+
+  CONSTRAINT pk_param_fleurs PRIMARY KEY (id),
+  CONSTRAINT fk_param_espece foreign key (espece_id) REFERENCES param_espece(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_fleurs TO usrocr;
+
+COMMENT ON TABLE param_fleurs IS 'Cette table le paramétrage pour les fleurs.';
