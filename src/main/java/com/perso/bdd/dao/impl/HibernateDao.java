@@ -1,4 +1,4 @@
-package com.perso.bdd.dao;
+package com.perso.bdd.dao.impl;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;

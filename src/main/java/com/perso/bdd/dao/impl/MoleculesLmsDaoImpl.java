@@ -1,8 +1,6 @@
 package com.perso.bdd.dao.impl;
 
-import com.perso.bdd.dao.HibernateDao;
 import com.perso.bdd.dao.ParamMoleculesLmsDao;
-import com.perso.bdd.entity.parametrage.FleursEntity;
 import com.perso.bdd.entity.parametrage.MoleculesLmsEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;

@@ -1,6 +1,5 @@
 package com.perso.bdd.dao.impl;
 
-import com.perso.bdd.dao.HibernateDao;
 import com.perso.bdd.dao.ResidusLmsDao;
 import com.perso.bdd.entity.ResidusLmsEntity;
 import org.apache.log4j.Logger;

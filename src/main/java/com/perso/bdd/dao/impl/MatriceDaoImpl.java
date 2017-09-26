@@ -1,8 +1,6 @@
 package com.perso.bdd.dao.impl;
 
-import com.perso.bdd.dao.HibernateDao;
 import com.perso.bdd.dao.ParamMatriceDao;
-import com.perso.bdd.entity.RuchesEntity;
 import com.perso.bdd.entity.parametrage.MatriceEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
