@@ -3,8 +3,10 @@ package com.perso.bdd.dao.impl;
 import com.perso.bdd.dao.PalynologieDao;
 import com.perso.bdd.entity.PalynologieEntity;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class PalynologieDaoImpl extends HibernateDao implements PalynologieDao {
 
     final static Logger LOGGER = Logger.getLogger(PalynologieDaoImpl.class);

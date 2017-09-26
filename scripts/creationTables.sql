@@ -205,7 +205,7 @@ CREATE TABLE param_fleurs
   id		            			INT8			NOT NULL default nextval('seq_param_fleurs_id'),
   nom						  		VARCHAR(200)	NOT NULL,
   nom2						  		VARCHAR(200)	NULL,
-  espece_id						  	INT8	  NOT NULL,
+  espece_id						  	INT8	  NULL,
 
   CONSTRAINT pk_param_fleurs PRIMARY KEY (id),
   CONSTRAINT uk_fleur_nom UNIQUE (nom),
@@ -229,6 +229,7 @@ CREATE TABLE residus_document
   date						  		DATE 	NOT NULL,
   identifiant						  		VARCHAR(200)	NOT NULL,
   certificat_analyse						  		VARCHAR(200)	NOT NULL,
+  poids						  	INT4	  NOT NULL,
   matrice_id						  	INT8	  NOT NULL,
   ruchier_id						  	INT8	  NOT NULL,
   ruche_id						  	INT8	  NOT NULL,

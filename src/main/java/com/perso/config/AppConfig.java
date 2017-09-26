@@ -12,6 +12,7 @@ import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.orm.hibernate5.HibernateExceptionTranslator;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.sql.DataSource;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 @Configuration
+@EnableTransactionManagement
 @Import({
         OcrConfiguration.class,
         ServicesExposesConfiguration.class,

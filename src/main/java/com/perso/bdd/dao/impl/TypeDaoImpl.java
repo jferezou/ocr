@@ -5,15 +5,18 @@ import com.perso.bdd.entity.parametrage.TypeEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 
+@Repository
 public class TypeDaoImpl extends HibernateDao implements ParamTypeDao {
 
     final static Logger LOGGER = Logger.getLogger(TypeDaoImpl.class);
 
     @Override
+    @Transactional
     public TypeEntity findByName(String typeName) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from TypeEntity where valeur=:typeName");
         requete.setParameter("typeName", typeName);

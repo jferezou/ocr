@@ -36,6 +36,9 @@ public class ResidusDocumentEntity implements Serializable {
     @Column(name = "identifiant", nullable = false)
     private String identifiant;
 
+    @Column(name = "poids", nullable = false)
+    private Integer poids;
+
 
     @Column(name = "certificat_analyse", nullable = false)
     private String certificatAnalyse;

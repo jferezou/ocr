@@ -1,24 +1,28 @@
 package com.perso.bdd.dao.impl;
 
 import com.perso.bdd.dao.ParamMoleculesGmsDao;
+import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import com.perso.bdd.entity.parametrage.MoleculesGmsEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.List;
 
+@Repository
 public class MoleculesGmsDaoImpl extends HibernateDao implements ParamMoleculesGmsDao {
 
     final static Logger LOGGER = Logger.getLogger(MoleculesGmsDaoImpl.class);
     @Override
-    public List<MoleculesGmsEntity> getAllMoleculesGms() {
+    @Transactional
+    public List<MoleculeEntity> getAllMoleculesGms() {
 
         Query requete = getCurrentSession().createQuery("from MoleculesGmsEntity");
 
-        List<MoleculesGmsEntity> moleculesGmsList = null;
+        List<MoleculeEntity> moleculesGmsList = null;
 
         try {
             moleculesGmsList = requete.getResultList();
@@ -29,6 +33,7 @@ public class MoleculesGmsDaoImpl extends HibernateDao implements ParamMoleculesG
         return moleculesGmsList;
     }
     @Override
+    @Transactional
     public MoleculesGmsEntity findByName(String nom) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from MoleculesGmsEntity where nom=:nom");
         requete.setParameter("nom", nom);

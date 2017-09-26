@@ -32,7 +32,7 @@ public class FleursEntity implements Serializable {
     private String nom2;
 
     @ManyToOne
-    @JoinColumn(name = "espece_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "espece_id", referencedColumnName = "id")
     private EspeceEntity espece;
 
 }

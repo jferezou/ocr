@@ -5,7 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.perso.config.ListeFleursConfig;
+import com.perso.bdd.dao.ParamFleursDao;
+import com.perso.bdd.entity.parametrage.FleursEntity;
 import com.perso.pojo.ocr.Zone;
 import com.perso.service.PalynologieExtractorService;
 import com.perso.utils.*;
@@ -32,13 +33,16 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
     private String tesseractDir;
 
 	@Resource
-	private ListeFleursConfig listeFleurs;
+	private ParamFleursDao paramFleursDao;
+
+	private List<String> listeFleurs;
 
 	@Override
 	/**
 	 * Permet de reconnaitre le texte
 	 */
 	public PalynologieDocument extract(final File pngFile) {
+        this.generateListeFleurs();
 		LOGGER.info("Début du traitement du fichier {}", pngFile.getPath());
 
 		Zone zoneEchantillon = new Zone(new Point(1646, 330), new Point(2448, 416));
@@ -63,7 +67,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
 		String zoneInterpretationValue = this.zoneReading(pngFile, zoneInterpretation);
 
 		PalynologieDocument result = new PalynologieDocument();
-		result.setFleurs(this.listeFleurs.getFleurs());
+		result.setFleurs(this.listeFleurs);
 
         String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
         result.setPdfFileName(baseName);
@@ -78,6 +82,14 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
 		LOGGER.info("Fin du traitement du fichier {}", pngFile.getName());
 		return result;
 	}
+
+	private void generateListeFleurs() {
+	    List<FleursEntity> listeFleursEntity = this.paramFleursDao.getAllFleurs();
+	    this.listeFleurs = new ArrayList<>();
+	    for(FleursEntity fleur : listeFleursEntity) {
+	        this.listeFleurs.add(fleur.getNom());
+        }
+    }
 
     private void fillInterpretation(String zoneInterpretationValue, List<Palynologie> compositionList) {
         // on repere la ligne d'interpretation (il doit y avoir des % et des ,)
@@ -110,7 +122,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
                         name = name.replace(".", "");
                         name = StringUtils.trim(name);
                         if(name.length() > 2) {
-                            for(String fleur : this.listeFleurs.getFleurs()) {
+                            for(String fleur : this.listeFleurs) {
                                 if(fleur.toLowerCase().replace(" ","").contains(name)) {
                                     name = fleur;
                                 }
@@ -159,7 +171,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
             if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
                 Palynologie zoneObj = new Palynologie();
                 boolean valid = false;
-                for(String valeurPossible : this.listeFleurs.getFleurs()) {
+                for(String valeurPossible : this.listeFleurs) {
                     String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase().replace(" ",""));
                     String currentValueTemp = StringUtils.stripAccents(tempZone1[j].replace("ﬂ","fl").replace(" ","").toLowerCase());
                     if(tempP.equals(currentValueTemp)) {

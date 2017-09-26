@@ -1,9 +1,10 @@
 package com.perso.service.impl;
 
-import com.perso.config.ListeFleursConfig;
+import com.perso.bdd.dao.ParamFleursDao;
+import com.perso.bdd.dao.ParamMoleculesGmsDao;
+import com.perso.bdd.dao.ParamMoleculesLmsDao;
+import com.perso.bdd.entity.parametrage.FleursEntity;
 import com.perso.exception.ParsingException;
-import com.perso.pojo.residus.MoleculesGmsList;
-import com.perso.pojo.residus.MoleculesLmsList;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
 import com.perso.pojo.palynologie.Palynologie;
@@ -27,16 +28,27 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
     private Map<Integer, PalynologieDocument> valeursPalynologie = new HashMap<>();
     private Map<Integer, ResidusDocument> valeursResidus = new HashMap<>();
+
     @Resource
-    private ListeFleursConfig listeFleurs;
+    private ParamFleursDao paramFleursDao;
+
+    @Resource
+    private ParamMoleculesGmsDao paramMoleculesGmsDao;
+
+    @Resource
+    private ParamMoleculesLmsDao paramMoleculesLmsDao;
 
     @Override
     public void parseAndSavePalynologie(final String value) throws ParsingException {
 
         Map<String, String> correspondance = this.parseStringToMap(value);
-
+        List<FleursEntity> listeFleursEntity = this.paramFleursDao.getAllFleurs();
+        List<String> listeFleurs = new ArrayList<>();
+        for(FleursEntity fleur : listeFleursEntity) {
+            listeFleurs.add(fleur.getNom());
+        }
         PalynologieDocument result = new PalynologieDocument();
-        result.setFleurs(this.listeFleurs.getFleurs());
+        result.setFleurs(listeFleurs);
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String echantillon = correspondance.get("echantillon");
@@ -71,8 +83,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         Map<String, String> correspondance = this.parseStringToMap(value);
 
         ResidusDocument result = new ResidusDocument();
-        result.setGmsDataList(new MoleculesGmsList().toList());
-        result.setLmsDataList(new MoleculesLmsList().toList());
+        result.setGmsDataList(this.paramMoleculesGmsDao.getAllMoleculesGms());
+        result.setLmsDataList(this.paramMoleculesLmsDao.getAllMoleculesLms());
         int id = Integer.parseInt(correspondance.get("id"));
         result.setId(id);
         String reference = correspondance.get("reference");
@@ -116,6 +128,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
         this.valeursResidus.put(id,result);
 
+        // on persiste en base
+
     }
 
     private Map<String, String> parseStringToMap(String value) throws ParsingException {
@@ -138,7 +152,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
                 throw new ParsingException("Attention, : est un caractère interdit, enregistrement non pris en compte !");
             }
             if(linesplited.length == 2) {
-                correspondance.put(linesplited[0], linesplited[1]);
+                correspondance.put(linesplited[0], linesplited[1].replace("ceciestundeuxpoints",":"));
             }
             else {
                 correspondance.put(linesplited[0], "");

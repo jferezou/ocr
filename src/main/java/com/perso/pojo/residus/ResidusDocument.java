@@ -1,5 +1,6 @@
 package com.perso.pojo.residus;
 
+import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,6 @@ public class ResidusDocument {
         this.id = new Integer(IDENTIFIANT);
     }
 
-    private List<DataListItem> lmsDataList;
-    private List<DataListItem> gmsDataList;
+    private List<MoleculeEntity> lmsDataList;
+    private List<MoleculeEntity> gmsDataList;
 }

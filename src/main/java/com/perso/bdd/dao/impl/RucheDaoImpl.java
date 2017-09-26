@@ -5,10 +5,12 @@ import com.perso.bdd.entity.RuchesEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 
+@Repository
 public class RucheDaoImpl extends HibernateDao implements RucheDao {
 
     final static Logger LOGGER = Logger.getLogger(RucheDaoImpl.class);
@@ -50,6 +52,7 @@ public class RucheDaoImpl extends HibernateDao implements RucheDao {
      * @return
      */
     @Override
+    @Transactional
     public RuchesEntity getRuchesByName(final String rucheName) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from RuchesEntity where nom=:rucheName");
         requete.setParameter("rucheName", rucheName);

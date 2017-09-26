@@ -57,13 +57,9 @@ public class PalynologieRest implements ApiExposeRest{
     @Override
     @ApiResponses({@ApiResponse(code = 200, message = "", response = String.class)})
     @ServiceMethod
-    public Response sauvegarder(final String data)  throws InvalidFormatException {
+    public Response sauvegarder(final String data)  throws InvalidFormatException, ParsingException {
 
-        try {
             this.updatedValuesService.parseAndSavePalynologie(data);
-        } catch (ParsingException e) {
-            LOGGER.error("Erreur de parsing", e);
-        }
         return Response.ok().build();
     }
 

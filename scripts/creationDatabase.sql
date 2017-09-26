@@ -13,3 +13,5 @@ CREATE DATABASE ocr
     OWNER = usrocr
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
+
+GRANT USAGE ON SCHEMA public TO usrocr;

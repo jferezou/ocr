@@ -5,16 +5,19 @@ import com.perso.bdd.entity.parametrage.FleursEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.List;
 
+@Repository
 public class FleursDaoImpl extends HibernateDao implements ParamFleursDao {
 
     final static Logger LOGGER = Logger.getLogger(FleursDaoImpl.class);
 
     @Override
+    @Transactional
     public List<FleursEntity> getAllFleurs() {
         Query requete = getCurrentSession().createQuery("from FleursEntity");
 
@@ -30,6 +33,7 @@ public class FleursDaoImpl extends HibernateDao implements ParamFleursDao {
     }
 
     @Override
+    @Transactional
     public FleursEntity findByName(String nom) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from FleursEntity where nom=:nom");
         requete.setParameter("nom", nom);

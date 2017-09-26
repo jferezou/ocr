@@ -5,15 +5,18 @@ import com.perso.bdd.entity.parametrage.MatriceEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 
+@Repository
 public class MatriceDaoImpl extends HibernateDao implements ParamMatriceDao {
 
     final static Logger LOGGER = Logger.getLogger(MatriceDaoImpl.class);
 
     @Override
+    @Transactional
     public MatriceEntity findByIdentifiant(String identifiant) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from MatriceEntity where identifiant=:identifiant");
         requete.setParameter("identifiant", identifiant);

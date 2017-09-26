@@ -10,7 +10,7 @@ import java.io.Serializable;
 @ToString
 @Entity
 @Table(schema = "public", name = "param_molecules_gms", uniqueConstraints = {@UniqueConstraint(columnNames={"nom"})})
-public class MoleculesGmsEntity implements Serializable {
+public class MoleculesGmsEntity  extends MoleculeEntity implements Serializable {
     /**
      * serialVersionUID
      */
@@ -27,9 +27,9 @@ public class MoleculesGmsEntity implements Serializable {
 
 
     @Column(name = "nom", nullable = false)
-    private String nom;
+    protected String nom;
 
     @Column(name = "valeurTrace", nullable = false)
-    private Double valeurTrace;
+    protected Double valeurTrace;
 
 }

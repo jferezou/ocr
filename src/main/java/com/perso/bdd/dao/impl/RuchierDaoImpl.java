@@ -5,15 +5,18 @@ import com.perso.bdd.entity.parametrage.RuchierEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 
+@Repository
 public class RuchierDaoImpl extends HibernateDao implements ParamRuchierDao {
 
     final static Logger LOGGER = Logger.getLogger(RuchierDaoImpl.class);
 
     @Override
+    @Transactional
     public RuchierEntity findByCorrespondance(int idCorrespondance) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from RuchierEntity where correspondance=:idCorrespondance");
         requete.setParameter("idCorrespondance", idCorrespondance);

@@ -9,6 +9,9 @@ import com.itextpdf.kernel.pdf.canvas.parser.filter.TextRegionEventFilter;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.FilteredTextEventListener;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy;
+import com.perso.bdd.dao.ParamMoleculesGmsDao;
+import com.perso.bdd.dao.ParamMoleculesLmsDao;
+import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import com.perso.pojo.ocr.Point;
 import com.perso.pojo.ocr.Zone;
 import com.perso.pojo.residus.*;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -35,15 +39,24 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResidusExtractorServiceImpl.class);
     private final int taillePage = 840;
-    private MoleculesGmsList gmsList = new MoleculesGmsList();
-    private MoleculesLmsList lmsList = new MoleculesLmsList();
+    private List<MoleculeEntity> gmsList;
+    private  List<MoleculeEntity> lmsList;
+
+
+    @Resource
+    private ParamMoleculesGmsDao paramMoleculesGmsDao;
+
+    @Resource
+    private ParamMoleculesLmsDao paramMoleculesLmsDao;
 
     @Override
     public ResidusDocument extraire(Path path) {
+        this.gmsList = this.paramMoleculesGmsDao.getAllMoleculesGms();
+        this.lmsList = this.paramMoleculesLmsDao.getAllMoleculesLms();
         LOGGER.debug("Début traitement fichier : {}", path);
         ResidusDocument residusDocument = new ResidusDocument();
-        residusDocument.setGmsDataList(new MoleculesGmsList().toList());
-        residusDocument.setLmsDataList(new MoleculesLmsList().toList());
+        residusDocument.setGmsDataList(this.gmsList);
+        residusDocument.setLmsDataList(this.lmsList);
         residusDocument.setPdfFilePath(path.toString());
 
         residusDocument.setPdfName(path.getFileName().toString());
@@ -225,7 +238,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         }
 
         // enfin on verifie que l'élément existe bien dans nos listes, sinon on le mets enb erreur :
-        if (!gmsList.getValues().containsKey(traitementObj.getValue()) && !lmsList.getValues().containsKey(traitementObj.getValue())) {
+        if ((this.containsValue(this.gmsList, traitementObj.getValue()) == null) && (this.containsValue(this.lmsList, traitementObj.getValue()) == null)) {
             traitementObj.setErreur(true);
         }
 
@@ -233,14 +246,31 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         return traitementObj;
     }
 
-    private double getPourcentageFromElement(String value, MoleculesList moleculesList) {
+    private double getPourcentageFromElement(String value, List<MoleculeEntity> moleculesList) {
         double pourcentage = -1;
-        if (moleculesList.getValues().containsKey(value)) {
-            pourcentage = moleculesList.getValues().get(value);
+        MoleculeEntity matchMolecule = this.containsValue(moleculesList, value);
+        if (matchMolecule != null) {
+            pourcentage = matchMolecule.getValeurTrace();
         }
         return pourcentage;
     }
 
+    private MoleculeEntity containsValue(List<MoleculeEntity> liste, String value) {
+        MoleculeEntity result = null;
+        if(value != null) {
+            boolean trouve = false;
+            int index = 0;
+
+            while (!trouve && index < liste.size()) {
+                if (value.equals(liste.get(index).getNom())) {
+                    result = liste.get(index);
+                    trouve = true;
+                }
+                index++;
+            }
+        }
+        return result;
+    }
 
     private String extractValue(final PdfPage pdfPage, final Zone zoneReference) {
         Rectangle rect = new Rectangle(zoneReference.getDebut().getX(), zoneReference.getDebut().getY(), zoneReference.getWidth(), zoneReference.getHeigth());
