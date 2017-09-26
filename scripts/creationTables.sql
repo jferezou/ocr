@@ -1,3 +1,6 @@
+-- #######################################################################################################
+-- CREATION TABLE : param_matrice
+-- #######################################################################################################
 
 CREATE SEQUENCE seq_param_matrice_id;
 GRANT usage on SEQUENCE seq_param_matrice_id to usrocr;
@@ -22,6 +25,9 @@ COMMENT ON COLUMN param_matrice.identifiant IS 'Identifiant du nom';
 
 
 
+-- #######################################################################################################
+-- CREATION TABLE : param_ruchier
+-- #######################################################################################################
 
 CREATE SEQUENCE seq_param_ruchier_id;
 GRANT usage on SEQUENCE seq_param_ruchier_id to usrocr;
@@ -45,6 +51,11 @@ COMMENT ON TABLE param_ruchier IS 'Cette table le paramétrage pour les ruchiers
 
 
 
+
+-- #######################################################################################################
+-- CREATION TABLE : param_molecules_gms
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_param_molecules_gms_id;
 GRANT usage on SEQUENCE seq_param_molecules_gms_id to usrocr;
 CREATE TABLE param_molecules_gms
@@ -61,6 +72,12 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_gms TO usrocr;
 COMMENT ON TABLE param_molecules_gms IS 'Cette table le paramétrage pour les molécules GMS.';
 
 
+
+
+-- #######################################################################################################
+-- CREATION TABLE : param_molecules_lms
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_param_molecules_lms_id;
 GRANT usage on SEQUENCE seq_param_molecules_lms_id to usrocr;
 CREATE TABLE param_molecules_lms
@@ -76,6 +93,12 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_lms TO usrocr;
 
 COMMENT ON TABLE param_molecules_lms IS 'Cette table le paramétrage pour les molécules LMS.';
 
+
+
+
+-- #######################################################################################################
+-- CREATION TABLE : ruches
+-- #######################################################################################################
 
 CREATE SEQUENCE seq_ruches_id;
 GRANT usage on SEQUENCE seq_ruches_id to usrocr;
@@ -96,6 +119,11 @@ COMMENT ON TABLE ruches IS 'Liste des ruches.';
 
 
 
+
+-- #######################################################################################################
+-- CREATION TABLE : param_type
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_param_type_id;
 GRANT usage on SEQUENCE seq_param_type_id to usrocr;
 CREATE TABLE param_type
@@ -112,12 +140,17 @@ COMMENT ON TABLE param_type IS 'Parametrage type.';
 
 
 
+
+-- #######################################################################################################
+-- CREATION TABLE : palynologie
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_palynologie_id;
 GRANT usage on SEQUENCE seq_palynologie_id to usrocr;
 CREATE TABLE palynologie
 (
   id		            		INT8			  NOT NULL default nextval('seq_palynologie_id'),
-  valeur						  	float8	  NOT NULL,
+  poucentage						float8	  NOT NULL,
   id_fleur  						INT8			  NOT NULL,
   id_type               INT8       NOT NULL,
 
@@ -132,12 +165,17 @@ COMMENT ON TABLE palynologie IS 'Palynologie.';
 
 
 
+
+-- #######################################################################################################
+-- CREATION TABLE : residus_gms
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_residus_gms_id;
 GRANT usage on SEQUENCE seq_residus_gms_id to usrocr;
 CREATE TABLE residus_gms
 (
   id		            		INT8			  NOT NULL default nextval('seq_residus_gms_id'),
-  valeur						  	float8	  NOT NULL,
+  taux						  	float8	  NULL,
   id_molecule_gms  						INT8			  NOT NULL,
 
   CONSTRAINT pk_residus_gms PRIMARY KEY (id),
@@ -150,12 +188,17 @@ COMMENT ON TABLE residus_gms IS 'Residus GMS.';
 
 
 
+
+-- #######################################################################################################
+-- CREATION TABLE : residus_lms
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_residus_lms_id;
 GRANT usage on SEQUENCE seq_residus_lms_id to usrocr;
 CREATE TABLE residus_lms
 (
   id		            		INT8			  NOT NULL default nextval('seq_residus_lms_id'),
-  valeur						  	float8	  NOT NULL,
+  taux						  	float8	  NULL,
   id_molecule_lms  						INT8			  NOT NULL,
 
   CONSTRAINT pk_residus_lms PRIMARY KEY (id),
@@ -166,6 +209,12 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE residus_lms TO usrocr;
 
 COMMENT ON TABLE residus_lms IS 'Residus LMS.';
 
+
+
+
+-- #######################################################################################################
+-- CREATION TABLE : param_famille
+-- #######################################################################################################
 
 CREATE SEQUENCE seq_param_famille_id;
 GRANT usage on SEQUENCE seq_param_famille_id to usrocr;
@@ -181,6 +230,12 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_famille TO usrocr;
 
 COMMENT ON TABLE param_famille IS 'Paramétrage famille fleurs.';
 
+
+
+
+-- #######################################################################################################
+-- CREATION TABLE : param_espece
+-- #######################################################################################################
 
 CREATE SEQUENCE seq_param_espece_id;
 GRANT usage on SEQUENCE seq_param_espece_id to usrocr;
@@ -201,6 +256,10 @@ COMMENT ON TABLE param_espece IS 'Paramétrage especes fleurs.';
 
 
 
+-- #######################################################################################################
+-- CREATION TABLE : param_fleurs
+-- #######################################################################################################
+
 CREATE SEQUENCE seq_param_fleurs_id;
 GRANT usage on SEQUENCE seq_param_fleurs_id to usrocr;
 CREATE TABLE param_fleurs
@@ -217,3 +276,5 @@ CREATE TABLE param_fleurs
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_fleurs TO usrocr;
 
 COMMENT ON TABLE param_fleurs IS 'Cette table le paramétrage pour les fleurs.';
+
+--  constraint fk_ptf_signalement_id foreign key () references table () ON DELETE CASCADE ON UPDATE RESTRICT

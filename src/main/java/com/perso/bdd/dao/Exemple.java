@@ -1,6 +1,6 @@
-package com.perso.bdd.entity;
+package com.perso.bdd.dao;
 
-import com.perso.bdd.dao.HibernateDao;
+import com.perso.bdd.entity.AnomalieEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;

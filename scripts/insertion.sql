@@ -1,6 +1,16 @@
+-- #######################################################################################################
+-- INSERTION TABLE : param_matrice
+-- #######################################################################################################
+
 INSERT INTO param_matrice (nom, identifiant) VALUES('Pollen', 'P');
 INSERT INTO param_matrice (nom, identifiant) VALUES('Miel', 'M');
 
+
+
+
+-- #######################################################################################################
+-- INSERTION TABLE : param_ruchier
+-- #######################################################################################################
 
 INSERT INTO param_ruchier (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Julien','Delaunay','St-aubin-la-plaine',85,'Vendée','',0);
 INSERT INTO param_ruchier (nom, prenom, site, departement, region, telephone, correspondance) VALUES('David','Sowtys','Tavers',45,'Loiret','',1);
@@ -8,6 +18,14 @@ INSERT INTO param_ruchier (nom, prenom, site, departement, region, telephone, co
 INSERT INTO param_ruchier (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Pascal','Turani','Bourideys',33,'Gironde','',3);
 INSERT INTO param_ruchier (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Florent','Vacher','Tavers',45,'Loiret','',4);
 INSERT INTO param_ruchier (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Jean-François','Maréchal','Tilloy-Bellay',51,'Marne','',5);
+
+
+
+
+
+-- #######################################################################################################
+-- INSERTION TABLE : param_molecules_gms
+-- #######################################################################################################
 
 INSERT INTO param_molecules_gms (nom, valeurTrace) VALUES ('1,4-dimethylnaphthalene',0.01);
 INSERT INTO param_molecules_gms (nom, valeurTrace) VALUES ('2-phenylphenol (ortho-) (A)',0.05);
@@ -219,6 +237,11 @@ INSERT INTO param_molecules_gms (nom, valeurTrace) VALUES ('vinclozolin (A)',0.0
 INSERT INTO param_molecules_gms (nom, valeurTrace) VALUES ('vinclozolin - TOTAL (A)',0.01);
 
 
+
+
+-- #######################################################################################################
+-- INSERTION TABLE : param_molecules_lms
+-- #######################################################################################################
 
 INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('2-(1-naphtyl)acetamide (A)',0.01);
 INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('6-benzyladenine (A)',0.01);
@@ -551,6 +574,12 @@ INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('vamidothion (A)',0.0
 INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('zoxamide (A)',0.01);
 
 
+
+
+-- #######################################################################################################
+-- INSERTION TABLE : param_type
+-- #######################################################################################################
+
 INSERT INTO param_type (valeur) VALUES ('DOMINANT');
 INSERT INTO param_type (valeur) VALUES ('ACCOMPAGNEMENT');
 INSERT INTO param_type (valeur) VALUES ('ISOLE');
@@ -558,7 +587,9 @@ INSERT INTO param_type (valeur) VALUES ('ISOLE');
 
 
 
-
+-- #######################################################################################################
+-- INSERTION TABLE : param_famille
+-- #######################################################################################################
 
 INSERT INTO param_famille(nom) VALUES ('Amaranthaceae');
 INSERT INTO param_famille(nom) VALUES ('Anacardiaceae');
@@ -608,6 +639,12 @@ INSERT INTO param_famille(nom) VALUES ('Sapindaceae');
 INSERT INTO param_famille(nom) VALUES ('Solenaceae');
 INSERT INTO param_famille(nom) VALUES ('Vitaceae');
 
+
+
+
+-- #######################################################################################################
+-- INSERTION TABLE : param_espece
+-- #######################################################################################################
 
 INSERT INTO param_espece(famille_id,nom) VALUES (3,' ');
 INSERT INTO param_espece(famille_id,nom) VALUES (45,'Acer');
@@ -680,6 +717,12 @@ INSERT INTO param_espece(famille_id,nom) VALUES (22,'Vicia');
 INSERT INTO param_espece(famille_id,nom) VALUES (47,'Vitis');
 INSERT INTO param_espece(famille_id,nom) VALUES (37,'Zea');
 
+
+
+
+-- #######################################################################################################
+-- INSERTION TABLE : param_fleurs
+-- #######################################################################################################
 
 INSERT INTO param_fleurs(espece_id,nom1, nom2) VALUES (16,'Chénopode','Chénopode');
 INSERT INTO param_fleurs(espece_id,nom1, nom2) VALUES (49,'Terebinthus','Terebinthus');
