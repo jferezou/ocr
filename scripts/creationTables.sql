@@ -90,3 +90,93 @@ CREATE TABLE param_molecules_lms
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_lms TO usrocr;
 
 COMMENT ON TABLE param_molecules_lms IS 'Cette table le paramétrage pour les molécules LMS.';
+
+
+CREATE SEQUENCE seq_ruches_id;
+GRANT usage on SEQUENCE seq_ruches_id to usrocr;
+CREATE TABLE ruches
+(
+  id		            		INT8			  NOT NULL default nextval('seq_ruches_id'),
+  nom						  		  VARCHAR(10)	NOT NULL,
+  id_ruchier						INT8			  NOT NULL,
+
+  CONSTRAINT pk_ruches PRIMARY KEY (id),
+  CONSTRAINT uk_ruches_nom UNIQUE (nom),
+  CONSTRAINT fk_ruchier foreign key (id_ruchier) REFERENCES param_ruchier(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruches TO usrocr;
+
+COMMENT ON TABLE ruches IS 'Liste des ruches.';
+
+
+
+CREATE SEQUENCE seq_param_type_id;
+GRANT usage on SEQUENCE seq_param_type_id to usrocr;
+CREATE TABLE param_type
+(
+  id		            		INT8			  NOT NULL default nextval('seq_param_type_id'),
+  valeur						  	VARCHAR(200)	  NOT NULL,
+
+  CONSTRAINT pk_param_type PRIMARY KEY (id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_type TO usrocr;
+
+COMMENT ON TABLE param_type IS 'Parametrage type.';
+
+
+
+CREATE SEQUENCE seq_palynologie_id;
+GRANT usage on SEQUENCE seq_palynologie_id to usrocr;
+CREATE TABLE palynologie
+(
+  id		            		INT8			  NOT NULL default nextval('seq_palynologie_id'),
+  valeur						  	float8	  NOT NULL,
+  id_fleur  						INT8			  NOT NULL,
+  id_type               INT8       NOT NULL,
+
+  CONSTRAINT pk_palynologie PRIMARY KEY (id),
+  CONSTRAINT fk_fleur foreign key (id_fleur) REFERENCES param_fleurs(id),
+  CONSTRAINT fk_type foreign key (id_type) REFERENCES param_type(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE palynologie TO usrocr;
+
+COMMENT ON TABLE palynologie IS 'Palynologie.';
+
+
+
+CREATE SEQUENCE seq_residus_gms_id;
+GRANT usage on SEQUENCE seq_residus_gms_id to usrocr;
+CREATE TABLE residus_gms
+(
+  id		            		INT8			  NOT NULL default nextval('seq_residus_gms_id'),
+  valeur						  	float8	  NOT NULL,
+  id_molecule_gms  						INT8			  NOT NULL,
+
+  CONSTRAINT pk_residus_gms PRIMARY KEY (id),
+  CONSTRAINT fk_residus_gms foreign key (id_molecule_gms) REFERENCES param_molecules_gms(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE residus_gms TO usrocr;
+
+COMMENT ON TABLE residus_gms IS 'Residus GMS.';
+
+
+
+CREATE SEQUENCE seq_residus_lms_id;
+GRANT usage on SEQUENCE seq_residus_lms_id to usrocr;
+CREATE TABLE residus_lms
+(
+  id		            		INT8			  NOT NULL default nextval('seq_residus_lms_id'),
+  valeur						  	float8	  NOT NULL,
+  id_molecule_lms  						INT8			  NOT NULL,
+
+  CONSTRAINT pk_residus_lms PRIMARY KEY (id),
+  CONSTRAINT fk_residus_lms foreign key (id_molecule_lms) REFERENCES param_molecules_lms(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE residus_lms TO usrocr;
+
+COMMENT ON TABLE residus_lms IS 'Residus LMS.';

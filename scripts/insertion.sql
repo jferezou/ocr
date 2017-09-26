@@ -550,3 +550,7 @@ INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('valifenalate (A)',0.
 INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('vamidothion (A)',0.01);
 INSERT INTO param_molecules_lms (nom, valeurTrace) VALUES ('zoxamide (A)',0.01);
 
+
+INSERT INTO param_type (valeur) VALUES ('DOMINANT');
+INSERT INTO param_type (valeur) VALUES ('ACCOMPAGNEMENT');
+INSERT INTO param_type (valeur) VALUES ('ISOLE');
