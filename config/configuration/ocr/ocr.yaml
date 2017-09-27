@@ -1,70 +1,7 @@
 dossier:
-  parent: D:\\dev
+  parent: D:\\developpement
   entrant: ${dossier.parent}\\ocr\\input\\
   temporaire: ${dossier.parent}\\temp
   tesseract: ${dossier.parent}\\ocr\\config\\tessdata
   palynologie: palynologie
   residus: residus
-liste:
-  fleurs:
-    - Phacélie
-    - Aigremoine eupatoire
-    - Germandrée
-    - Tamaris
-    - Seringat
-    - Tilleul
-    - Nerprun
-    - Sedum
-    - Sumac
-    - Phaoélie
-    - Erable
-    - Noyer
-    - Colza
-    - Marronnier
-    - Ronce
-    - Luzerne
-    - Mélilot
-    - Pin
-    - Colz
-    - Myosotis
-    - Sainfoin
-    - Lotier
-    - Saule
-    - Graminé
-    - Graminées
-    - Fruitiers
-    - Trèfle blanc
-    - Erable
-    - Papaver
-    - Noyer
-    - Réséda
-    - Cornouiller sanguin
-    - Pyracanthe
-    - Cercis
-    - Thym
-    - Géraniées
-    - Clématite
-    - Bourrache
-    - Laurier
-    - Chêne
-    - Erable
-    - Pissenlit
-    - Liliacées
-    - Pyracantha
-    - Sureau
-    - Pyracantha
-    - Chardon
-    - Cistes
-    - Vigne
-    - Cotoneaster
-    - Caryophyllacées
-    - Fève
-    - Ilex
-    - Sorbier
-    - Caprifoliacées
-    - Salsifis des prés
-    - Oléinées
-    - Crucifères
-    - Rumex
-    - Liriodendron
-    - Plantain

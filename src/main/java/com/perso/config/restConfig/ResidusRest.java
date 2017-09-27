@@ -87,7 +87,7 @@ public class ResidusRest implements ApiExposeRest {
     @ApiResponses({@ApiResponse(code = 200, message = "", response = File.class)})
     @ServiceMethod
     @Path("/pdf/aggregate")
-    @Produces("application/pdf")
+    @Produces("application/zip")
     public Response aggregatePdf() {
         File file = null;
         try {
@@ -96,7 +96,7 @@ public class ResidusRest implements ApiExposeRest {
             LOGGER.error("erreur" ,e);
         }
 
-        String disposition = "attachment; fileName=resultatPdf.pdf";
+        String disposition = "attachment; fileName=^resultats.zip";
         Response response = Response.ok(file).build();
         response.getHeaders().add("Content-Disposition", disposition);
 
