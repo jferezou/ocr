@@ -8,5 +8,5 @@ public interface RucheDao {
     void deleteRuche(final String rucheName);
     void updateRuche(final RuchesEntity ruchesentity);
     void createRuche(final RuchesEntity ruchesentity);
-    RuchesEntity getRuchesByName(final String rucheName) throws NoResultException;
+    RuchesEntity findRucheByName(final String rucheName) throws NoResultException;
 }

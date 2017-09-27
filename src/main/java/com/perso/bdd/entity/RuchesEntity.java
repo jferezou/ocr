@@ -30,9 +30,4 @@ public class RuchesEntity implements Serializable {
     @Column(name = "nom", nullable = false)
     private String nom;
 
-
-    @ManyToOne
-    @JoinColumn(name = "id_ruchier", referencedColumnName = "id", nullable = false)
-    private RuchierEntity ruchier;
-
 }

@@ -1,11 +1,13 @@
 package com.perso.service.impl;
 
-import com.perso.bdd.dao.ParamFleursDao;
-import com.perso.bdd.dao.ParamMoleculesGmsDao;
-import com.perso.bdd.dao.ParamMoleculesLmsDao;
+import com.perso.bdd.dao.*;
 import com.perso.bdd.entity.PalynologieDocumentEntity;
-import com.perso.bdd.entity.ResidusDocumentEntity;
+import com.perso.bdd.entity.PalynologieEntity;
+import com.perso.bdd.entity.RuchesEntity;
 import com.perso.bdd.entity.parametrage.FleursEntity;
+import com.perso.bdd.entity.parametrage.MatriceEntity;
+import com.perso.bdd.entity.parametrage.RuchierEntity;
+import com.perso.bdd.entity.parametrage.TypeEntity;
 import com.perso.exception.ParsingException;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,13 +37,23 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     private Map<Integer, ResidusDocument> valeursResidus = new HashMap<>();
 
     @Resource
-    private ParamFleursDao paramFleursDao;
-
-    @Resource
     private ParamMoleculesGmsDao paramMoleculesGmsDao;
 
     @Resource
     private ParamMoleculesLmsDao paramMoleculesLmsDao;
+
+    @Resource
+    private ParamMatriceDao paramMatriceDao;
+    @Resource
+    private ParamRuchierDao paramRuchierDao;
+    @Resource
+    private ParamTypeDao paramTypeDao;
+    @Resource
+    private RucheDao rucheDao;
+    @Resource
+    private ParamFleursDao paramFleursDao;
+    @Resource
+    private PalynologieDocumentDao palynologieDocumentDao;
 
     @Override
     public void parseAndSavePalynologie(final String value) throws ParsingException {
@@ -80,13 +93,22 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setCompositions(compoList);
 
         this.valeursPalynologie.put(id,result);
+        insertNewPalynologie(result);
 
+
+    }
+
+    private void insertNewPalynologie(PalynologieDocument result) {
         // enregistrer BDD
-        String[] splitAppelationDemandeur = appelationDemandeur.split(" ");
+        String[] splitAppelationDemandeur = result.getAppelationDemandeur().split(" ");
         if(splitAppelationDemandeur.length == 2) {
             try {
                 String ident = splitAppelationDemandeur[0];
 
+                PalynologieDocumentEntity palynodoc = this.palynologieDocumentDao.findByEchantillonId(ident);
+                if(palynodoc != null) {
+                    this.palynologieDocumentDao.deletePalynologieDocument(palynodoc);
+                }
 
                 String dateS = splitAppelationDemandeur[1];
                 SimpleDateFormat spd = new SimpleDateFormat("dd/MM/yy");
@@ -97,22 +119,53 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
                 Date date = spd.parse(dateS);
 
-                PalynologieDocumentEntity palynodoc = new PalynologieDocumentEntity();
+                palynodoc = new PalynologieDocumentEntity();
                 palynodoc.setDate(date);
-                palynodoc.setIdentifiant(ident);
-                palynodoc.setIdentifiantEchantillon(matrice+ruchier+ruche);
-                palynodoc.setNumeroEchantillon(Long.parseLong(echantillon));
+                palynodoc.setIdentifiant(matrice+ruchier);
+                palynodoc.setIdentifiantEchantillon(ident);
+                String echantillongString = result.getEchantillon().replace("\\n", "").replace(" ", "");
+                palynodoc.setNumeroEchantillon(Long.parseLong(echantillongString));
                 palynodoc.setPdfName(result.getPdfFileName());
-//                palynodoc.setMatrice();
-//                palynodoc.setRuche();
-//                palynodoc.setRuchier();
+
+                MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
+                palynodoc.setMatrice(matriceEntity);
+                RuchierEntity ruchierEntity = this.paramRuchierDao.findByCorrespondance(Integer.parseInt(ruchier));
+                palynodoc.setRuchier(ruchierEntity);
+                RuchesEntity ruchesEntity = this.rucheDao.findRucheByName(ruche);
+                if(ruchesEntity == null) {
+                    LOGGER.warn("La ruche n'existe pas, on la créé");
+                    ruchesEntity = new RuchesEntity();
+                    ruchesEntity.setNom(ruche);
+                    this.rucheDao.createRuche(ruchesEntity);
+                }
+                palynodoc.setRuche(ruchesEntity);
+                palynodoc.setPalynologieList(new ArrayList<>());
+
+                for(Palynologie palyno : result.getCompositions()) {
+                    FleursEntity fleursEntity = this.paramFleursDao.findByName(palyno.getValue());
+                    if(fleursEntity == null) {
+                        LOGGER.warn("La fleurs n'existe pas, on la créé");
+                        fleursEntity = new FleursEntity();
+                        fleursEntity.setNom(palyno.getValue());
+                        this.paramFleursDao.createFleur(fleursEntity);
+                    }
+
+                    TypeEntity type = this.paramTypeDao.findByName(palyno.getType().toUpperCase());
+
+                    PalynologieEntity palynologieEntity = new PalynologieEntity();
+                    palynologieEntity.setFleur(fleursEntity);
+                    palynologieEntity.setPalynologieDocument(palynodoc);
+                    palynologieEntity.setPourcentage(palyno.getPercentage());
+                    palynologieEntity.setType(type);
+                    palynodoc.getPalynologieList().add(palynologieEntity);
+                }
+                this.palynologieDocumentDao.createPalynologieDocument(palynodoc);
             } catch (ParseException e) {
                 LOGGER.error("Erreur de parsin de date",e);
             }
         }
-
     }
-    
+
     @Override
     public void parseAndSaveResidus(final String value)  throws ParsingException {
 

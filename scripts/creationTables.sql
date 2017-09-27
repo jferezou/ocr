@@ -110,11 +110,9 @@ CREATE TABLE ruches
 (
   id		            		INT8			  NOT NULL default nextval('seq_ruches_id'),
   nom						  		  VARCHAR(10)	NOT NULL,
-  id_ruchier						INT8			  NOT NULL,
 
   CONSTRAINT pk_ruches PRIMARY KEY (id),
-  CONSTRAINT uk_ruches_nom UNIQUE (nom),
-  CONSTRAINT fk_ruchier foreign key (id_ruchier) REFERENCES param_ruchier(id)
+  CONSTRAINT uk_ruches_nom UNIQUE (nom)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ruches TO usrocr;
@@ -226,7 +224,7 @@ GRANT usage on SEQUENCE seq_residus_document_id to usrocr;
 CREATE TABLE residus_document
 (
   id		            			INT8			NOT NULL default nextval('seq_residus_document_id'),
-  date						  		DATE 	NOT NULL,
+  date						  		TIMESTAMP 	NOT NULL,
   identifiant						  		VARCHAR(200)	NOT NULL,
   certificat_analyse						  		VARCHAR(200)	NOT NULL,
   poids						  	INT4	  NOT NULL,
@@ -258,7 +256,7 @@ GRANT usage on SEQUENCE seq_palynologie_document_id to usrocr;
 CREATE TABLE palynologie_document
 (
   id		            			  INT8			NOT NULL default nextval('seq_palynologie_document_id'),
-  date						  		    DATE 	NOT NULL,
+  date						  		    TIMESTAMP 	NOT NULL,
   identifiant						  	VARCHAR(200)	NOT NULL,
   identifiant_echantillon  	VARCHAR(50)	NOT NULL,
   numero_echantillon        INT8	  NOT NULL,

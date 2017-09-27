@@ -22,7 +22,7 @@ public class RucheDaoImpl extends HibernateDao implements RucheDao {
     @Override
     @Transactional
     public void deleteRuche(final String rucheName) {
-        RuchesEntity ruchesentity = this.getRuchesByName(rucheName);
+        RuchesEntity ruchesentity = this.findRucheByName(rucheName);
         this.getCurrentSession().delete(ruchesentity);
     }
 
@@ -53,7 +53,7 @@ public class RucheDaoImpl extends HibernateDao implements RucheDao {
      */
     @Override
     @Transactional
-    public RuchesEntity getRuchesByName(final String rucheName) throws NoResultException {
+    public RuchesEntity findRucheByName(final String rucheName) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from RuchesEntity where nom=:rucheName");
         requete.setParameter("rucheName", rucheName);
 

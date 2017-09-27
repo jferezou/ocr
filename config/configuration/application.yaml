@@ -44,7 +44,7 @@ datasource:
     jdbcDialect: org.hibernate.dialect.PostgreSQLDialect
 hibernate:
   configuration:
-    defaultSchema: ocr_default
+    defaultSchema: public
     jdbcDialect: org.hibernate.dialect.PostgreSQLDialect
     schemas:
-      schema_name_ssi: ocr_default
+      schema_name_ssi: public

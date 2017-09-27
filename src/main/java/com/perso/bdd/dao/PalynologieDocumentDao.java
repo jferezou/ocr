@@ -6,4 +6,5 @@ public interface PalynologieDocumentDao {
     void deletePalynologieDocument(final PalynologieDocumentEntity palynologieDocumentEntity);
     void updatePalynologieDocument(final PalynologieDocumentEntity palynologieDocumentEntity);
     void createPalynologieDocument(final PalynologieDocumentEntity palynologieDocumentEntity);
+    PalynologieDocumentEntity findByEchantillonId(final String idEchantillon);
 }
