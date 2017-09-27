@@ -12,6 +12,7 @@ public class AggregatePdf implements Comparable<AggregatePdf> {
 
     private Date date;
     private Path path;
+    private String ruche;
 
     @Override
     public int compareTo(AggregatePdf o) {

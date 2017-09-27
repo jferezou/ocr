@@ -169,6 +169,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         Date debut = null;
         PdfDocument pdfDoc = null;
         PdfReader reader = null;
+        String ruche = null;
         try {
             reader = new PdfReader(path.toString());
             pdfDoc = new PdfDocument(reader);
@@ -178,6 +179,8 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             String periodeDebut = dateList[3];
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             debut = sdf.parse(periodeDebut);
+
+            ruche = dateList[2];
             LOGGER.debug("debut : {}", debut);
         }
         catch (IOException | ParseException e) {
@@ -198,6 +201,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         AggregatePdf aggregatePdf = new AggregatePdf();
         aggregatePdf.setDate(debut);
         aggregatePdf.setPath(path);
+        aggregatePdf.setRuche(ruche);
         return aggregatePdf;
     }
 

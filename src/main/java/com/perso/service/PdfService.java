@@ -11,5 +11,5 @@ public interface PdfService {
     void splitPdf(final Path path);
     boolean checkIfPdf(final File file);
     void deletePages(final Path path);
-    File createPdf(final List<AggregatePdf> aggregatePdfs);
+    File createPdf(final List<AggregatePdf> aggregatePdfs, String ruche);
 }
