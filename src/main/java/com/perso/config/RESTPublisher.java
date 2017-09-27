@@ -72,7 +72,7 @@ public class RESTPublisher {
             serverFactory.setServiceBeans(beans);
             serverFactory.setStart(true);
             serverFactory.getInInterceptors().add(new LoggingInInterceptor());
-            serverFactory.getOutInterceptors().add(new LoggingOutInterceptor());
+            serverFactory.getOutInterceptors().add(new LoggingOutInterceptor(2 * 1024));
             // configuration du provider Json
             JacksonJsonProvider provider = new JacksonJsonProvider();
             serverFactory.setProvider(provider);
