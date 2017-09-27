@@ -319,6 +319,7 @@ CREATE TABLE residus_gms
   id		            		INT8			  NOT NULL default nextval('seq_residus_gms_id'),
   taux						  	float8	  NULL,
   id_molecule_gms  						INT8			  NOT NULL,
+  trace  						BOOLEAN			  NOT NULL,
   residus_document_id INT8			  NOT NULL,
 
   CONSTRAINT pk_residus_gms PRIMARY KEY (id),
@@ -344,6 +345,7 @@ CREATE TABLE residus_lms
   id		            		INT8			  NOT NULL default nextval('seq_residus_lms_id'),
   taux						  	float8	  NULL,
   id_molecule_lms  						INT8			  NOT NULL,
+  trace  						BOOLEAN			  NOT NULL,
   residus_document_id INT8			  NOT NULL,
 
   CONSTRAINT pk_residus_lms PRIMARY KEY (id),

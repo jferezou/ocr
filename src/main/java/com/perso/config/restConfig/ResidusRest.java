@@ -2,6 +2,7 @@ package com.perso.config.restConfig;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.perso.annotation.ServiceMethod;
+import com.perso.exception.BddException;
 import com.perso.exception.FichierInvalideException;
 import com.perso.exception.ParsingException;
 import com.perso.service.ReaderFileService;
@@ -60,7 +61,7 @@ public class ResidusRest implements ApiExposeRest {
     @Override
     @ApiResponses({@ApiResponse(code = 200, message = "", response = String.class)})
     @ServiceMethod
-    public Response sauvegarder(final String data)  throws InvalidFormatException, ParsingException {
+    public Response sauvegarder(final String data) throws InvalidFormatException, ParsingException, BddException {
 
         this.updatedValuesService.parseAndSaveResidus(data);
         return Response.ok().build();

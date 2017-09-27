@@ -2,6 +2,7 @@ package com.perso.config.restConfig;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.perso.annotation.ServiceMethod;
+import com.perso.exception.BddException;
 import com.perso.exception.ParsingException;
 
 import javax.ws.rs.*;
@@ -20,7 +21,7 @@ public interface ApiExposeRest {
     @POST
     @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
-    Response sauvegarder(final String data)  throws InvalidFormatException, ParsingException;
+    Response sauvegarder(final String data)  throws InvalidFormatException, ParsingException, BddException;
 
 
 

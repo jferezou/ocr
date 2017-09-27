@@ -1,5 +1,6 @@
 package com.perso.service;
 
+import com.perso.exception.BddException;
 import com.perso.exception.ParsingException;
 import com.perso.pojo.residus.ResidusDocument;
 import com.perso.pojo.palynologie.PalynologieDocument;
@@ -9,8 +10,8 @@ import java.util.Map;
 
 public interface UpdatedValuesService {
 
-    void parseAndSavePalynologie(final String value) throws ParsingException;
-    void parseAndSaveResidus(final String value) throws ParsingException;
+    void parseAndSavePalynologie(final String value) throws ParsingException, BddException;
+    void parseAndSaveResidus(final String value) throws ParsingException, BddException;
     String getCsvPalynologie();
     String getCsvResidus();
     void cleanPalynologieMap();

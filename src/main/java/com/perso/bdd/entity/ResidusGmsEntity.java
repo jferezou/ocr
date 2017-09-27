@@ -30,6 +30,9 @@ public class ResidusGmsEntity implements Serializable {
     @Column(name = "taux")
     private Double taux;
 
+    @Column(name = "trace", nullable = false)
+    private Boolean trace;
+
     @ManyToOne
     @JoinColumn(name = "id_molecule_gms", referencedColumnName = "id", nullable = false)
     private MoleculesGmsEntity moleculeGms;

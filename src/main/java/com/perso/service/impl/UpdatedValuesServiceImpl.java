@@ -1,13 +1,9 @@
 package com.perso.service.impl;
 
 import com.perso.bdd.dao.*;
-import com.perso.bdd.entity.PalynologieDocumentEntity;
-import com.perso.bdd.entity.PalynologieEntity;
-import com.perso.bdd.entity.RuchesEntity;
-import com.perso.bdd.entity.parametrage.FleursEntity;
-import com.perso.bdd.entity.parametrage.MatriceEntity;
-import com.perso.bdd.entity.parametrage.RuchierEntity;
-import com.perso.bdd.entity.parametrage.TypeEntity;
+import com.perso.bdd.entity.*;
+import com.perso.bdd.entity.parametrage.*;
+import com.perso.exception.BddException;
 import com.perso.exception.ParsingException;
 import com.perso.service.UpdatedValuesService;
 import com.perso.utils.*;
@@ -54,9 +50,11 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     private ParamFleursDao paramFleursDao;
     @Resource
     private PalynologieDocumentDao palynologieDocumentDao;
+    @Resource
+    private ResidusDocumentDao residusDocumentDao;
 
     @Override
-    public void parseAndSavePalynologie(final String value) throws ParsingException {
+    public void parseAndSavePalynologie(final String value) throws ParsingException, BddException {
 
         Map<String, String> correspondance = this.parseStringToMap(value);
         List<FleursEntity> listeFleursEntity = this.paramFleursDao.getAllFleurs();
@@ -98,7 +96,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
     }
 
-    private void insertNewPalynologie(PalynologieDocument result) {
+    private void insertNewPalynologie(PalynologieDocument result) throws BddException {
         // enregistrer BDD
         String[] splitAppelationDemandeur = result.getAppelationDemandeur().split(" ");
         if(splitAppelationDemandeur.length == 2) {
@@ -131,13 +129,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
                 palynodoc.setMatrice(matriceEntity);
                 RuchierEntity ruchierEntity = this.paramRuchierDao.findByCorrespondance(Integer.parseInt(ruchier));
                 palynodoc.setRuchier(ruchierEntity);
-                RuchesEntity ruchesEntity = this.rucheDao.findRucheByName(ruche);
-                if(ruchesEntity == null) {
-                    LOGGER.warn("La ruche n'existe pas, on la créé");
-                    ruchesEntity = new RuchesEntity();
-                    ruchesEntity.setNom(ruche);
-                    this.rucheDao.createRuche(ruchesEntity);
-                }
+                RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 palynodoc.setRuche(ruchesEntity);
                 palynodoc.setPalynologieList(new ArrayList<>());
 
@@ -167,7 +159,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     }
 
     @Override
-    public void parseAndSaveResidus(final String value)  throws ParsingException {
+    public void parseAndSaveResidus(final String value)  throws ParsingException, BddException {
 
         Map<String, String> correspondance = this.parseStringToMap(value);
 
@@ -178,6 +170,10 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setId(id);
         String reference = correspondance.get("reference");
         result.setReference(reference);
+        String certificatAnalyses = correspondance.get("certificatAnalyses");
+        result.setCertificatAnalyses(certificatAnalyses);
+        String poids = correspondance.get("poids");
+        result.setPoids(Double.parseDouble(poids));
 
         List<Molecule> gmsList = new ArrayList<>();
         int index=0;
@@ -218,7 +214,91 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         this.valeursResidus.put(id,result);
 
         // on persiste en base
+        this.insertNewResidus(result);
+    }
 
+
+    private void insertNewResidus(ResidusDocument result) throws BddException{
+        // enregistrer BDD
+        String identifiant = result.getReference();
+        String[] splitreference = identifiant.split("-");
+        if(splitreference.length == 5) {
+            try {
+
+
+                String matrice = splitreference[0];
+                String ruchier = splitreference[1];
+                String ruche = splitreference[2];
+                String dateS = splitreference[3];
+                SimpleDateFormat spd = new SimpleDateFormat("dd/MM/yy");
+                Date date = spd.parse(dateS);
+
+                ResidusDocumentEntity residusDoc = this.residusDocumentDao.findByIdentifiant(identifiant);
+                if(residusDoc != null) {
+                    this.residusDocumentDao.deleteResidusDocument(residusDoc);
+                }
+
+
+                residusDoc = new ResidusDocumentEntity();
+                residusDoc.setDate(date);
+                residusDoc.setIdentifiant(identifiant);
+                residusDoc.setCertificatAnalyse(residusDoc.getCertificatAnalyse());
+                residusDoc.setPdfName(result.getPdfName());
+
+                MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
+                residusDoc.setMatrice(matriceEntity);
+                RuchierEntity ruchierEntity = this.paramRuchierDao.findByCorrespondance(Integer.parseInt(ruchier));
+                residusDoc.setRuchier(ruchierEntity);
+                RuchesEntity ruchesEntity = getRuchesEntity(ruche);
+                residusDoc.setRuche(ruchesEntity);
+                residusDoc.setResidusGmsList(new ArrayList<>());
+
+                for(Molecule molecule : result.getMoleculesGms()) {
+                    MoleculesGmsEntity moleculeEntity = this.paramMoleculesGmsDao.findByName(molecule.getValue());
+                    if(moleculeEntity == null) {
+                        LOGGER.warn("La molecule n'existe pas, on la créé");
+                        throw new BddException("La molécule GMS "+molecule.getValue()+" n'existe pas dans le référentiel");
+                    }
+
+
+                    ResidusGmsEntity residusGmsEntity = new ResidusGmsEntity();
+                    residusGmsEntity.setMoleculeGms(moleculeEntity);
+                    residusGmsEntity.setTaux(molecule.getPourcentage());
+                    residusGmsEntity.setTrace(molecule.isTrace());
+                    residusDoc.getResidusGmsList().add(residusGmsEntity);
+                }
+
+
+                for(Molecule molecule : result.getMoleculesGms()) {
+                    MoleculesLmsEntity moleculeEntity = this.paramMoleculesLmsDao.findByName(molecule.getValue());
+                    if(moleculeEntity == null) {
+                        LOGGER.warn("La molecule n'existe pas, on la créé");
+                        throw new BddException("La molécule LMS "+molecule.getValue()+" n'existe pas dans le référentiel");
+                    }
+
+
+                    ResidusLmsEntity residusLmsEntity = new ResidusLmsEntity();
+                    residusLmsEntity.setMoleculeLms(moleculeEntity);
+                    residusLmsEntity.setTaux(molecule.getPourcentage());
+                    residusLmsEntity.setTrace(molecule.isTrace());
+                    residusDoc.getResidusLmsList().add(residusLmsEntity);
+                }
+                this.residusDocumentDao.createResidusDocument(residusDoc);
+            } catch (ParseException e) {
+                LOGGER.error("Erreur de parsin de date",e);
+            }
+        }
+    }
+
+    private RuchesEntity getRuchesEntity(String ruche) {
+        RuchesEntity ruchesEntity = this.rucheDao.findRucheByName(ruche);
+        if(ruchesEntity == null) {
+            LOGGER.warn("La ruche n'existe pas, on la créé");
+            ruchesEntity = new RuchesEntity();
+            ruchesEntity.setNom(ruche);
+            this.rucheDao.createRuche(ruchesEntity);
+        }
+        return ruchesEntity;
     }
 
     private Map<String, String> parseStringToMap(String value) throws ParsingException {
