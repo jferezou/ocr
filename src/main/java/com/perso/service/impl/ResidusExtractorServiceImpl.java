@@ -90,11 +90,21 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             int totalPage = pdfDoc.getNumberOfPages();
             LOGGER.debug("totalPage : {}", totalPage);
 
+            Zone zoneResultatP1 = new Zone(new Point(0, this.taillePage - 567), new Point(301, this.taillePage - 454));
+            LOGGER.info("zoneResultat : {}", zoneResultatP1.toString());
+
             Zone zoneResultat = new Zone(new Point(0, this.taillePage - 742), new Point(301, this.taillePage - 103));
             LOGGER.info("zoneResultat : {}", zoneResultat.toString());
-            // on parcours de la page 2 à la page total - 5
-            for(int page = 2; page <= totalPage - 5 ; page ++) {
-                String resultat = this.extractValue(pdfDoc.getPage(page), zoneResultat);
+            // on parcours de la page 1 à la page total - 5
+            for(int page = 1; page <= totalPage - 5 ; page ++) {
+                String resultat = "";
+                // cas particulier de la page 1 :
+                if(page ==1) {
+                    resultat = this.extractValue(pdfDoc.getPage(page), zoneResultatP1);
+                }
+                else {
+                    resultat = this.extractValue(pdfDoc.getPage(page), zoneResultat);
+                }
                 LOGGER.debug("Resultat : {}", resultat);
                 resultat = resultat.replace("trace found", "");
                 resultat = resultat.replace("Autres non détectables (<LC)", "");

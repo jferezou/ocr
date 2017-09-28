@@ -164,7 +164,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         if(accoladeFermante != 1) {
             throw new ParsingException("Attention, } est un caractère interdit, enregistrement non pris en compte !");
         }
-        String[] splitValues = value.replace("{","").replace("}","").split(",");
+        String[] splitValues = value.replace("{","").replace("}","").split(",\"");
         Map<String,String> correspondance = new HashMap<>();
         for(int i =0; i< splitValues.length; i++) {
             String line = splitValues[i];
