@@ -1,6 +1,5 @@
 package com.perso.bdd.entity;
 
-import com.perso.bdd.entity.parametrage.RuchierEntity;
 import lombok.Data;
 import lombok.ToString;
 

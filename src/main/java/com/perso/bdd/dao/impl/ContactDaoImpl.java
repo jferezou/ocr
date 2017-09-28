@@ -1,7 +1,7 @@
 package com.perso.bdd.dao.impl;
 
-import com.perso.bdd.dao.ParamRuchierDao;
-import com.perso.bdd.entity.parametrage.RuchierEntity;
+import com.perso.bdd.dao.ParamContactDao;
+import com.perso.bdd.entity.parametrage.ContactEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
@@ -11,57 +11,57 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.NoResultException;
 
 @Repository
-public class RuchierDaoImpl extends HibernateDao implements ParamRuchierDao {
+public class ContactDaoImpl extends HibernateDao implements ParamContactDao {
 
-    final static Logger LOGGER = Logger.getLogger(RuchierDaoImpl.class);
+    final static Logger LOGGER = Logger.getLogger(ContactDaoImpl.class);
 
     @Override
     @Transactional
-    public RuchierEntity findByCorrespondance(int idCorrespondance) throws NoResultException {
+    public ContactEntity findByCorrespondance(int idCorrespondance) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from RuchierEntity where correspondance=:idCorrespondance");
         requete.setParameter("idCorrespondance", idCorrespondance);
 
-        RuchierEntity ruchierEntity = null;
+        ContactEntity contactEntity = null;
 
         try {
-            ruchierEntity = (RuchierEntity) requete.getSingleResult();
+            contactEntity = (ContactEntity) requete.getSingleResult();
         } catch (NonUniqueResultException nonUniqueException) {
             LOGGER.debug("Pas de ruchier trouvée avec l'identifiant : {}" + idCorrespondance);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
         }
 
-        return ruchierEntity;
+        return contactEntity;
     }
 
     /**
      * {@inheritDoc}
-     * @param ruchierEntity
+     * @param contactEntity
      */
     @Override
     @Transactional
-    public void deleteRuchier(final RuchierEntity ruchierEntity) {
-        this.getCurrentSession().delete(ruchierEntity);
+    public void deleteContact(final ContactEntity contactEntity) {
+        this.getCurrentSession().delete(contactEntity);
     }
 
     /**
      * {@inheritDoc}
-     * @param ruchierEntity
+     * @param contactEntity
      */
     @Override
     @Transactional
-    public void updateRuchier(final RuchierEntity ruchierEntity) {
-        this.getCurrentSession().merge(ruchierEntity);
+    public void updateContact(final ContactEntity contactEntity) {
+        this.getCurrentSession().merge(contactEntity);
     }
 
     /**
      * {@inheritDoc}
-     * @param ruchierEntity
+     * @param contactEntity
      */
     @Override
     @Transactional
-    public void createRuchier(final RuchierEntity ruchierEntity) {
-        this.getCurrentSession().save(ruchierEntity);
+    public void createContact(final ContactEntity contactEntity) {
+        this.getCurrentSession().save(contactEntity);
     }
 
 }

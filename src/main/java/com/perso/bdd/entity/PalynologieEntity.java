@@ -1,9 +1,7 @@
 package com.perso.bdd.entity;
 
 import com.perso.bdd.entity.parametrage.FleursEntity;
-import com.perso.bdd.entity.parametrage.RuchierEntity;
 import com.perso.bdd.entity.parametrage.TypeEntity;
-import com.perso.pojo.palynologie.PalynologieDocument;
 import lombok.Data;
 import lombok.ToString;
 

@@ -27,14 +27,14 @@ COMMENT ON COLUMN param_matrice.identifiant IS 'Identifiant du nom';
 
 
 -- #######################################################################################################
--- CREATION TABLE : param_ruchier
+-- CREATION TABLE : param_contact
 -- #######################################################################################################
 
-CREATE SEQUENCE seq_param_ruchier_id;
-GRANT usage on SEQUENCE seq_param_ruchier_id to usrocr;
-CREATE TABLE param_ruchier
+CREATE SEQUENCE seq_param_contact_id;
+GRANT usage on SEQUENCE seq_param_contact_id to usrocr;
+CREATE TABLE param_contact
 (
-  id		            			INT8			NOT NULL default nextval('seq_param_ruchier_id'),
+  id		            			INT8			NOT NULL default nextval('seq_param_contact_id'),
   nom						  		VARCHAR(200)	NOT NULL,
   prenom							VARCHAR(200)	NOT NULL,
   site								VARCHAR(200)	NULL,
@@ -43,13 +43,13 @@ CREATE TABLE param_ruchier
   telephone							VARCHAR(200)	NULL,
   correspondance       INT4 NOT NULL,
 
-  CONSTRAINT pk_param_ruchier PRIMARY KEY (id),
-  CONSTRAINT uk_param_ruchier_correspondancet UNIQUE (correspondance)
+  CONSTRAINT pk_param_contact PRIMARY KEY (id),
+  CONSTRAINT uk_param_contact_correspondancet UNIQUE (correspondance)
 );
 
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_ruchier TO usrocr;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_contact TO usrocr;
 
-COMMENT ON TABLE param_ruchier IS 'Cette table le paramétrage pour les ruchiers.';
+COMMENT ON TABLE param_contact IS 'Cette table le paramétrage pour les contacts.';
 
 
 
@@ -229,14 +229,14 @@ CREATE TABLE residus_document
   certificat_analyse						  		VARCHAR(200)	NOT NULL,
   poids						  	INT4	  NOT NULL,
   matrice_id						  	INT8	  NOT NULL,
-  ruchier_id						  	INT8	  NOT NULL,
+  contact_id						  	INT8	  NOT NULL,
   ruche_id						  	INT8	  NOT NULL,
   pdf_name						  	VARCHAR(200)	  NULL,
 
   CONSTRAINT pk_residus_document_id PRIMARY KEY (id),
   CONSTRAINT uk_residus_document_identifiant UNIQUE (identifiant),
   CONSTRAINT fk_residus_document_matrice foreign key (matrice_id) REFERENCES param_espece(id),
-  CONSTRAINT fk_residus_document_ruchier foreign key (ruchier_id) REFERENCES param_ruchier(id),
+  CONSTRAINT fk_residus_document_contact foreign key (contact_id) REFERENCES param_contact(id),
   CONSTRAINT fk_residus_document_ruche foreign key (ruche_id) REFERENCES ruches(id)
 );
 
@@ -261,14 +261,14 @@ CREATE TABLE palynologie_document
   identifiant_echantillon  	VARCHAR(50)	NOT NULL,
   numero_echantillon        INT8	  NOT NULL,
   matrice_id						  	INT8	  NOT NULL,
-  ruchier_id						  	INT8	  NOT NULL,
+  contact_id						  	INT8	  NOT NULL,
   ruche_id						  	  INT8	  NOT NULL,
   pdf_name						  	  VARCHAR(200)	  NULL,
 
   CONSTRAINT pk_palynologie_document_id PRIMARY KEY (id),
   CONSTRAINT uk_palynologie_document_identifiant UNIQUE (identifiant),
   CONSTRAINT fk_palynologie_document_matrice foreign key (matrice_id) REFERENCES param_espece(id),
-  CONSTRAINT fk_palynologie_document_ruchier foreign key (ruchier_id) REFERENCES param_ruchier(id),
+  CONSTRAINT fk_palynologie_document_contact foreign key (contact_id) REFERENCES param_contact(id),
   CONSTRAINT fk_palynologie_document_ruche foreign key (ruche_id) REFERENCES ruches(id)
 );
 

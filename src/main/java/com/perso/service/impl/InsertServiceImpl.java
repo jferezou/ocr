@@ -32,7 +32,7 @@ public class InsertServiceImpl implements InsertService {
     @Resource
     private ParamMatriceDao paramMatriceDao;
     @Resource
-    private ParamRuchierDao paramRuchierDao;
+    private ParamContactDao paramContactDao;
     @Resource
     private ParamTypeDao paramTypeDao;
     @Resource
@@ -76,8 +76,8 @@ public class InsertServiceImpl implements InsertService {
 
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 palynodoc.setMatrice(matriceEntity);
-                RuchierEntity ruchierEntity = this.paramRuchierDao.findByCorrespondance(Integer.parseInt(ruchier));
-                palynodoc.setRuchier(ruchierEntity);
+                ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(ruchier));
+                palynodoc.setRuchier(contactEntity);
                 RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 palynodoc.setRuche(ruchesEntity);
                 palynodoc.setPalynologieList(new ArrayList<>());
@@ -136,8 +136,8 @@ public class InsertServiceImpl implements InsertService {
 
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 residusDoc.setMatrice(matriceEntity);
-                RuchierEntity ruchierEntity = this.paramRuchierDao.findByCorrespondance(Integer.parseInt(ruchier));
-                residusDoc.setRuchier(ruchierEntity);
+                ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(ruchier));
+                residusDoc.setRuchier(contactEntity);
                 RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 residusDoc.setRuche(ruchesEntity);
                 residusDoc.setResidusGmsList(new ArrayList<>());

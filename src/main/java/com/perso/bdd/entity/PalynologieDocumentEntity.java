@@ -1,7 +1,7 @@
 package com.perso.bdd.entity;
 
 import com.perso.bdd.entity.parametrage.MatriceEntity;
-import com.perso.bdd.entity.parametrage.RuchierEntity;
+import com.perso.bdd.entity.parametrage.ContactEntity;
 import lombok.Data;
 import lombok.ToString;
 
@@ -51,7 +51,7 @@ public class PalynologieDocumentEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ruchier_id", referencedColumnName = "id", nullable = false)
-    private RuchierEntity ruchier;
+    private ContactEntity ruchier;
 
 
     @ManyToOne
