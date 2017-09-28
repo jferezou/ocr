@@ -77,7 +77,7 @@ public class InsertServiceImpl implements InsertService {
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 palynodoc.setMatrice(matriceEntity);
                 ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(ruchier));
-                palynodoc.setRuchier(contactEntity);
+                palynodoc.setContact(contactEntity);
                 RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 palynodoc.setRuche(ruchesEntity);
                 palynodoc.setPalynologieList(new ArrayList<>());
@@ -137,7 +137,7 @@ public class InsertServiceImpl implements InsertService {
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 residusDoc.setMatrice(matriceEntity);
                 ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(ruchier));
-                residusDoc.setRuchier(contactEntity);
+                residusDoc.setContact(contactEntity);
                 RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 residusDoc.setRuche(ruchesEntity);
                 residusDoc.setResidusGmsList(new ArrayList<>());

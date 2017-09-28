@@ -50,8 +50,8 @@ public class PalynologieDocumentEntity implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "ruchier_id", referencedColumnName = "id", nullable = false)
-    private ContactEntity ruchier;
+    @JoinColumn(name = "contact_id", referencedColumnName = "id", nullable = false)
+    private ContactEntity contact;
 
 
     @ManyToOne

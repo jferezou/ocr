@@ -26,7 +26,7 @@ public class ContactDaoImpl extends HibernateDao implements ParamContactDao {
         try {
             contactEntity = (ContactEntity) requete.getSingleResult();
         } catch (NonUniqueResultException nonUniqueException) {
-            LOGGER.debug("Pas de ruchier trouvée avec l'identifiant : {}" + idCorrespondance);
+            LOGGER.debug("Pas de contact trouvée avec l'identifiant : {}" + idCorrespondance);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
         }
