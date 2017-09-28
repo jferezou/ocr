@@ -63,6 +63,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setEchantillon(echantillon);
         String appelationDemandeur = correspondance.get("appelationDemandeur");
         result.setAppelationDemandeur(appelationDemandeur);
+        String pdfName = correspondance.get("pdfName");
+        result.setPdfFileName(pdfName);
 
         List<Palynologie> compoList = new ArrayList<>();
         int index=0;
@@ -106,6 +108,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         result.setCertificatAnalyses(certificatAnalyses);
         String poids = correspondance.get("poids");
         result.setPoids(Double.parseDouble(poids));
+        String pdfName = correspondance.get("pdfName");
+        result.setPdfName(pdfName);
 
         List<Molecule> gmsList = new ArrayList<>();
         int index=0;
@@ -160,17 +164,19 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
         if(accoladeFermante != 1) {
             throw new ParsingException("Attention, } est un caractère interdit, enregistrement non pris en compte !");
         }
-        String[] splitValues = value.replace("{","").replace("}","").replace("\"","").split(",");
+        String[] splitValues = value.replace("{","").replace("}","").split(",");
         Map<String,String> correspondance = new HashMap<>();
         for(int i =0; i< splitValues.length; i++) {
             String line = splitValues[i];
-            int deuxPointsCount = StringUtils.countMatches(line, ":");
-            String[] linesplited = line.split(":");
+            int deuxPointsCount = StringUtils.countMatches(line, "\":");
+            String[] linesplited = line.split("\":");
             if(deuxPointsCount != 1) {
                 throw new ParsingException("Attention, : est un caractère interdit, enregistrement non pris en compte !");
             }
+            linesplited[0] = linesplited[0].replace("\"","");
+            linesplited[1] = linesplited[1].replace("\"","");
             if(linesplited.length == 2) {
-                correspondance.put(linesplited[0], linesplited[1].replace("ceciestundeuxpoints",":"));
+                correspondance.put(linesplited[0], linesplited[1]);
             }
             else {
                 correspondance.put(linesplited[0], "");

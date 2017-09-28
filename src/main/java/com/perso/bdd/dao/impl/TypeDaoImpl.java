@@ -2,6 +2,7 @@ package com.perso.bdd.dao.impl;
 
 import com.perso.bdd.dao.ParamTypeDao;
 import com.perso.bdd.entity.parametrage.TypeEntity;
+import com.perso.exception.BddException;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
@@ -17,7 +18,7 @@ public class TypeDaoImpl extends HibernateDao implements ParamTypeDao {
 
     @Override
     @Transactional
-    public TypeEntity findByName(String typeName) throws NoResultException {
+    public TypeEntity findByName(String typeName) throws BddException {
         Query requete = getCurrentSession().createQuery("from TypeEntity where valeur=:typeName");
         requete.setParameter("typeName", typeName);
 
@@ -25,12 +26,17 @@ public class TypeDaoImpl extends HibernateDao implements ParamTypeDao {
 
         try {
             typeEntity = (TypeEntity) requete.getSingleResult();
-        } catch (NonUniqueResultException nonUniqueException) {
+        } catch (NoResultException e) {
+            throw new BddException("Pas de type trouvé pour le type " + typeName);
+        }catch (NonUniqueResultException nonUniqueException) {
             LOGGER.debug("Pas de type trouvée avec le nom : {}" + typeName);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
         }
 
+        if(typeEntity == null) {
+            throw new BddException("Pas de type trouvé pour le type " + typeName);
+        }
         return typeEntity;
     }
 

@@ -227,7 +227,7 @@ CREATE TABLE residus_document
   date						  		TIMESTAMP 	NOT NULL,
   identifiant						  		VARCHAR(200)	NOT NULL,
   certificat_analyse						  		VARCHAR(200)	NOT NULL,
-  poids						  	INT4	  NOT NULL,
+  poids						  	float8	  NOT NULL,
   matrice_id						  	INT8	  NOT NULL,
   contact_id						  	INT8	  NOT NULL,
   ruche_id						  	INT8	  NOT NULL,
@@ -257,7 +257,7 @@ CREATE TABLE palynologie_document
 (
   id		            			  INT8			NOT NULL default nextval('seq_palynologie_document_id'),
   date						  		    TIMESTAMP 	NOT NULL,
-  identifiant						  	VARCHAR(200)	NOT NULL,
+  identifiant						  	VARCHAR(20)	NOT NULL,
   identifiant_echantillon  	VARCHAR(50)	NOT NULL,
   numero_echantillon        INT8	  NOT NULL,
   matrice_id						  	INT8	  NOT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE palynologie_document
   pdf_name						  	  VARCHAR(200)	  NULL,
 
   CONSTRAINT pk_palynologie_document_id PRIMARY KEY (id),
-  CONSTRAINT uk_palynologie_document_identifiant UNIQUE (identifiant),
+  CONSTRAINT uk_palynologie_document_identifiant UNIQUE (identifiant_echantillon),
   CONSTRAINT fk_palynologie_document_matrice foreign key (matrice_id) REFERENCES param_espece(id),
   CONSTRAINT fk_palynologie_document_contact foreign key (contact_id) REFERENCES param_contact(id),
   CONSTRAINT fk_palynologie_document_ruche foreign key (ruche_id) REFERENCES ruches(id)

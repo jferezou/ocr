@@ -61,14 +61,14 @@ public class InsertServiceImpl implements InsertService {
                 SimpleDateFormat spd = new SimpleDateFormat("dd/MM/yy");
 
                 String matrice = ident.substring(0,1);
-                String ruchier = ident.substring(1,2);
+                String contact = ident.substring(1,2);
                 String ruche = ident.substring(2,6);
 
                 Date date = spd.parse(dateS);
 
                 palynodoc = new PalynologieDocumentEntity();
                 palynodoc.setDate(date);
-                palynodoc.setIdentifiant(matrice+ruchier);
+                palynodoc.setIdentifiant(matrice+contact);
                 palynodoc.setIdentifiantEchantillon(ident);
                 String echantillongString = result.getEchantillon().replace("\\n", "").replace(" ", "");
                 palynodoc.setNumeroEchantillon(Long.parseLong(echantillongString));
@@ -76,7 +76,7 @@ public class InsertServiceImpl implements InsertService {
 
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 palynodoc.setMatrice(matriceEntity);
-                ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(ruchier));
+                ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(contact));
                 palynodoc.setContact(contactEntity);
                 RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 palynodoc.setRuche(ruchesEntity);
@@ -116,7 +116,7 @@ public class InsertServiceImpl implements InsertService {
         if(splitreference.length == 5) {
             try {
                 String matrice = splitreference[0];
-                String ruchier = splitreference[1];
+                String contact = splitreference[1];
                 String ruche = splitreference[2];
                 String dateS = splitreference[3];
                 SimpleDateFormat spd = new SimpleDateFormat("dd/MM/yy");
@@ -129,14 +129,17 @@ public class InsertServiceImpl implements InsertService {
 
 
                 residusDoc = new ResidusDocumentEntity();
+                residusDoc.setResidusGmsList(new ArrayList<>());
+                residusDoc.setResidusLmsList(new ArrayList<>());
                 residusDoc.setDate(date);
                 residusDoc.setIdentifiant(identifiant);
-                residusDoc.setCertificatAnalyse(residusDoc.getCertificatAnalyse());
+                residusDoc.setCertificatAnalyse(result.getCertificatAnalyses());
                 residusDoc.setPdfName(result.getPdfName());
+                residusDoc.setPoids(result.getPoids());
 
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 residusDoc.setMatrice(matriceEntity);
-                ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(ruchier));
+                ContactEntity contactEntity = this.paramContactDao.findByCorrespondance(Integer.parseInt(contact));
                 residusDoc.setContact(contactEntity);
                 RuchesEntity ruchesEntity = getRuchesEntity(ruche);
                 residusDoc.setRuche(ruchesEntity);
@@ -144,37 +147,29 @@ public class InsertServiceImpl implements InsertService {
 
                 for(Molecule molecule : result.getMoleculesGms()) {
                     MoleculesGmsEntity moleculeEntity = this.paramMoleculesGmsDao.findByName(molecule.getValue());
-                    if(moleculeEntity == null) {
-                        LOGGER.warn("La molecule n'existe pas, on la créé");
-                        throw new BddException("La molécule GMS "+molecule.getValue()+" n'existe pas dans le référentiel");
-                    }
-
 
                     ResidusGmsEntity residusGmsEntity = new ResidusGmsEntity();
                     residusGmsEntity.setMoleculeGms(moleculeEntity);
                     residusGmsEntity.setTaux(molecule.getPourcentage());
                     residusGmsEntity.setTrace(molecule.isTrace());
+                    residusGmsEntity.setResidusDocument(residusDoc);
                     residusDoc.getResidusGmsList().add(residusGmsEntity);
                 }
 
 
-                for(Molecule molecule : result.getMoleculesGms()) {
+                for(Molecule molecule : result.getMoleculesLms()) {
                     MoleculesLmsEntity moleculeEntity = this.paramMoleculesLmsDao.findByName(molecule.getValue());
-                    if(moleculeEntity == null) {
-                        LOGGER.warn("La molecule n'existe pas, on la créé");
-                        throw new BddException("La molécule LMS "+molecule.getValue()+" n'existe pas dans le référentiel");
-                    }
-
 
                     ResidusLmsEntity residusLmsEntity = new ResidusLmsEntity();
                     residusLmsEntity.setMoleculeLms(moleculeEntity);
                     residusLmsEntity.setTaux(molecule.getPourcentage());
                     residusLmsEntity.setTrace(molecule.isTrace());
+                    residusLmsEntity.setResidusDocument(residusDoc);
                     residusDoc.getResidusLmsList().add(residusLmsEntity);
                 }
                 this.residusDocumentDao.createResidusDocument(residusDoc);
             } catch (ParseException e) {
-                LOGGER.error("Erreur de parsin de date",e);
+                LOGGER.error("Erreur de parsing de date",e);
             }
         }
     }

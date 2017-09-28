@@ -2,6 +2,7 @@ package com.perso.bdd.dao.impl;
 
 import com.perso.bdd.dao.ParamContactDao;
 import com.perso.bdd.entity.parametrage.ContactEntity;
+import com.perso.exception.BddException;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
@@ -17,20 +18,25 @@ public class ContactDaoImpl extends HibernateDao implements ParamContactDao {
 
     @Override
     @Transactional
-    public ContactEntity findByCorrespondance(int idCorrespondance) throws NoResultException {
-        Query requete = getCurrentSession().createQuery("from RuchierEntity where correspondance=:idCorrespondance");
+    public ContactEntity findByCorrespondance(int idCorrespondance) throws BddException {
+        Query requete = getCurrentSession().createQuery("from ContactEntity where correspondance=:idCorrespondance");
         requete.setParameter("idCorrespondance", idCorrespondance);
 
         ContactEntity contactEntity = null;
 
         try {
             contactEntity = (ContactEntity) requete.getSingleResult();
-        } catch (NonUniqueResultException nonUniqueException) {
+        } catch (NoResultException e) {
+            throw new BddException("Pas de contact trouvé pour la correspondance " + idCorrespondance);
+        }catch (NonUniqueResultException nonUniqueException) {
             LOGGER.debug("Pas de contact trouvée avec l'identifiant : {}" + idCorrespondance);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
         }
 
+        if(contactEntity == null) {
+            throw new BddException("Pas de contact trouvé pour la correspondance " + idCorrespondance);
+        }
         return contactEntity;
     }
 

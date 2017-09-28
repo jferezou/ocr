@@ -3,6 +3,7 @@ package com.perso.bdd.dao.impl;
 import com.perso.bdd.dao.ParamMoleculesGmsDao;
 import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import com.perso.bdd.entity.parametrage.MoleculesGmsEntity;
+import com.perso.exception.BddException;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
@@ -34,7 +35,7 @@ public class MoleculesGmsDaoImpl extends HibernateDao implements ParamMoleculesG
     }
     @Override
     @Transactional
-    public MoleculesGmsEntity findByName(String nom) throws NoResultException {
+    public MoleculesGmsEntity findByName(String nom) throws BddException {
         Query requete = getCurrentSession().createQuery("from MoleculesGmsEntity where nom=:nom");
         requete.setParameter("nom", nom);
 
@@ -42,12 +43,17 @@ public class MoleculesGmsDaoImpl extends HibernateDao implements ParamMoleculesG
 
         try {
             moleculesGmsEntity = (MoleculesGmsEntity) requete.getSingleResult();
-        } catch (NonUniqueResultException nonUniqueException) {
+        } catch (NoResultException e) {
+            throw new BddException("Pas de molécule GMS trouvée pour la nom " + nom);
+        }catch (NonUniqueResultException nonUniqueException) {
             LOGGER.debug("Pas de molecules Gms trouvée avec le nom : {}" + nom);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
         }
 
+        if(moleculesGmsEntity == null) {
+            throw new BddException("Pas de molécule GMS trouvée pour la nom " + nom);
+        }
         return moleculesGmsEntity;
     }
 
