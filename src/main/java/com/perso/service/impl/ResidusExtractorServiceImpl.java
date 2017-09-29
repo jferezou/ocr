@@ -12,6 +12,7 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStra
 import com.perso.bdd.dao.ParamMoleculesGmsDao;
 import com.perso.bdd.dao.ParamMoleculesLmsDao;
 import com.perso.bdd.entity.parametrage.MoleculeEntity;
+import com.perso.exception.BddException;
 import com.perso.pojo.ocr.Point;
 import com.perso.pojo.ocr.Zone;
 import com.perso.pojo.residus.*;
@@ -129,7 +130,10 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                         LOGGER.debug("Passage liste GMS");
                     }
                     else {
-                        currentList.add(this.traitementLigne(line, isGms));
+                        Molecule molecule = this.traitementLigne(line, isGms);
+                        if(molecule != null) {
+                            currentList.add(molecule);
+                        }
                     }
                 }
 
@@ -151,6 +155,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                 }
             }
         }
+
         LOGGER.debug("Fin traitement fichier : {}", path);
         return residusDocument;
     }
@@ -218,17 +223,42 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     private Molecule traitementLigne(final String line, boolean isGmt) {
         LOGGER.debug("traitement ligne nettoyé : {}", line);
-        Molecule traitementObj = new Molecule();
+        Molecule traitementObj = null;
         int firstDigit = StringUtilsOcr.getfirstdigitIndex(line);
         // il y a une valeur
         if(firstDigit > 0) {
+            traitementObj = new Molecule();
             String value = line.substring(0, firstDigit);
             value = StringUtils.trim(value);
-
+            MoleculeEntity moleculeEntity;
             try {
                 double pourcentage = Double.parseDouble(line.substring(firstDigit, line.length()).replace(",", "."));
-                traitementObj.setValue(value);
                 traitementObj.setPourcentage(pourcentage);
+                try {
+                    if (isGmt) {
+                        moleculeEntity = this.paramMoleculesGmsDao.findByName(value);
+                    } else {
+                        moleculeEntity = this.paramMoleculesLmsDao.findByName(value);
+                    }
+                    traitementObj.setValue(moleculeEntity.getNom());
+                }
+                catch(BddException e) {
+                    LOGGER.error("Erreur", e);
+                    traitementObj.setErreur(true);
+                    try {
+                        if (isGmt) {
+                            moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(value);
+                        } else {
+                            moleculeEntity = this.paramMoleculesLmsDao.findByNameContaining(value);
+                        }
+                        traitementObj.setValue(moleculeEntity.getNom());
+                    }
+                    catch(BddException ne) {
+                        LOGGER.error("Erreur", ne);
+                        traitementObj.setErreur(true);
+                    }
+                }
+
             }
             catch(NumberFormatException e) {
                 LOGGER.error("Erreur", e);
@@ -246,15 +276,18 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             else {
                 pourcentage = getPourcentageFromElement(value, lmsList);
             }
-            traitementObj.setValue(value);
-            traitementObj.setPourcentage(pourcentage);
-            traitementObj.setTrace(true);
+            if(pourcentage != -1) {
+                traitementObj = new Molecule();
+                traitementObj.setValue(value);
+                traitementObj.setPourcentage(pourcentage);
+                traitementObj.setTrace(true);
+            }
         }
 
         // enfin on verifie que l'élément existe bien dans nos listes, sinon on le mets enb erreur :
-        if ((this.containsValue(this.gmsList, traitementObj.getValue()) == null) && (this.containsValue(this.lmsList, traitementObj.getValue()) == null)) {
-            traitementObj.setErreur(true);
-        }
+//        if ((this.containsValue(this.gmsList, traitementObj.getValue()) == null) && (this.containsValue(this.lmsList, traitementObj.getValue()) == null)) {
+//            traitementObj.setErreur(true);
+//        }
 
         LOGGER.debug("Objet généré : {}", traitementObj);
         return traitementObj;

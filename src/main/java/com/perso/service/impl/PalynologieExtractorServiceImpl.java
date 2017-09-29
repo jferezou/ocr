@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.perso.bdd.dao.ParamFleursDao;
-import com.perso.bdd.entity.parametrage.FleursEntity;
+import com.perso.bdd.dao.ParamEspeceDao;
+import com.perso.bdd.entity.parametrage.EspeceEntity;
 import com.perso.pojo.ocr.Zone;
 import com.perso.service.PalynologieExtractorService;
 import com.perso.utils.*;
@@ -33,9 +33,9 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
     private String tesseractDir;
 
 	@Resource
-	private ParamFleursDao paramFleursDao;
+	private ParamEspeceDao paramEspeceDao;
 
-	private List<String> listeFleurs;
+	private List<String> listeEspece;
 
 	@Override
 	/**
@@ -71,13 +71,18 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
 		String zoneEchantillonValue = this.zoneReading(pngFile, zoneEchantillon);
 
 		PalynologieDocument result = new PalynologieDocument();
-		result.setFleurs(this.listeFleurs);
+		result.setFleurs(this.listeEspece);
 
         String baseName = FilenameUtils.getBaseName(pngFile.getName())+".pdf";
         result.setEchantillon(zoneEchantillonValue);
         result.setPdfFileName(baseName);
         result.setPdfFilePath(pngFile.getParentFile()+"\\"+baseName);
         String zoneEchantillonValueTempName = this.fillAppelationDemandeur(zoneAppelationDemandeurValue);
+        int firstSpace = StringUtilsOcr.getFirstSpace(zoneEchantillonValueTempName);
+        if(firstSpace > -1 ) {
+            zoneEchantillonValueTempName = zoneEchantillonValueTempName.substring(firstSpace, zoneEchantillonValueTempName.length());
+        }
+
         result.setAppelationDemandeur(zoneEchantillonValueTempName);
 
         List<Palynologie> compositionList = this.fillComposition(zone1Value);
@@ -89,10 +94,10 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
 	}
 
 	private void generateListeFleurs() {
-	    List<FleursEntity> listeFleursEntity = this.paramFleursDao.getAllFleurs();
-	    this.listeFleurs = new ArrayList<>();
-	    for(FleursEntity fleur : listeFleursEntity) {
-	        this.listeFleurs.add(fleur.getNom());
+	    List<EspeceEntity> listeEspeceEntity = this.paramEspeceDao.getAllEspeces();
+	    this.listeEspece = new ArrayList<>();
+	    for(EspeceEntity espece : listeEspeceEntity) {
+	        this.listeEspece.add(espece.getNom());
         }
     }
 
@@ -127,7 +132,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
                         name = name.replace(".", "");
                         name = StringUtils.trim(name);
                         if(name.length() > 2) {
-                            for(String fleur : this.listeFleurs) {
+                            for(String fleur : this.listeEspece) {
                                 if(fleur.toLowerCase().replace(" ","").contains(name)) {
                                     name = fleur;
                                 }
@@ -176,7 +181,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
             if(!StringUtils.stripStart(tempZone1[j]," ").isEmpty()) {
                 Palynologie zoneObj = new Palynologie();
                 boolean valid = false;
-                for(String valeurPossible : this.listeFleurs) {
+                for(String valeurPossible : this.listeEspece) {
                     String tempP = StringUtils.stripAccents(valeurPossible.toLowerCase().replace(" ",""));
                     String currentValueTemp = StringUtils.stripAccents(tempZone1[j].replace("ﬂ","fl").replace(" ","").toLowerCase());
                     if(tempP.equals(currentValueTemp)) {

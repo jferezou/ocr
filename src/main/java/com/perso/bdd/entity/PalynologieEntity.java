@@ -1,6 +1,6 @@
 package com.perso.bdd.entity;
 
-import com.perso.bdd.entity.parametrage.FleursEntity;
+import com.perso.bdd.entity.parametrage.EspeceEntity;
 import com.perso.bdd.entity.parametrage.TypeEntity;
 import lombok.Data;
 import lombok.ToString;
@@ -33,8 +33,8 @@ public class PalynologieEntity implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "id_fleur", referencedColumnName = "id", nullable = false)
-    private FleursEntity fleur;
+    @JoinColumn(name = "id_espece", referencedColumnName = "id", nullable = false)
+    private EspeceEntity espece;
 
     @ManyToOne
     @JoinColumn(name = "id_type", referencedColumnName = "id", nullable = false)

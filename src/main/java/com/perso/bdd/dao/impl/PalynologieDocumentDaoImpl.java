@@ -2,7 +2,6 @@ package com.perso.bdd.dao.impl;
 
 import com.perso.bdd.dao.PalynologieDocumentDao;
 import com.perso.bdd.entity.PalynologieDocumentEntity;
-import com.perso.bdd.entity.parametrage.FleursEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;

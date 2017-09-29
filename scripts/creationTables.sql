@@ -163,7 +163,31 @@ CREATE TABLE param_famille
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_famille TO usrocr;
 
-COMMENT ON TABLE param_famille IS 'Paramétrage famille fleurs.';
+COMMENT ON TABLE param_famille IS 'Paramétrage famille espece.';
+
+
+
+
+-- #######################################################################################################
+-- CREATION TABLE : param_genre
+-- #######################################################################################################
+
+CREATE SEQUENCE seq_param_genre_id;
+GRANT usage on SEQUENCE seq_param_genre_id to usrocr;
+CREATE TABLE param_genre
+(
+  id		            		INT8			  NOT NULL default nextval('seq_param_genre_id'),
+  nom						  	VARCHAR(200)	  NOT NULL,
+  famille_id						  	INT8	  NOT NULL,
+
+  CONSTRAINT pk_param_genre PRIMARY KEY (id),
+  CONSTRAINT uk_genre_nom UNIQUE (nom),
+  CONSTRAINT fk_param_famille foreign key (famille_id) REFERENCES param_famille(id)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_genre TO usrocr;
+
+COMMENT ON TABLE param_genre IS 'Paramétrage genres espece.';
 
 
 
@@ -176,43 +200,19 @@ CREATE SEQUENCE seq_param_espece_id;
 GRANT usage on SEQUENCE seq_param_espece_id to usrocr;
 CREATE TABLE param_espece
 (
-  id		            		INT8			  NOT NULL default nextval('seq_param_espece_id'),
-  nom						  	VARCHAR(200)	  NOT NULL,
-  famille_id						  	INT8	  NOT NULL,
+  id		            			INT8			NOT NULL default nextval('seq_param_espece_id'),
+  nom						  		VARCHAR(200)	NOT NULL,
+  nom2						  		VARCHAR(200)	NULL,
+  genre_id						  	INT8	  NULL,
 
   CONSTRAINT pk_param_espece PRIMARY KEY (id),
   CONSTRAINT uk_espece_nom UNIQUE (nom),
-  CONSTRAINT fk_param_famille foreign key (famille_id) REFERENCES param_famille(id)
+  CONSTRAINT fk_param_genre foreign key (genre_id) REFERENCES param_genre(id)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_espece TO usrocr;
 
-COMMENT ON TABLE param_espece IS 'Paramétrage especes fleurs.';
-
-
-
-
--- #######################################################################################################
--- CREATION TABLE : param_fleurs
--- #######################################################################################################
-
-CREATE SEQUENCE seq_param_fleurs_id;
-GRANT usage on SEQUENCE seq_param_fleurs_id to usrocr;
-CREATE TABLE param_fleurs
-(
-  id		            			INT8			NOT NULL default nextval('seq_param_fleurs_id'),
-  nom						  		VARCHAR(200)	NOT NULL,
-  nom2						  		VARCHAR(200)	NULL,
-  espece_id						  	INT8	  NULL,
-
-  CONSTRAINT pk_param_fleurs PRIMARY KEY (id),
-  CONSTRAINT uk_fleur_nom UNIQUE (nom),
-  CONSTRAINT fk_param_espece foreign key (espece_id) REFERENCES param_espece(id)
-);
-
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_fleurs TO usrocr;
-
-COMMENT ON TABLE param_fleurs IS 'Cette table le paramétrage pour les fleurs.';
+COMMENT ON TABLE param_espece IS 'Cette table le paramétrage pour les espece.';
 
 
 -- #######################################################################################################
@@ -235,7 +235,7 @@ CREATE TABLE residus_document
 
   CONSTRAINT pk_residus_document_id PRIMARY KEY (id),
   CONSTRAINT uk_residus_document_identifiant UNIQUE (identifiant),
-  CONSTRAINT fk_residus_document_matrice foreign key (matrice_id) REFERENCES param_espece(id),
+  CONSTRAINT fk_residus_document_matrice foreign key (matrice_id) REFERENCES param_matrice(id),
   CONSTRAINT fk_residus_document_contact foreign key (contact_id) REFERENCES param_contact(id),
   CONSTRAINT fk_residus_document_ruche foreign key (ruche_id) REFERENCES ruches(id)
 );
@@ -267,7 +267,7 @@ CREATE TABLE palynologie_document
 
   CONSTRAINT pk_palynologie_document_id PRIMARY KEY (id),
   CONSTRAINT uk_palynologie_document_identifiant UNIQUE (identifiant_echantillon),
-  CONSTRAINT fk_palynologie_document_matrice foreign key (matrice_id) REFERENCES param_espece(id),
+  CONSTRAINT fk_palynologie_document_matrice foreign key (matrice_id) REFERENCES param_matrice(id),
   CONSTRAINT fk_palynologie_document_contact foreign key (contact_id) REFERENCES param_contact(id),
   CONSTRAINT fk_palynologie_document_ruche foreign key (ruche_id) REFERENCES ruches(id)
 );
@@ -291,12 +291,12 @@ CREATE TABLE palynologie
 (
   id		            		INT8			  NOT NULL default nextval('seq_palynologie_id'),
   pourcentage						float8	  NOT NULL,
-  id_fleur  						INT8			  NOT NULL,
+  id_espece  						INT8			  NOT NULL,
   id_type               INT8       NOT NULL,
   palynologie_document_id            INT8       NOT NULL,
 
   CONSTRAINT pk_palynologie PRIMARY KEY (id),
-  CONSTRAINT fk_fleur foreign key (id_fleur) REFERENCES param_fleurs(id),
+  CONSTRAINT fk_espece foreign key (id_espece) REFERENCES param_espece(id),
   CONSTRAINT fk_type foreign key (id_type) REFERENCES param_type(id),
   CONSTRAINT fk_palynologie_palynologie_document foreign key (palynologie_document_id) REFERENCES palynologie_document(id)
 );

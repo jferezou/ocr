@@ -21,4 +21,17 @@ public class StringUtilsOcr {
         LOGGER.debug("Index du 1er digit de la chaîne {} : {}", stringValue, value);
         return value;
     }
+    public static int getFirstSpace(final String stringValue) {
+        Pattern pattern = Pattern.compile(" ");
+        Matcher matcher = pattern.matcher(stringValue);
+        matcher.find();
+        int value = -1;
+        try {
+            value = matcher.start(1);
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            LOGGER.warn("Erreur lors de la récupération de l'espace pour : {}",stringValue);
+        }
+        LOGGER.debug("Index du 1er espace de la chaîne {} : {}", stringValue, value);
+        return value;
+    }
 }

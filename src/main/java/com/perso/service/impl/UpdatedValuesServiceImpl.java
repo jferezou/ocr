@@ -1,7 +1,6 @@
 package com.perso.service.impl;
 
 import com.perso.bdd.dao.*;
-import com.perso.bdd.entity.*;
 import com.perso.bdd.entity.parametrage.*;
 import com.perso.exception.BddException;
 import com.perso.exception.ParsingException;
@@ -19,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.persistence.NoResultException;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -35,7 +31,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
 
     @Resource
-    private ParamFleursDao paramFleursDao;
+    private ParamEspeceDao paramEspeceDao;
 
     @Resource
     private ParamMoleculesGmsDao paramMoleculesGmsDao;
@@ -50,9 +46,9 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     public void parseAndSavePalynologie(final String value) throws ParsingException, BddException {
 
         Map<String, String> correspondance = this.parseStringToMap(value);
-        List<FleursEntity> listeFleursEntity = this.paramFleursDao.getAllFleurs();
+        List<EspeceEntity> listeEspeceEntity = this.paramEspeceDao.getAllEspeces();
         List<String> listeFleurs = new ArrayList<>();
-        for(FleursEntity fleur : listeFleursEntity) {
+        for(EspeceEntity fleur : listeEspeceEntity) {
             listeFleurs.add(fleur.getNom());
         }
         PalynologieDocument result = new PalynologieDocument();

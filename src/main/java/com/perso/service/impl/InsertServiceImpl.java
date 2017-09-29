@@ -9,6 +9,7 @@ import com.perso.pojo.palynologie.PalynologieDocument;
 import com.perso.pojo.residus.Molecule;
 import com.perso.pojo.residus.ResidusDocument;
 import com.perso.service.InsertService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class InsertServiceImpl implements InsertService {
     @Resource
     private RucheDao rucheDao;
     @Resource
-    private ParamFleursDao paramFleursDao;
+    private ParamEspeceDao paramEspeceDao;
     @Resource
     private PalynologieDocumentDao palynologieDocumentDao;
     @Resource
@@ -83,18 +84,18 @@ public class InsertServiceImpl implements InsertService {
                 palynodoc.setPalynologieList(new ArrayList<>());
 
                 for(Palynologie palyno : result.getCompositions()) {
-                    FleursEntity fleursEntity = this.paramFleursDao.findByName(palyno.getValue());
-                    if(fleursEntity == null) {
-                        LOGGER.warn("La fleurs n'existe pas, on la créé");
-                        fleursEntity = new FleursEntity();
-                        fleursEntity.setNom(palyno.getValue());
-                        this.paramFleursDao.createFleur(fleursEntity);
+                    EspeceEntity especeEntity = this.paramEspeceDao.findByName(StringUtils.stripAccents(palyno.getValue()));
+                    if(especeEntity == null) {
+                        LOGGER.warn("L'espèce n'existe pas, on la créé");
+                        especeEntity = new EspeceEntity();
+                        especeEntity.setNom(palyno.getValue());
+                        this.paramEspeceDao.createEspece(especeEntity);
                     }
 
                     TypeEntity type = this.paramTypeDao.findByName(palyno.getType().toUpperCase());
 
                     PalynologieEntity palynologieEntity = new PalynologieEntity();
-                    palynologieEntity.setFleur(fleursEntity);
+                    palynologieEntity.setEspece(especeEntity);
                     palynologieEntity.setPalynologieDocument(palynodoc);
                     palynologieEntity.setPourcentage(palyno.getPercentage());
                     palynologieEntity.setType(type);

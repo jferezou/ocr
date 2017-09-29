@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Data
 @Entity
 @ToString
-@Table(schema = "public", name = "param_fleurs", uniqueConstraints = {@UniqueConstraint(columnNames={"nom"})})
-public class FleursEntity implements Serializable {
+@Table(schema = "public", name = "param_genre", uniqueConstraints = {@UniqueConstraint(columnNames={"nom"})})
+public class GenreEntity implements Serializable {
     /**
      * serialVersionUID
      */
@@ -21,18 +21,17 @@ public class FleursEntity implements Serializable {
      */
     @Id
     @Column(name = "id")
-    @SequenceGenerator(name = "seq_param_fleurs_id", sequenceName = "seq_param_fleurs_id", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_param_fleurs_id")
+    @SequenceGenerator(name = "seq_param_genre_id", sequenceName = "seq_param_genre_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_param_genre_id")
     private Long id;
+
 
     @Column(name = "nom", nullable = false)
     private String nom;
 
-    @Column(name = "nom2")
-    private String nom2;
 
     @ManyToOne
-    @JoinColumn(name = "espece_id", referencedColumnName = "id")
-    private EspeceEntity espece;
+    @JoinColumn(name = "famille_id", referencedColumnName = "id", nullable = false)
+    private FamilleEntity famille;
 
 }

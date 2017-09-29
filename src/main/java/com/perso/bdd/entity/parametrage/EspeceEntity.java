@@ -25,13 +25,14 @@ public class EspeceEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_param_espece_id")
     private Long id;
 
-
     @Column(name = "nom", nullable = false)
     private String nom;
 
+    @Column(name = "nom2")
+    private String nom2;
 
     @ManyToOne
-    @JoinColumn(name = "famille_id", referencedColumnName = "id", nullable = false)
-    private FamilleEntity famille;
+    @JoinColumn(name = "genre_id", referencedColumnName = "id")
+    private GenreEntity genre;
 
 }

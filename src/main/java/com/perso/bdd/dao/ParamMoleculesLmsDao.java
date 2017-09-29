@@ -10,6 +10,7 @@ import java.util.List;
 public interface ParamMoleculesLmsDao {
     List<MoleculeEntity> getAllMoleculesLms();
     MoleculesLmsEntity findByName(final String moleculeName) throws BddException;
+    MoleculesLmsEntity findByNameContaining(String nom) throws BddException;
     void deleteMoleculesLms(final MoleculesLmsEntity moleculesLmsEntity);
     void updateMoleculesLms(final MoleculesLmsEntity moleculesLmsEntity);
     void createMoleculesLms(final MoleculesLmsEntity moleculesLmsEntity);

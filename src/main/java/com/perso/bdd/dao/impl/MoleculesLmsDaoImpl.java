@@ -59,6 +59,30 @@ public class MoleculesLmsDaoImpl extends HibernateDao implements ParamMoleculesL
         return moleculesLmsEntity;
     }
 
+    @Override
+    @Transactional
+    public MoleculesLmsEntity findByNameContaining(String nom) throws BddException {
+        Query requete = getCurrentSession().createQuery("from MoleculesLmsEntity where nom like :nom");
+        requete.setParameter("nom", "%"+nom+"%");
+
+        MoleculesLmsEntity moleculesLmsEntity = null;
+
+        try {
+            moleculesLmsEntity = (MoleculesLmsEntity) requete.getSingleResult();
+        } catch (NoResultException e) {
+            throw new BddException("Pas de molécule LMS trouvée pour le nom " + nom);
+        }catch (NonUniqueResultException nonUniqueException) {
+            LOGGER.debug("Pas de molecules Lms trouvée avec le nom : {}" + nom);
+        } catch (Exception e) {
+            LOGGER.error("Erreur : " + e);
+        }
+
+        if(moleculesLmsEntity == null) {
+            throw new BddException("Pas de molécule LMS trouvée pour le nom " + nom);
+        }
+        return moleculesLmsEntity;
+    }
+
     /**
      * {@inheritDoc}
      * @param moleculesLmsEntity
