@@ -72,12 +72,12 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			File tempsDir = new File(this.tempDirectory);
 			if(tempsDir.isDirectory()) {
 				// on supprime le contenu du temp dir
-				for(File fileTemp : tempsDir.listFiles()) {
+				for (File fileTemp : tempsDir.listFiles()) {
 					fileTemp.delete();
 				}
 
 				// pour chaque fichier, on les split en page dans le temp dir
-				for(Path path : paths) {
+				for (Path path : paths) {
 					this.pdfService.splitPdf(path);
 				}
 
@@ -93,7 +93,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 						.filter(myFile -> this.generateImageService.checkIfPng(myFile))
 						.map(pngFile -> this.palynologieExtractorService.extract(pngFile))
 						.collect(Collectors.toList());
-
+				finalResults.sort((PalynologieDocument o1, PalynologieDocument o2) -> o1.getPdfFilePath().compareTo(o2.getPdfFilePath()));
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
@@ -107,6 +107,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			listPdfIdResponse.setPdfFilePath(result.getPdfFilePath());
 			returnValue.add(listPdfIdResponse);
 		}
+
 		return returnValue;
 	}
 
@@ -150,6 +151,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 					.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
 					.map(pdfFile -> this.residusExtractorService.extraire(pdfFile))
 					.collect(Collectors.toList());
+			response.sort((ResidusDocument o1, ResidusDocument o2) -> o1.getPdfFilePath().compareTo(o2.getPdfFilePath()));
 
 			}
 			else {

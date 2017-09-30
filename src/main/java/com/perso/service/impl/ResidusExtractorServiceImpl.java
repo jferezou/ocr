@@ -43,6 +43,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     private List<MoleculeEntity> gmsList;
     private  List<MoleculeEntity> lmsList;
 
+    private String valeurPrecedente;
 
     @Resource
     private ParamMoleculesGmsDao paramMoleculesGmsDao;
@@ -132,7 +133,15 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                     else {
                         Molecule molecule = this.traitementLigne(line, isGms);
                         if(molecule != null) {
-                            currentList.add(molecule);
+                            // si la liste continet deja cette molécule, on lui assigne le pourcentage max
+                            if(currentList.contains(molecule)) {
+                              Molecule currentMolecule = currentList.get(currentList.indexOf(molecule));
+                              currentMolecule.setPourcentage(Math.max(molecule.getPourcentage(), currentMolecule.getPourcentage()));
+                                currentMolecule.setErreur(true);
+                            }
+                            else if(molecule.getValue() != "" && molecule.getValue() != null ) {
+                                currentList.add(molecule);
+                            }
                         }
                     }
                 }
@@ -221,21 +230,21 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     }
 
 
-    private Molecule traitementLigne(final String line, boolean isGmt) {
+    private Molecule traitementLigne(final String line, boolean isGms) {
         LOGGER.debug("traitement ligne nettoyé : {}", line);
         Molecule traitementObj = null;
         int firstDigit = StringUtilsOcr.getfirstdigitIndex(line);
         // il y a une valeur
         if(firstDigit > 0) {
-            traitementObj = new Molecule();
             String value = line.substring(0, firstDigit);
             value = StringUtils.trim(value);
             MoleculeEntity moleculeEntity;
             try {
                 double pourcentage = Double.parseDouble(line.substring(firstDigit, line.length()).replace(",", "."));
+                traitementObj = new Molecule();
                 traitementObj.setPourcentage(pourcentage);
                 try {
-                    if (isGmt) {
+                    if (isGms) {
                         moleculeEntity = this.paramMoleculesGmsDao.findByName(value);
                     } else {
                         moleculeEntity = this.paramMoleculesLmsDao.findByName(value);
@@ -245,52 +254,67 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                 catch(BddException e) {
                     LOGGER.error("Erreur", e);
                     traitementObj.setErreur(true);
-                    try {
-                        if (isGmt) {
-                            moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(value);
-                        } else {
-                            moleculeEntity = this.paramMoleculesLmsDao.findByNameContaining(value);
-                        }
-                        traitementObj.setValue(moleculeEntity.getNom());
-                    }
-                    catch(BddException ne) {
-                        LOGGER.error("Erreur", ne);
-                        traitementObj.setErreur(true);
-                    }
+                    this.findMoleculeContainingName(isGms, traitementObj);
                 }
 
             }
             catch(NumberFormatException e) {
                 LOGGER.error("Erreur", e);
-                traitementObj.setErreur(true);
             }
 
         }
         // on cherche la valeur dans nos tables
         else {
+            traitementObj = new Molecule();
             String value = StringUtils.trim(line);
             double pourcentage = -1;
-            if(isGmt) {
+            if(isGms) {
                 pourcentage = getPourcentageFromElement(value, gmsList);
             }
             else {
                 pourcentage = getPourcentageFromElement(value, lmsList);
             }
             if(pourcentage != -1) {
-                traitementObj = new Molecule();
                 traitementObj.setValue(value);
                 traitementObj.setPourcentage(pourcentage);
                 traitementObj.setTrace(true);
             }
+            else {
+                // on supprime le - à la fin pour éviter les soucis de retour à la ligne
+                this.valeurPrecedente = StringUtils.removeEnd(value,"-");
+                this.findMoleculeContainingName(isGms, traitementObj);
+            }
         }
 
-        // enfin on verifie que l'élément existe bien dans nos listes, sinon on le mets enb erreur :
+        // enfin on verifie que l'élément existe bien dans nos listes, sinon on le mets en erreur :
 //        if ((this.containsValue(this.gmsList, traitementObj.getValue()) == null) && (this.containsValue(this.lmsList, traitementObj.getValue()) == null)) {
 //            traitementObj.setErreur(true);
 //        }
 
         LOGGER.debug("Objet généré : {}", traitementObj);
         return traitementObj;
+    }
+
+    private void findMoleculeContainingName(boolean isGms, Molecule traitementObj) {
+        MoleculeEntity moleculeEntity = null;
+        try {
+            if (isGms) {
+                moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(this.valeurPrecedente);
+            } else {
+                moleculeEntity = this.paramMoleculesLmsDao.findByNameContaining(this.valeurPrecedente);
+            }
+            traitementObj.setValue(moleculeEntity.getNom());
+            if(traitementObj.getPourcentage() == null || traitementObj.getPourcentage() < 0) {
+                traitementObj.setPourcentage(moleculeEntity.getValeurTrace());
+            }
+        }
+        catch(BddException ne) {
+            LOGGER.error("Erreur", ne);
+//            traitementObj.setValue("ERREUR !!!");
+//            traitementObj.setPourcentage(-1.0);
+//            traitementObj.setTrace(true);
+            traitementObj = null;
+        }
     }
 
     private double getPourcentageFromElement(String value, List<MoleculeEntity> moleculesList) {
