@@ -1,6 +1,8 @@
 package com.perso.service.impl;
 
 import com.perso.bdd.dao.*;
+import com.perso.bdd.entity.PalynologieDocumentEntity;
+import com.perso.bdd.entity.ResidusDocumentEntity;
 import com.perso.bdd.entity.parametrage.*;
 import com.perso.exception.BddException;
 import com.perso.exception.ParsingException;
@@ -13,9 +15,11 @@ import com.perso.pojo.residus.Molecule;
 import com.perso.pojo.residus.ResidusDocument;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.cxf.jaxrs.ext.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -41,6 +45,14 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
     @Resource
     private InsertService insertService;
+
+    @Resource
+    private ResidusDocumentDao residusDocumentDao;
+    @Resource
+    private PalynologieDocumentDao palynologieDocumentDao;
+
+    @Resource
+    private ExportCsvServiceImpl exportCsvService;
 
     @Override
     public void parseAndSavePalynologie(final String value) throws ParsingException, BddException {
@@ -183,36 +195,76 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
 
 
     @Override
+    @Transactional
     public String getCsvPalynologie() {
         StringBuilder exportedCsv = new StringBuilder();
         try {
-        exportedCsv.append("sep=;");
-        exportedCsv.append("\n");
-        exportedCsv.append(CSVUtils.writeLine(Arrays.asList("Echantillon", "Composition","Pourcentage", "Type"),'"'));
+            List<PalynologieDocumentEntity> palynoDocsList = this.palynologieDocumentDao.getAllPalynologieDocument();
+            exportedCsv.append("sep=;");
+            exportedCsv.append("\n");
+            exportedCsv.append(this.exportCsvService.writeLine(Arrays.asList("n° éch.",
+                    "année",
+                    "type",
+                    "id_échantillon",
+                    "Echantillon",
+                    "Balance",
+                    "nom apiculteur",
+                    "prénom apiculteur",
+                    "commune",
+                    "dept.",
+                    "région",
+                    "date récolte",
+                    "mois",
+                    "famille",
+                    "genre",
+                    "espèce",
+                    "espèce 2",
+                    "%",
+                    "N° ruche",
+                    "Fichier PDF",
+                    "Page"),'"'));
 
-        // on écrit les résultats dans le fichier
-        for (PalynologieDocument palynologieDocument : this.valeursPalynologie.values()) {
-            exportedCsv.append(CSVUtils.writeResult(palynologieDocument));
+
+            // on écrit les résultats dans le fichier
+            for (PalynologieDocumentEntity palynologieDocument : palynoDocsList) {
+                exportedCsv.append(this.exportCsvService.writeResult(palynologieDocument));
+            }
+        } catch (IOException e) {
+            LOGGER.error("erreur",e);
         }
-    } catch (IOException e) {
-        LOGGER.error("erreur",e);
-    }
 
         return exportedCsv.toString();
     }
 
 
     @Override
+    @Transactional
     public String getCsvResidus() {
         StringBuilder exportedCsv = new StringBuilder();
         try {
+            List<ResidusDocumentEntity> residusDocsList = this.residusDocumentDao.getAllResidusDocument();
             exportedCsv.append("sep=;");
             exportedCsv.append("\n");
-            exportedCsv.append(CSVUtils.writeLine(Arrays.asList("Reference", "Composition","Pourcentage", "Type"),'"'));
-
+            exportedCsv.append(this.exportCsvService.writeLine(Arrays.asList("Certificat analyse",
+                    "Année",
+                    "Matrice",
+                    "Id ech",
+                    "Numéro de ruche",
+                    "Nom apiculteur",
+                    "Préom apiculteur",
+                    "Site","Département",
+                    "Région",
+                    "Date",
+                    "Mois",
+                    "Poids gr",
+                    "Molécule",
+                    "Résidu (mg/L)",
+                    "Trace",
+                    "Type molécule",
+                    "Fichier PDF"),'"'));
             // on écrit les résultats dans le fichier
-            for (ResidusDocument residusDocument : this.valeursResidus.values()) {
-                final String str = CSVUtils.writeResult(residusDocument);
+            for (ResidusDocumentEntity residusDocument : residusDocsList) {
+                final String str = this.exportCsvService.writeResult(residusDocument);
                 exportedCsv.append(str);
             }
         } catch (IOException e) {

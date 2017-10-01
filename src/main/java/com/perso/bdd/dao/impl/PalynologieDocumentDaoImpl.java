@@ -2,11 +2,14 @@ package com.perso.bdd.dao.impl;
 
 import com.perso.bdd.dao.PalynologieDocumentDao;
 import com.perso.bdd.entity.PalynologieDocumentEntity;
+import com.perso.bdd.entity.ResidusDocumentEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public class PalynologieDocumentDaoImpl extends HibernateDao implements PalynologieDocumentDao {
@@ -22,6 +25,21 @@ public class PalynologieDocumentDaoImpl extends HibernateDao implements Palynolo
     @Transactional
     public void deletePalynologieDocument(final PalynologieDocumentEntity palynologieDocumentEntity) {
         this.getCurrentSession().delete(palynologieDocumentEntity);
+    }
+    @Override
+    @Transactional
+    public List<PalynologieDocumentEntity> getAllPalynologieDocument(){
+        Query requete = getCurrentSession().createQuery("from PalynologieDocumentEntity");
+
+        List<PalynologieDocumentEntity> palynologieDocumentEntityList = null;
+
+        try {
+            palynologieDocumentEntityList = requete.getResultList();
+        } catch (Exception e) {
+            LOGGER.error("Erreur : " + e);
+        }
+
+        return palynologieDocumentEntityList;
     }
 
     /**

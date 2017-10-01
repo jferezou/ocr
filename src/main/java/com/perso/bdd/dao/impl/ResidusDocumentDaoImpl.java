@@ -3,11 +3,14 @@ package com.perso.bdd.dao.impl;
 import com.perso.bdd.dao.ResidusDocumentDao;
 import com.perso.bdd.entity.PalynologieDocumentEntity;
 import com.perso.bdd.entity.ResidusDocumentEntity;
+import com.perso.bdd.entity.parametrage.EspeceEntity;
 import org.apache.log4j.Logger;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public class ResidusDocumentDaoImpl extends HibernateDao implements ResidusDocumentDao {
@@ -23,6 +26,22 @@ public class ResidusDocumentDaoImpl extends HibernateDao implements ResidusDocum
     @Transactional
     public void deleteResidusDocument(final ResidusDocumentEntity residusDocumentEntity) {
         this.getCurrentSession().delete(residusDocumentEntity);
+    }
+
+    @Override
+    @Transactional
+    public List<ResidusDocumentEntity> getAllResidusDocument(){
+        Query requete = getCurrentSession().createQuery("from ResidusDocumentEntity");
+
+        List<ResidusDocumentEntity> residusDocumentEntityList = null;
+
+        try {
+            residusDocumentEntityList = requete.getResultList();
+        } catch (Exception e) {
+            LOGGER.error("Erreur : " + e);
+        }
+
+        return residusDocumentEntityList;
     }
 
     /**

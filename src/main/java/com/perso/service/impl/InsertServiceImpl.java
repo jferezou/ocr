@@ -75,7 +75,11 @@ public class InsertServiceImpl implements InsertService {
                 palynodoc.setIdentifiant(matrice+contact);
                 palynodoc.setIdentifiantEchantillon(ident);
                 String echantillongString = result.getEchantillon().replace("\\n", "").replace(" ", "").replace("/\n", "");
-                palynodoc.setNumeroEchantillon(Long.parseLong(echantillongString));
+                try {
+                    palynodoc.setNumeroEchantillon(Long.parseLong(echantillongString));
+                } catch (NumberFormatException e) {
+                    throw new BddException("Erreur sur l'échantillon : "+echantillongString);
+                }
 
                 String pdfTempName = result.getPdfFileName();
                 pdfTempName = StringUtils.removeEnd(pdfTempName,".pdf");
