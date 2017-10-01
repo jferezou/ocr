@@ -48,6 +48,11 @@ public class PalynologieDocumentEntity implements Serializable {
     @Column(name = "pdf_name")
     private String pdfName;
 
+    @Column(name = "pdf_page")
+    private String pdfPage;
+
+
+
 
     @ManyToOne
     @JoinColumn(name = "contact_id", referencedColumnName = "id", nullable = false)

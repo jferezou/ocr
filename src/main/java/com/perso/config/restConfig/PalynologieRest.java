@@ -24,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -47,7 +48,7 @@ public class PalynologieRest implements ApiExposeRest{
         this.updatedValuesService.cleanPalynologieMap();
         ListPdfResponse response = new ListPdfResponse();
         try {
-            Set<ListPdfIdResponse> results = this.readerFileService.readAndLaunchPalynologie();
+            List results = this.readerFileService.readAndLaunchPalynologie();
             response.setResultats(results);
         } catch (FichierInvalideException | TikaException | IOException e) {
             LOGGER.error("Erreur lors de l'extraction palynologie", e);

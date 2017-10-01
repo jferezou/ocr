@@ -9,6 +9,7 @@ import com.perso.pojo.palynologie.PalynologieDocument;
 import com.perso.pojo.residus.Molecule;
 import com.perso.pojo.residus.ResidusDocument;
 import com.perso.service.InsertService;
+import com.perso.utils.StringUtilsOcr;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,9 @@ public class InsertServiceImpl implements InsertService {
     @Override
     public void insertNewPalynologie(PalynologieDocument result) throws BddException {
         // enregistrer BDD
-        String[] splitAppelationDemandeur = result.getAppelationDemandeur().split(" ");
+        String appelationDemandeur = result.getAppelationDemandeur();
+        appelationDemandeur = StringUtils.stripStart(appelationDemandeur, " ");
+        String[] splitAppelationDemandeur = appelationDemandeur.split(" ");
         if(splitAppelationDemandeur.length == 2) {
             try {
                 String ident = splitAppelationDemandeur[0];
@@ -71,9 +74,14 @@ public class InsertServiceImpl implements InsertService {
                 palynodoc.setDate(date);
                 palynodoc.setIdentifiant(matrice+contact);
                 palynodoc.setIdentifiantEchantillon(ident);
-                String echantillongString = result.getEchantillon().replace("\\n", "").replace(" ", "");
+                String echantillongString = result.getEchantillon().replace("\\n", "").replace(" ", "").replace("/\n", "");
                 palynodoc.setNumeroEchantillon(Long.parseLong(echantillongString));
-                palynodoc.setPdfName(result.getPdfFileName());
+
+                String pdfTempName = result.getPdfFileName();
+                pdfTempName = StringUtils.removeEnd(pdfTempName,".pdf");
+                int lastUnderscoreIndex = StringUtilsOcr.getLastUnderscore(pdfTempName);
+                palynodoc.setPdfName(pdfTempName.substring(0,lastUnderscoreIndex)+".pdf");
+                palynodoc.setPdfPage(pdfTempName.substring(lastUnderscoreIndex+1,pdfTempName.length()));
 
                 MatriceEntity matriceEntity = this.paramMatriceDao.findByIdentifiant(matrice);
                 palynodoc.setMatrice(matriceEntity);
@@ -84,12 +92,17 @@ public class InsertServiceImpl implements InsertService {
                 palynodoc.setPalynologieList(new ArrayList<>());
 
                 for(Palynologie palyno : result.getCompositions()) {
+                    // on recherche sans accents
                     EspeceEntity especeEntity = this.paramEspeceDao.findByName(StringUtils.stripAccents(palyno.getValue()));
                     if(especeEntity == null) {
-                        LOGGER.warn("L'espèce n'existe pas, on la créé");
-                        especeEntity = new EspeceEntity();
-                        especeEntity.setNom(palyno.getValue());
-                        this.paramEspeceDao.createEspece(especeEntity);
+                        // on recherche avec accents
+                        especeEntity = this.paramEspeceDao.findByName(palyno.getValue());
+                        if(especeEntity == null) {
+                            LOGGER.warn("L'espèce n'existe pas, on la créé");
+                            especeEntity = new EspeceEntity();
+                            especeEntity.setNom(palyno.getValue());
+                            this.paramEspeceDao.createEspece(especeEntity);
+                        }
                     }
 
                     TypeEntity type = this.paramTypeDao.findByName(palyno.getType().toUpperCase());
@@ -106,6 +119,10 @@ public class InsertServiceImpl implements InsertService {
                 LOGGER.error("Erreur de parsin de date",e);
             }
         }
+        else {
+            throw new BddException("L'appelation demandeur n'est pas correcte : '"+appelationDemandeur+"'");
+        }
+
     }
 
 

@@ -26,8 +26,8 @@ import java.util.*;
 public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdatedValuesServiceImpl.class);
 
-    private Map<Integer, PalynologieDocument> valeursPalynologie = new HashMap<>();
-    private Map<Integer, ResidusDocument> valeursResidus = new HashMap<>();
+    private Map<Integer, PalynologieDocument> valeursPalynologie = new TreeMap<>();
+    private Map<Integer, ResidusDocument> valeursResidus = new TreeMap<>();
 
 
     @Resource

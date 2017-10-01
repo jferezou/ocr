@@ -22,7 +22,7 @@ public class StringUtilsOcr {
         return value;
     }
     public static int getFirstSpace(final String stringValue) {
-        Pattern pattern = Pattern.compile(" ");
+        Pattern pattern = Pattern.compile("(\\s)+");
         Matcher matcher = pattern.matcher(stringValue);
         matcher.find();
         int value = -1;
@@ -32,6 +32,21 @@ public class StringUtilsOcr {
             LOGGER.warn("Erreur lors de la récupération de l'espace pour : {}",stringValue);
         }
         LOGGER.debug("Index du 1er espace de la chaîne {} : {}", stringValue, value);
+        return value;
+    }
+
+    public static int getLastUnderscore(final String stringValue) {
+        Pattern pattern = Pattern.compile("(_)+");
+        Matcher matcher = pattern.matcher(stringValue);
+        int value = -1;
+        try {
+            while(matcher.find()) {
+                value = matcher.start(1);
+            }
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            LOGGER.warn("Erreur lors de la récupération de _ pour : {}",stringValue);
+        }
+        LOGGER.debug("Index du dernier _ de la chaîne {} : {}", stringValue, value);
         return value;
     }
 }

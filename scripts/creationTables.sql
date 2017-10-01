@@ -264,6 +264,7 @@ CREATE TABLE palynologie_document
   contact_id						  	INT8	  NOT NULL,
   ruche_id						  	  INT8	  NOT NULL,
   pdf_name						  	  VARCHAR(200)	  NULL,
+  pdf_page						  	  VARCHAR(10)	  NULL,
 
   CONSTRAINT pk_palynologie_document_id PRIMARY KEY (id),
   CONSTRAINT uk_palynologie_document_identifiant UNIQUE (identifiant_echantillon),

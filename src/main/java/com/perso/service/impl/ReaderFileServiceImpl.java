@@ -51,7 +51,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	UpdatedValuesService updatedValuesService;
 
 	@Override
-	public Set<ListPdfIdResponse> readAndLaunchPalynologie() throws FichierInvalideException, TikaException, IOException {
+	public List<ListPdfIdResponse> readAndLaunchPalynologie() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement");
 		String palynologieDir = this.dossierEntrant +"\\"+this.palynologieDir;
 		// Vérifie que le fichier existe
@@ -93,14 +93,14 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 						.filter(myFile -> this.generateImageService.checkIfPng(myFile))
 						.map(pngFile -> this.palynologieExtractorService.extract(pngFile))
 						.collect(Collectors.toList());
-				finalResults.sort((PalynologieDocument o1, PalynologieDocument o2) -> o1.getPdfFilePath().compareTo(o2.getPdfFilePath()));
+				finalResults.sort(Comparator.comparing(PalynologieDocument::getPdfFileName));
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
 		this.updatedValuesService.fillPalynologieMap(finalResults);
-		Set<ListPdfIdResponse> returnValue = new HashSet<>();
+		List<ListPdfIdResponse> returnValue = new ArrayList<>();
 		for(PalynologieDocument result : this.updatedValuesService.getValeursPalynologie().values()) {
 			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
 			listPdfIdResponse.setId(result.getId());
@@ -114,7 +114,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 
 	@Override
-	public Set<ListPdfIdResponse> readAndLaunchResidus() throws FichierInvalideException, TikaException, IOException {
+	public List<ListPdfIdResponse> readAndLaunchResidus() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement résidus");
 		String residusDir = this.dossierEntrant +"\\"+this.residusDir;
 		// Vérifie que le fichier existe
@@ -151,7 +151,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 					.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
 					.map(pdfFile -> this.residusExtractorService.extraire(pdfFile))
 					.collect(Collectors.toList());
-			response.sort((ResidusDocument o1, ResidusDocument o2) -> o1.getPdfFilePath().compareTo(o2.getPdfFilePath()));
+			response.sort(Comparator.comparing(ResidusDocument::getPdfName));
 
 			}
 			else {
@@ -159,7 +159,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			}
 		}
 		this.updatedValuesService.fillResidusMap(response);
-		Set<ListPdfIdResponse> returnValue = new HashSet<>();
+		List<ListPdfIdResponse> returnValue = new ArrayList<>();
 		for(ResidusDocument result : this.updatedValuesService.getValeursResidus().values()) {
 			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
 			listPdfIdResponse.setId(result.getId());

@@ -78,10 +78,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
         result.setPdfFileName(baseName);
         result.setPdfFilePath(pngFile.getParentFile()+"\\"+baseName);
         String zoneEchantillonValueTempName = this.fillAppelationDemandeur(zoneAppelationDemandeurValue);
-        int firstSpace = StringUtilsOcr.getFirstSpace(zoneEchantillonValueTempName);
-        if(firstSpace > -1 ) {
-            zoneEchantillonValueTempName = zoneEchantillonValueTempName.substring(firstSpace, zoneEchantillonValueTempName.length());
-        }
+
 
         result.setAppelationDemandeur(zoneEchantillonValueTempName);
 
@@ -204,6 +201,10 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
         String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
         zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
         zoneEchantillonValueTempName = zoneEchantillonValueTempName.replace("\n","");
+        int firstSpace = StringUtilsOcr.getFirstSpace(zoneEchantillonValueTempName);
+        if(firstSpace > -1 ) {
+            zoneEchantillonValueTempName = zoneEchantillonValueTempName.substring(firstSpace, zoneEchantillonValueTempName.length());
+        }
         return zoneEchantillonValueTempName;
     }
 

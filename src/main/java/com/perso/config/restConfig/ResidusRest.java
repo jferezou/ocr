@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -49,7 +50,7 @@ public class ResidusRest implements ApiExposeRest {
         this.updatedValuesService.cleanResidusMap();
         ListPdfResponse response = new ListPdfResponse();
         try {
-            Set<ListPdfIdResponse> liste = this.readerFileService.readAndLaunchResidus();
+            List liste = this.readerFileService.readAndLaunchResidus();
             response.setResultats(liste);
 
         } catch (FichierInvalideException | TikaException | IOException e) {
