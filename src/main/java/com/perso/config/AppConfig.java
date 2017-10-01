@@ -38,7 +38,7 @@ public class AppConfig {
     /**
      * nom JNDI de la source de donnees
      */
-    public static final String DATASOURCE_SSI = "OCRDS";
+    public static final String DATASOURCE_OCR = "OCRDS";
 
     /**
      * packages contenant les entity hibernate

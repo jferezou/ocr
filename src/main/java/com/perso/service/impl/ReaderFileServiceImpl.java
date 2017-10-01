@@ -173,7 +173,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	public File readAndLaunchAggregatePdf() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement résidus");
 
-		String zipFilePath = this.tempDirectory+"pdfAggreges.zip";
+		String zipFilePath = this.tempDirectory+"\\pdfAggreges.zip";
 		String residusDir = this.dossierEntrant +"\\"+this.residusDir;
 		// Vérifie que le fichier existe
 		File file = new File(residusDir);
