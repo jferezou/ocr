@@ -97,7 +97,7 @@ public class ResidusRest implements ApiExposeRest {
             LOGGER.error("erreur" ,e);
         }
 
-        String disposition = "attachment; fileName=^resultats.zip";
+        String disposition = "attachment; fileName=fichiersAggreges.zip";
         Response response = Response.ok(file).build();
         response.getHeaders().add("Content-Disposition", disposition);
 
