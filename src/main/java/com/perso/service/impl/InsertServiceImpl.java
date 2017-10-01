@@ -190,6 +190,10 @@ public class InsertServiceImpl implements InsertService {
                 LOGGER.error("Erreur de parsing de date",e);
             }
         }
+        else {
+            throw new BddException("L'identifiant n'est pas correct : '"+identifiant+"'");
+        }
+
     }
 
 
