@@ -173,7 +173,8 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 	public File readAndLaunchAggregatePdf() throws FichierInvalideException, TikaException, IOException {
 		LOGGER.info("Début du traitement résidus");
 
-		String zipFilePath = this.tempDirectory+"\\pdfAggreges.zip";
+//		String zipFilePath = this.tempDirectory+"\\pdfAggreges.zip";
+		File aggregatedPdf = null;
 		String residusDir = this.dossierEntrant +"\\"+this.residusDir;
 		// Vérifie que le fichier existe
 		File file = new File(residusDir);
@@ -206,41 +207,45 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 				Collections.sort(pdfList);
 
 
-				Map<String, List<AggregatePdf>> rucheList = new HashMap<>();
-				for(AggregatePdf agg : pdfList) {
-					if(rucheList.containsKey(agg.getRuche())) {
-						rucheList.get(agg.getRuche()).add(agg);
-					}
-					else {
-						List<AggregatePdf> newAgg = new ArrayList<>();
-						newAgg.add(agg);
-						rucheList.put(agg.getRuche(),newAgg);
-					}
-				}
-				try {
-					FileOutputStream fos = new FileOutputStream(zipFilePath);
-					ZipOutputStream zos = new ZipOutputStream(fos);
 
-					for(String ruche : rucheList.keySet()) {
-						File newPdfFile = this.pdfService.createPdf(rucheList.get(ruche),ruche);
-						addToZipFile(newPdfFile, zos);
-					}
-
-					zos.close();
-					fos.close();
-
-				} catch (FileNotFoundException e) {
-					LOGGER.error("erreur", e);
-				} catch (IOException e) {
-					LOGGER.error("erreur", e);
-				}
+				aggregatedPdf = this.pdfService.createPdf(pdfList,"");
+//				Map<String, List<AggregatePdf>> rucheList = new HashMap<>();
+//				for(AggregatePdf agg : pdfList) {
+//					if(rucheList.containsKey(agg.getRuche())) {
+//						rucheList.get(agg.getRuche()).add(agg);
+//					}
+//					else {
+//						List<AggregatePdf> newAgg = new ArrayList<>();
+//						newAgg.add(agg);
+//						rucheList.put(agg.getRuche(),newAgg);
+//					}
+//				}
+//
+//				try {
+//					FileOutputStream fos = new FileOutputStream(zipFilePath);
+//					ZipOutputStream zos = new ZipOutputStream(fos);
+//
+//					for(String ruche : rucheList.keySet()) {
+//						File newPdfFile = this.pdfService.createPdf(rucheList.get(ruche),ruche);
+//						addToZipFile(newPdfFile, zos);
+//					}
+//
+//					zos.close();
+//					fos.close();
+//
+//				} catch (FileNotFoundException e) {
+//					LOGGER.error("erreur", e);
+//				} catch (IOException e) {
+//					LOGGER.error("erreur", e);
+//				}
 
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
-		return new File(zipFilePath);
+//		return new File(zipFilePath);
+		return aggregatedPdf;
 	}
 	private void addToZipFile(File file, ZipOutputStream zos) throws FileNotFoundException, IOException {
 
