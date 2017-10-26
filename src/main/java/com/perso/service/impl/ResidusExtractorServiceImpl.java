@@ -92,10 +92,10 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             int totalPage = pdfDoc.getNumberOfPages();
             LOGGER.debug("totalPage : {}", totalPage);
 
-            Zone zoneResultatP1 = new Zone(new Point(0, this.taillePage - 567), new Point(301, this.taillePage - 454));
+            Zone zoneResultatP1 = new Zone(new Point(0, this.taillePage - 567), new Point(345, this.taillePage - 454));
             LOGGER.info("zoneResultat : {}", zoneResultatP1.toString());
 
-            Zone zoneResultat = new Zone(new Point(0, this.taillePage - 742), new Point(301, this.taillePage - 103));
+            Zone zoneResultat = new Zone(new Point(0, this.taillePage - 742), new Point(345, this.taillePage - 103));
             LOGGER.info("zoneResultat : {}", zoneResultat.toString());
             // on parcours de la page 1 à la page total - 5
             for(int page = 1; page <= totalPage - 5 ; page ++) {
@@ -111,7 +111,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                 resultat = resultat.replace("trace found", "");
                 resultat = resultat.replace("Autres non détectables (<LC)", "");
                 resultat = resultat.replace("Autres non détectables >= LC", "");
-                resultat = resultat.replace("Substance Accr. Résultat", "");
+                resultat = resultat.replace("Substance Accr. Résultat Limites", "");
                 resultat = resultat.replace("Aucun produit >= LC", "");
                 resultat = resultat.replace("A","(A)");
                 resultat = resultat.replaceAll("(?m)^\\s", "");
@@ -237,19 +237,26 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
 
     private Molecule traitementLigne(final String line, boolean isGms) {
-        LOGGER.debug("traitement ligne nettoyé : {}", line);
+        LOGGER.debug("traitement ligne nettoyée : {}", line);
+        String tempLine = line;
+        String[] splitedLine = tempLine.split(" ");
+        String limite = "";
+        if(splitedLine.length > 1) {
+            limite = splitedLine[splitedLine.length-1];
+            tempLine = tempLine.substring(0, tempLine.lastIndexOf(" "));
+        }
         Molecule traitementObj;
-        int firstDigit = StringUtilsOcr.getfirstdigitIndex(line);
+        int firstDigit = StringUtilsOcr.getfirstdigitIndex(tempLine);
         // il y a une valeur
         if(firstDigit > 0) {
-            traitementObj = this.getMoleculeFirstDigitFound(line, isGms, firstDigit);
+            traitementObj = this.getMoleculeFirstDigitFound(tempLine, isGms, firstDigit);
 
         }
         // on cherche la valeur dans nos tables
         else {
-            traitementObj = this.getMoleculeNoDigit(line, isGms);
+            traitementObj = this.getMoleculeNoDigit(tempLine, isGms);
         }
-
+        traitementObj.setLimite(limite);
 
         LOGGER.debug("Objet généré : {}", traitementObj);
         return traitementObj;

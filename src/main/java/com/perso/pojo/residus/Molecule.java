@@ -15,6 +15,7 @@ public class Molecule {
     private Double pourcentage;
     private boolean trace;
     private boolean erreur;
+    private String limite;
 
     public Molecule() {
         this.trace = false;

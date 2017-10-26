@@ -126,10 +126,12 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
             if(!nomcomposition.isEmpty()) {
                 double percentage = Double.parseDouble(correspondance.get("pourcentagegms" + index));
                 boolean isTrace = Boolean.parseBoolean(correspondance.get("tracegms"+index));
+                String limite = correspondance.get("limitegms"+index);
                 Molecule compo = new Molecule();
                 compo.setPourcentage(percentage);
                 compo.setValue(nomcomposition);
                 compo.setTrace(isTrace);
+                compo.setLimite(limite);
                 gmsList.add(compo);
             }
             index ++;
@@ -143,10 +145,12 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
             if(!nomcomposition.isEmpty()) {
                 double percentage = Double.parseDouble(correspondance.get("pourcentagelms" + index));
                 boolean isTrace = Boolean.parseBoolean(correspondance.get("tracelms"+index));
+                String limite = correspondance.get("limitelms"+index);
                 Molecule compo = new Molecule();
                 compo.setPourcentage(percentage);
                 compo.setValue(nomcomposition);
                 compo.setTrace(isTrace);
+                compo.setLimite(limite);
                 lmsList.add(compo);
             }
             index ++;

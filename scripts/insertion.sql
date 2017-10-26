@@ -12,12 +12,12 @@ INSERT INTO param_matrice (nom, identifiant) VALUES('Miel', 'M');
 -- INSERTION TABLE : param_contact
 -- #######################################################################################################
 
-INSERT INTO param_contact (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Julien','Delaunay','St-aubin-la-plaine',85,'Vendée','',0);
-INSERT INTO param_contact (nom, prenom, site, departement, region, telephone, correspondance) VALUES('David','Sowtys','Tavers',45,'Loiret','',1);
-INSERT INTO param_contact (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Eric','Lelong','Aspiran',34,'Hérault','', 2);
-INSERT INTO param_contact (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Pascal','Turani','Bourideys',33,'Gironde','',3);
-INSERT INTO param_contact (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Florent','Vacher','Tavers',45,'Loiret','',4);
-INSERT INTO param_contact (nom, prenom, site, departement, region, telephone, correspondance) VALUES('Jean-François','Maréchal','Tilloy-Bellay',51,'Marne','',5);
+INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, correspondance) VALUES('Julien','Delaunay','St-aubin-la-plaine',85,'Vendée','',0);
+INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, correspondance) VALUES('David','Sowtys','Tavers',45,'Loiret','',1);
+INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, correspondance) VALUES('Eric','Lelong','Aspiran',34,'Hérault','', 2);
+INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, correspondance) VALUES('Pascal','Turani','Bourideys',33,'Gironde','',3);
+INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, correspondance) VALUES('Florent','Vacher','Tavers',45,'Loiret','',4);
+INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, correspondance) VALUES('Jean-François','Maréchal','Tilloy-Bellay',51,'Marne','',5);
 
 
 
@@ -235,7 +235,7 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('tri-allate 
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('trifluralin (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('vinclozolin (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('vinclozolin - TOTAL (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('RAS', 1, 0.00);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('RAS', 3, 0.00);
 
 
 
@@ -572,7 +572,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('triticonazo
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('valifenalate (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('vamidothion (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('zoxamide (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('RAS', 1, 0.00);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('RAS', 3, 0.00);
 
 
 
@@ -583,6 +583,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('RAS', 1, 0.
 
 INSERT INTO param_type_residus (nom) VALUES ('HERBICIDES');
 INSERT INTO param_type_residus (nom) VALUES ('FONGICIDES');
+INSERT INTO param_type_residus (nom) VALUES ('');
 
 
 

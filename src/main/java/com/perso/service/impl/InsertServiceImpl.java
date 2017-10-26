@@ -174,6 +174,7 @@ public class InsertServiceImpl implements InsertService {
                     residusGmsEntity.setMoleculeGms(moleculeEntity);
                     residusGmsEntity.setTaux(molecule.getPourcentage());
                     residusGmsEntity.setTrace(molecule.isTrace());
+                    residusGmsEntity.setLimite(molecule.getLimite());
                     residusGmsEntity.setResidusDocument(residusDoc);
                     residusDoc.getResidusGmsList().add(residusGmsEntity);
                 }
@@ -186,6 +187,7 @@ public class InsertServiceImpl implements InsertService {
                     residusLmsEntity.setMoleculeLms(moleculeEntity);
                     residusLmsEntity.setTaux(molecule.getPourcentage());
                     residusLmsEntity.setTrace(molecule.isTrace());
+                    residusLmsEntity.setLimite(molecule.getLimite());
                     residusLmsEntity.setResidusDocument(residusDoc);
                     residusDoc.getResidusLmsList().add(residusLmsEntity);
                 }
