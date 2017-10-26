@@ -71,8 +71,8 @@ public class ExportCsvServiceImpl implements ExportCsvService {
                     idEchantillon,
                     echantillon,
                     ruche,
-                    nomApiculteur,
                     prenomApiculteur,
+                    nomApiculteur,
                     commune,
                     departement.toString(),
                     region,
@@ -100,7 +100,11 @@ public class ExportCsvServiceImpl implements ExportCsvService {
         SimpleDateFormat yearSdf = new SimpleDateFormat("yyyy");
         final String annee = yearSdf.format(date);
         final String matrice = residusDocument.getMatrice().getNom();
-        final String identifiantEchantillon = residusDocument.getIdentifiant();
+        final String[] splitId = residusDocument.getIdentifiant().split("-");
+        String identifiantEchantillon = residusDocument.getIdentifiant();
+        if(splitId.length > 2) {
+            identifiantEchantillon = splitId[0]+splitId[1]+splitId[2];
+        }
         final String ruche = residusDocument.getRuche().getNom();
         final String nomApiculteur = residusDocument.getContact().getNom();
         final String prenomApiculteur = residusDocument.getContact().getPrenom();
@@ -118,19 +122,26 @@ public class ExportCsvServiceImpl implements ExportCsvService {
         for(ResidusGmsEntity residusGmsEntity : residusDocument.getResidusGmsList()) {
             result.append(writeLine(Arrays.asList(certificatAnalyse,
                     annee,
+                    "",
                     matrice,
                     identifiantEchantillon,
                     ruche,
-                    nomApiculteur,
-                    prenomApiculteur,
+                    prenomApiculteur+ " " +nomApiculteur,
                     site,
                     departement.toString(),
                     region,
                     dateStr,
                     month,
+                    "",
+                    "",
+                    "",
+                    "",
                     poids.toString().replace(".",","),
+                    "",
                     residusGmsEntity.getMoleculeGms().getNom(),
                     residusGmsEntity.getTaux().toString().replace(".",","),
+                    String.valueOf(residusGmsEntity.getMoleculeGms().getValeurTrace()),
+                    "",
                     residusGmsEntity.getTrace().toString(),
                     "GMS",
                     pdfFileName),'"'));
@@ -138,19 +149,26 @@ public class ExportCsvServiceImpl implements ExportCsvService {
         for(ResidusLmsEntity residusLmsEntity : residusDocument.getResidusLmsList()) {
             result.append(writeLine(Arrays.asList(certificatAnalyse,
                     annee,
+                    "",
                     matrice,
                     identifiantEchantillon,
                     ruche,
-                    nomApiculteur,
-                    prenomApiculteur,
+                    prenomApiculteur+ " " +nomApiculteur,
                     site,
                     departement.toString(),
                     region,
                     dateStr,
                     month,
+                    "",
+                    "",
+                    "",
+                    "",
                     poids.toString().replace(".",","),
+                    "",
                     residusLmsEntity.getMoleculeLms().getNom(),
                     residusLmsEntity.getTaux().toString().replace(".",","),
+                    String.valueOf(residusLmsEntity.getMoleculeLms().getValeurTrace()),
+                    "",
                     residusLmsEntity.getTrace().toString(),
                     "LMS",
                     pdfFileName),'"'));
