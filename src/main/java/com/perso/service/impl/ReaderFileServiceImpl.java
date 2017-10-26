@@ -204,62 +204,20 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 						.filter(myPath -> Files.isRegularFile(myPath))
 						.filter(myPath -> this.pdfService.checkIfPdf(myPath.toFile()))
 						.map(pdfFile -> this.residusExtractorService.extraireDate(pdfFile)).collect(Collectors.toList());
-				Collections.sort(pdfList);
 
-
+				pdfList.sort(
+						Comparator.comparing((AggregatePdf p) -> p.getRucher())
+								.thenComparing(p -> p.getMatrice())
+								.thenComparing(p -> p.getDate())
+								.thenComparing(p -> p.getRuche()));
 
 				aggregatedPdf = this.pdfService.createPdf(pdfList,"");
-//				Map<String, List<AggregatePdf>> rucheList = new HashMap<>();
-//				for(AggregatePdf agg : pdfList) {
-//					if(rucheList.containsKey(agg.getRuche())) {
-//						rucheList.get(agg.getRuche()).add(agg);
-//					}
-//					else {
-//						List<AggregatePdf> newAgg = new ArrayList<>();
-//						newAgg.add(agg);
-//						rucheList.put(agg.getRuche(),newAgg);
-//					}
-//				}
-//
-//				try {
-//					FileOutputStream fos = new FileOutputStream(zipFilePath);
-//					ZipOutputStream zos = new ZipOutputStream(fos);
-//
-//					for(String ruche : rucheList.keySet()) {
-//						File newPdfFile = this.pdfService.createPdf(rucheList.get(ruche),ruche);
-//						addToZipFile(newPdfFile, zos);
-//					}
-//
-//					zos.close();
-//					fos.close();
-//
-//				} catch (FileNotFoundException e) {
-//					LOGGER.error("erreur", e);
-//				} catch (IOException e) {
-//					LOGGER.error("erreur", e);
-//				}
 
 			}
 			else {
 				LOGGER.error("Le répertoire temporaire n'est pas un répertoire : {}", this.tempDirectory);
 			}
 		}
-//		return new File(zipFilePath);
 		return aggregatedPdf;
-	}
-	private void addToZipFile(File file, ZipOutputStream zos) throws FileNotFoundException, IOException {
-
-		FileInputStream fis = new FileInputStream(file);
-		ZipEntry zipEntry = new ZipEntry(file.getName());
-		zos.putNextEntry(zipEntry);
-
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zos.write(bytes, 0, length);
-		}
-
-		zos.closeEntry();
-		fis.close();
 	}
 }

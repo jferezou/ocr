@@ -8,14 +8,12 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class AggregatePdf implements Comparable<AggregatePdf> {
+public class AggregatePdf {
 
     private Date date;
     private Path path;
     private String ruche;
+    private String matrice;
+    private int rucher;
 
-    @Override
-    public int compareTo(AggregatePdf o) {
-        return this.getDate().compareTo(o.getDate());
-    }
 }
