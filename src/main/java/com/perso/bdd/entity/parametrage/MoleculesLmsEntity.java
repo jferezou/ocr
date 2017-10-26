@@ -30,4 +30,9 @@ public class MoleculesLmsEntity extends MoleculeEntity implements Serializable {
 
     @Column(name = "valeurTrace", nullable = false)
     protected Double valeurTrace;
+
+
+    @ManyToOne
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    private TypeResidusEntity type;
 }

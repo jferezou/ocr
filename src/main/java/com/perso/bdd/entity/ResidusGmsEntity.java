@@ -30,6 +30,9 @@ public class ResidusGmsEntity implements Serializable {
     @Column(name = "taux")
     private Double taux;
 
+    @Column(name = "limite")
+    private String limite;
+
     @Column(name = "trace", nullable = false)
     private Boolean trace;
 

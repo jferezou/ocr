@@ -24,6 +24,29 @@ COMMENT ON COLUMN param_matrice.nom IS 'Nom de la matrice';
 COMMENT ON COLUMN param_matrice.identifiant IS 'Identifiant du nom';
 
 
+-- #######################################################################################################
+-- CREATION TABLE : param_type_residus
+-- #######################################################################################################
+
+CREATE SEQUENCE seq_param_type_residus_id;
+GRANT usage on SEQUENCE seq_param_type_residus_id to usrocr;
+
+
+CREATE TABLE param_type_residus
+(
+  id		            			INT8			NOT NULL default nextval('seq_param_type_residus_id'),
+  nom						  		VARCHAR(200)	NOT NULL,
+
+  CONSTRAINT pk_param_type_residus PRIMARY KEY (id),
+  CONSTRAINT uk_param_type_residus_nom UNIQUE (nom)
+);
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_type_residus TO usrocr;
+
+COMMENT ON TABLE param_type_residus IS 'Cette table le paramétrage pour les type de resiuds (herbicides, ...).';
+
+COMMENT ON COLUMN param_type_residus.nom IS 'Nom du type';
+
 
 
 -- #######################################################################################################
@@ -62,12 +85,14 @@ CREATE SEQUENCE seq_param_molecules_gms_id;
 GRANT usage on SEQUENCE seq_param_molecules_gms_id to usrocr;
 CREATE TABLE param_molecules_gms
 (
-  id		            			INT8			NOT NULL default nextval('seq_param_molecules_gms_id'),
-  nom						  		VARCHAR(2000)	NOT NULL,
-  valeurTrace						float8			NOT NULL,
+  id		        INT8			    NOT NULL default nextval('seq_param_molecules_gms_id'),
+  type_id       INT8          NOT NULL,
+  nom						VARCHAR(2000)	NOT NULL,
+  valeurTrace		float8			  NOT NULL,
 
   CONSTRAINT pk_param_molecules_gms PRIMARY KEY (id),
-  CONSTRAINT uk_param_molecules_gms_nom UNIQUE (nom)
+  CONSTRAINT uk_param_molecules_gms_nom UNIQUE (nom),
+  CONSTRAINT fk_param_type_residus foreign key (type_id) REFERENCES param_type_residus(id)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_gms TO usrocr;
@@ -85,12 +110,14 @@ CREATE SEQUENCE seq_param_molecules_lms_id;
 GRANT usage on SEQUENCE seq_param_molecules_lms_id to usrocr;
 CREATE TABLE param_molecules_lms
 (
-  id		            			INT8			NOT NULL default nextval('seq_param_molecules_lms_id'),
+  id		            	INT8			    NOT NULL default nextval('seq_param_molecules_lms_id'),
+  type_id             INT8          NOT NULL,
   nom						  		VARCHAR(2000)	NOT NULL,
-  valeurTrace						float8			NOT NULL,
+  valeurTrace					float8			  NOT NULL,
 
   CONSTRAINT pk_param_molecules_lms PRIMARY KEY (id),
-  CONSTRAINT uk_param_molecules_lms_nom UNIQUE (nom)
+  CONSTRAINT uk_param_molecules_lms_nom UNIQUE (nom),
+  CONSTRAINT fk_param_type_residus foreign key (type_id) REFERENCES param_type_residus(id)
 );
 
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE param_molecules_lms TO usrocr;
@@ -318,10 +345,11 @@ GRANT usage on SEQUENCE seq_residus_gms_id to usrocr;
 CREATE TABLE residus_gms
 (
   id		            		INT8			  NOT NULL default nextval('seq_residus_gms_id'),
-  taux						  	float8	  NULL,
-  id_molecule_gms  						INT8			  NOT NULL,
-  trace  						BOOLEAN			  NOT NULL,
-  residus_document_id INT8			  NOT NULL,
+  taux						  	  float8	  NULL,
+  limite						  	VARCHAR(20)	  NULL,
+  id_molecule_gms  		  INT8			  NOT NULL,
+  trace  						    BOOLEAN			  NOT NULL,
+  residus_document_id   INT8			  NOT NULL,
 
   CONSTRAINT pk_residus_gms PRIMARY KEY (id),
   CONSTRAINT fk_residus_gms foreign key (id_molecule_gms) REFERENCES param_molecules_gms(id),
@@ -344,10 +372,11 @@ GRANT usage on SEQUENCE seq_residus_lms_id to usrocr;
 CREATE TABLE residus_lms
 (
   id		            		INT8			  NOT NULL default nextval('seq_residus_lms_id'),
-  taux						  	float8	  NULL,
-  id_molecule_lms  						INT8			  NOT NULL,
-  trace  						BOOLEAN			  NOT NULL,
-  residus_document_id INT8			  NOT NULL,
+  taux						  	  float8	  NULL,
+  limite						  	VARCHAR(20)	  NULL,
+  id_molecule_lms  			INT8			  NOT NULL,
+  trace  						    BOOLEAN			  NOT NULL,
+  residus_document_id   INT8			  NOT NULL,
 
   CONSTRAINT pk_residus_lms PRIMARY KEY (id),
   CONSTRAINT fk_residus_lms foreign key (id_molecule_lms) REFERENCES param_molecules_lms(id),
