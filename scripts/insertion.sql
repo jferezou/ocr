@@ -7,6 +7,20 @@ INSERT INTO param_matrice (nom, identifiant) VALUES('Miel', 'M');
 
 
 
+-- #######################################################################################################
+-- INSERTION TABLE : param_type_residus
+-- #######################################################################################################
+
+INSERT INTO param_type_residus (nom) VALUES ('');
+INSERT INTO param_type_residus (nom) VALUES ('Herbicide');
+INSERT INTO param_type_residus (nom) VALUES ('Fongicide');
+INSERT INTO param_type_residus (nom) VALUES ('Insecticide');
+INSERT INTO param_type_residus (nom) VALUES ('Acaricide');
+INSERT INTO param_type_residus (nom) VALUES ('Régulateur de croissance');
+INSERT INTO param_type_residus (nom) VALUES ('Répulsif insectes');
+
+
+
 
 -- #######################################################################################################
 -- INSERTION TABLE : param_contact
@@ -30,13 +44,13 @@ INSERT INTO param_contact (prenom, nom, site, departement, region, telephone, co
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('1,4-dimethylnaphthalene', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('2-phenylphenol (ortho-) (A)', 1, 0.05);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('acetochlor (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('aclonifen (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('aclonifen (A)', 2, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('acrinathrine (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('alachlor (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('aldrin and dieldrin (aldrin and dieldrin combined expressed as dieldrin) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('aldrine (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('anthraquinone (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('benalaxyl including other mixtures of constituent isomers including benalaxyl-M (sum of isomers) (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('benalaxyl including other mixtures of constituent isomers including benalaxyl-M (sum of isomers) (A)', 3, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('benfluralin (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('benzoylprop-ethyl (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('bifenazate', 1, 0.01);
@@ -63,20 +77,20 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlormépho
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorobenside (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorobenzilate (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chloroneb (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorothalonil', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorothalonil', 3, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorpropham (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorpyriphos-éthyl (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorpyriphos-méthyl (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorpyriphos-éthyl (A)', 4, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorpyriphos-méthyl (A)', 4, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlorthal-dimethyl (DCPA) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('chlozolinate (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('coumaphos (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('coumaphos (A)', 5, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('crimidine (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyanophenphos (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cycloate (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyflufenamid: sum of cyflufenamid (Z-isomer) and its E-isomer (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyflufenamid: sum of cyflufenamid (Z-isomer) and its E-isomer (A)', 3, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyfluthrin (cyfluthrin including other mixtures of constituent isomers (sum of isomers)) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyhalofop-butyl (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyhalothrin (sum of gamma and lambda) (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cyhalothrin (sum of gamma and lambda) (A)', 4, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('cypermethrin (cypermethrin including other mixtures of constituent isomers (sum of isomers)) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DBCP', 1, 0.1);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DDD (o,p''-)', 1, 0.01);
@@ -86,7 +100,7 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DDE (p,p'')
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DDT (op''-)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DDT (pp'')', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DDT (sum of p,p´-DDT, o,p´-DDT, p-p´-DDE and p,p´-TDE (DDD) expressed as DDT) (F)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DEET (N,N-diethyl-Mtoluamide) (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('DEET (N,N-diethyl-Mtoluamide) (A)', 7, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('deltamethrin (cisdeltamethrin) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('desmetryne (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('diazinon (A)', 1, 0.01);
@@ -139,7 +153,7 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('fipronil (s
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('fipronil-desulfinyl (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('fipronil-sulfone (A)', 1, 0.005);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('flucythrinate (flucythrinate including other mixtures of constituent isomers (sum of isomers)) (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('fludioxonil (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('fludioxonil (A)', 3, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('flumetralin (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('formothion (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('hch (alfa-) (A)', 1, 0.01);
@@ -184,11 +198,11 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('parathion (
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('parathion-methyl (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('parathion-methyl (sum of parathion-methyl and paraoxon-methyl expressed as parathionmethyl)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('pebulate (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('pendimethalin (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('pendimethalin (A)', 2, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('pentachloraniline (PCA) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('pentachloroanisol (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('penthiopyrade (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('permethrin (sum of isomers) (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('permethrin (sum of isomers) (A)', 4, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('phenothrin (phenothrin including other mixtures of constituent isomers (sum of isomers)) (A)', 1, 0.02);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('phorate (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('phosalone (A)', 1, 0.01);
@@ -216,7 +230,7 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('spirodiclof
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('spiromesifen (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('sulfotep (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('sulprofos (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('tau-fluvalinate (A)', 1, 0.01);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('tau-fluvalinate (A)', 4, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('tecnazene (TCNB) (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('téfluthrine (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('terbacil (A)', 1, 0.01);
@@ -235,7 +249,7 @@ INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('tri-allate 
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('trifluralin (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('vinclozolin (A)', 1, 0.01);
 INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('vinclozolin - TOTAL (A)', 1, 0.01);
-INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('RAS', 3, 0.00);
+INSERT INTO param_molecules_gms (nom, type_id, valeurTrace) VALUES ('RAS', 1, 0.00);
 
 
 
@@ -257,7 +271,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('aldicarb - 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('aldicarb - sulfoxide (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('aldicarb (sum of aldicarb, its sulfoxide and its sulfone, expressed as aldicarb) (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('allethrin (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('ametoctradin (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('ametoctradin (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('amétryne (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('amidosulfuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('amisulbrom (A)', 1, 0.01);
@@ -268,7 +282,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('azamethipho
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('azimsulfuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('azinphos-ethyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('azinphos-methyl (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('azoxystrobine (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('azoxystrobine (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('beflubutamid (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bendiocarb (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bensulfuron-methyl (A)', 1, 0.01);
@@ -276,13 +290,13 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('benthiavali
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bispyribac-sodium (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bitertanol (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bixafen (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('boscalid (A)', 1, 0.02);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('boscalid (A)', 3, 0.02);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bromacil (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bromuconazole (sum of diasteroisomers) (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('bupirimate (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('buprofézine (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbaryl (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbendazim and benomyl (sum of benomyl and carbendazim expressed as carbendazim) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbendazim and benomyl (sum of benomyl and carbendazim expressed as carbendazim) (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbétamide (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbofuran (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbofuran (3-OH-) (A)', 1, 0.01);
@@ -290,7 +304,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbofuran 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carbosulfan (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carboxin (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('carfentrazone-ethyl (determined as carfentrazone and expressed as carfentrazone-ethyl) (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chlorantraniliprole (DPX E-2Y45) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chlorantraniliprole (DPX E-2Y45) (A)', 4, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chlorbromuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chlorfenvinphos (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chlorfluazuron (A)', 1, 0.01);
@@ -300,7 +314,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chloroxuron
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('chlorsulfuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cinerin I',1 ,0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cinerin II', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('clethodim (sum of sethoxydim and clethodim including degradation products calculated as sethoxydim) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('clethodim (sum of sethoxydim and clethodim including degradation products calculated as sethoxydim) (A)', 2, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cléthodime (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('clodinafop (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('clodinafop and its Sisomers and their salts, expressed as clodinafop (A)', 1, 0.01);
@@ -313,24 +327,24 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cyazofamid 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cycloxidime (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cyflumetofen (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cymiazole (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cymoxanil (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cymoxanil (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cyproconazole (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cyprodinyl (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('cyprodinyl (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dazomet (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('demethon-s-methyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('demeton-S-methyl-sulfon (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('diafenthiuron', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dicrotophos (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('diéthofencarb (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('difénoconazole (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('difénoconazole (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('diflubenzuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('diflufénicanil (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimefox (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('Dimethenamid including other mixtures of constituent isomers including dimethenamidP (sum of isomers) (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimethoate (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimethoate (sum of dimethoate and omethoate expressed as dimethoate) (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimethomorph (sum of isomers) (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimoxystrobin (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimethoate (A)', 4, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimethoate (sum of dimethoate and omethoate expressed as dimethoate) (A)', 4, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimethomorph (sum of isomers) (A)', 3, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dimoxystrobin (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('diniconazole (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('dinotefuran (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('disulfoton (A)', 1, 0.01);
@@ -356,8 +370,8 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenamiphos 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenamiphos (sum of fenamiphos and its sulphoxide and sulphone expressed as fenamiphos) (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fénarimol (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fénazaquin (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenbuconazole (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenhexamid (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenbuconazole (A)', 3, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenhexamid (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenobucarb (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenoxaprop-P (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fenoxaprop-P-éthyl (A)', 1, 0.01);
@@ -389,8 +403,8 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('flubendiami
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('flufénacet (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('flufénoxuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fluometuron', 1, 0.02);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fluopicolide (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fluopyram (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fluopicolide (A)', 3, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fluopyram (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('fluoxastrobin (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('flupyradifurone (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('flupyrsulfuron-méthyl (A)', 1, 0.01);
@@ -421,25 +435,25 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('imazamox', 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('imazapyr', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('imazaquine', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('imazosulfuron (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('imidaclopride (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('indoxacarb (sum of indoxacarb and its R enantiomer) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('imidaclopride (A)', 4, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('indoxacarb (sum of indoxacarb and its R enantiomer) (A)', 4, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('iodosulfuron-methyl (iodosulfuron-methyl including salts, expressed as iodosulfuron-methyl) (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('iprobenfos (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('iprodione (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('iprovalicarbe (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('iprovalicarbe (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('isoprothiolane (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('isoproturon (IPU) (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('isopyrazam (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('isoxaben (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('krésoxim-méthyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('lenacil (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('linuron (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('linuron (A)', 2, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('lufénuron (A)', 1, 0.02);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mandipropamid (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mandipropamid (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mépanipyrim (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mesosulfuron-methyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metaflumizone (sum of E- and Z- isomers) (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metalaxyl and metalaxylM (metalaxyl including other mixtures of constituent isomers including metalaxyl-M (sum of isomers)) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metalaxyl and metalaxylM (metalaxyl including other mixtures of constituent isomers including metalaxyl-M (sum of isomers)) (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('métamitrone (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metazachlor (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metconazole (sum of isomers) (A)', 1, 0.01);
@@ -449,9 +463,9 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('methiocarb 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('methiocarb (sum of methiocarb and methiocarb sulfoxide and sulfone, expressed as methiocarb) (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('methiocarb-sulfon (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('methiocarb-sulfoxide (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metholachlor and metholachlor-S (metholachlor including other mixtures of constituent isomers including S-metholachlor (sum of isomers)) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metholachlor and metholachlor-S (metholachlor including other mixtures of constituent isomers including S-metholachlor (sum of isomers)) (A)', 2, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('methomyl (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('méthoxyfenozide (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('méthoxyfenozide (A)', 4, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metobromuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('métosulame (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('métoxuron (A)', 1, 0.01);
@@ -459,7 +473,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metsulfuron
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('molinate (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('monocrotophos (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('monolinuron (A)', 1, 0.02);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('myclobutanil (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('myclobutanil (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('napropamide (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('nicosulfuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('nitenpyram (A)', 1, 0.01);
@@ -482,9 +496,9 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('phenthoate 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('phosphamidon (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('phoxim (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('picolinafène (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('picoxystrobin (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('picoxystrobin (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pinoxaden (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pirimicarb (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pirimicarb (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('prochloraze (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('profenofos (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('promecarb (A)', 1, 0.01);
@@ -499,9 +513,9 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('propyzamide
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('proquinazid (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('prosulfocarbe (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('prosulfuron (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('prothioconazole: prothioconazole-dethio (sum of isomers) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('prothioconazole: prothioconazole-dethio (sum of isomers) (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pymétrozine (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyraclostrobine (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyraclostrobine (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyraflufen-éthyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyrethrin I', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyrethrin II', 1, 0.01);
@@ -512,11 +526,11 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyridaphent
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyridate', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('Pyridate (sum of pyridate, its hydrolysis product CL 9673 (6-chloro-4hydroxy-3phenylpyridazin) and hydrolysable conjugates of CL 9673 expressed as p', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyrifénox (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyriméthanil (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyriméthanil (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('pyriofenone (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('quinclorac (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('quinmérac', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('quinoxyfène (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('quinoxyfène (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('quizalofop, incl. quizalofop-P (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('quizalofop-éthyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('rimsulfuron (A)', 1, 0.01);
@@ -535,10 +549,10 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('spirotetram
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('spirotetramat-enolglucoside (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('spirotetramat-keto-hydrox (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('spirotetramat-monohydrox (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('spiroxamine (sum of isomers) (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('spiroxamine (sum of isomers) (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('sulfosulfuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('sulfoxaflor (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tebuconazole (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tebuconazole (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tébufenozide (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tébufenpyrad (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tepraloxydim (A)', 1, 0.01);
@@ -549,7 +563,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tétraconaz
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tetramethrine (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thiabendazole (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thiacloprid (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thiametoxam (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thiametoxam (A)', 4, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thifensulfuron-méthyle (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thiobencarb (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('thiodicarb (A)', 1, 0.01);
@@ -563,27 +577,17 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('triazophos 
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('trichlorfon (A)', 1, 0.02);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tricyclazole (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('tridemorphe (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('trifloxystrobin (A)', 1, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('trifloxystrobin (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('triflumizole (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('triflumuron (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('triforine (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('trinexapac (sum of trinexapac (acid) and its salts, expressed as trinexapac) (A)', 1, 0.02);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('trinexapac (sum of trinexapac (acid) and its salts, expressed as trinexapac) (A)', 6, 0.02);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('triticonazole (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('valifenalate (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('vamidothion (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('zoxamide (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('RAS', 3, 0.00);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('zoxamide (A)', 3, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('RAS', 1, 0.00);
 
-
-
-
--- #######################################################################################################
--- INSERTION TABLE : param_type_residus
--- #######################################################################################################
-
-INSERT INTO param_type_residus (nom) VALUES ('HERBICIDES');
-INSERT INTO param_type_residus (nom) VALUES ('FONGICIDES');
-INSERT INTO param_type_residus (nom) VALUES ('');
 
 
 
