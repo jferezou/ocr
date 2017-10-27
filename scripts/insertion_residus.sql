@@ -415,7 +415,7 @@ INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mandipropam
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mépanipyrim (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('mesosulfuron-methyl (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metaflumizone (sum of E- and Z- isomers) (A)', 1, 0.01);
-INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metalaxyl and metalaxylM (metalaxyl including other mixtures of constituent isomers including metalaxyl-M (sum of isomers)) (A)', 3, 0.01);
+INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metalaxyl and metalaxyl-M (metalaxyl including other mixtures of constituent isomers including metalaxyl-M (sum of isomers)) (A)', 3, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('métamitrone (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metazachlor (A)', 1, 0.01);
 INSERT INTO param_molecules_lms (nom, type_id, valeurTrace) VALUES ('metconazole (sum of isomers) (A)', 1, 0.01);

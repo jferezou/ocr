@@ -69,7 +69,7 @@ public class MoleculesGmsDaoImpl extends HibernateDao implements ParamMoleculesG
         } catch (NoResultException e) {
             throw new BddException("Pas de molécule GMS trouvée pour la nom " + nom);
         }catch (NonUniqueResultException nonUniqueException) {
-            LOGGER.debug("Pas de molecules Gms trouvée avec le nom : {}" + nom);
+            LOGGER.debug("Plus d'une molecule Gms trouvée avec le nom : {}" + nom);
         } catch (Exception e) {
             LOGGER.error("Erreur : " + e);
         }
