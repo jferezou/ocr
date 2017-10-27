@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(exclude={"trace","erreur","pourcentage"})
+@EqualsAndHashCode(exclude={"trace","erreur","pourcentage","limite"})
 public class Molecule {
 
     private String value;

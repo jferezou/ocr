@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -136,6 +137,22 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                             // si la liste continet deja cette molécule, on lui assigne le pourcentage max
                             if(currentList.contains(molecule)) {
                               Molecule currentMolecule = currentList.get(currentList.indexOf(molecule));
+                              currentMolecule.setPourcentage(Math.max(molecule.getPourcentage(), currentMolecule.getPourcentage()));
+                                  String limite = molecule.getLimite();
+                                  if ("*".equals(limite)){
+                                      currentMolecule.setLimite(limite);
+                                  }
+                                  else {
+                                      try {
+                                        double limiteD = Double.parseDouble(limite.replace(",", "."));
+                                        if(limiteD < 1 && limiteD > 0) {
+                                            currentMolecule.setLimite(limite);
+                                        }
+                                      } catch(NumberFormatException e) {
+                                          LOGGER.warn("la limite n'est pas un entier");
+                                      }
+                                  }
+
                               currentMolecule.setPourcentage(Math.max(molecule.getPourcentage(), currentMolecule.getPourcentage()));
                               currentMolecule.setErreur(true);
                             }
@@ -256,7 +273,9 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         else {
             traitementObj = this.getMoleculeNoDigit(tempLine, isGms);
         }
-        traitementObj.setLimite(limite);
+        if(traitementObj != null) {
+            traitementObj.setLimite(limite);
+        }
 
         LOGGER.debug("Objet généré : {}", traitementObj);
         return traitementObj;
@@ -318,23 +337,21 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     private void findMoleculeContainingName(boolean isGms, Molecule traitementObj) {
         MoleculeEntity moleculeEntity = null;
-        try {
-            if (isGms) {
-                moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(this.valeurPrecedente);
-            } else {
-                moleculeEntity = this.paramMoleculesLmsDao.findByNameContaining(this.valeurPrecedente);
+        if(!"".equals(this.valeurPrecedente)) {
+            try {
+                if (isGms) {
+                    moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(this.valeurPrecedente);
+                } else {
+                    moleculeEntity = this.paramMoleculesLmsDao.findByNameContaining(this.valeurPrecedente);
+                }
+                traitementObj.setValue(moleculeEntity.getNom());
+                if (traitementObj.getPourcentage() == null || traitementObj.getPourcentage() < 0) {
+                    traitementObj.setPourcentage(moleculeEntity.getValeurTrace());
+                }
+            } catch (BddException ne) {
+                LOGGER.error("Erreur", ne);
+                traitementObj = null;
             }
-            traitementObj.setValue(moleculeEntity.getNom());
-            if(traitementObj.getPourcentage() == null || traitementObj.getPourcentage() < 0) {
-                traitementObj.setPourcentage(moleculeEntity.getValeurTrace());
-            }
-        }
-        catch(BddException ne) {
-            LOGGER.error("Erreur", ne);
-//            traitementObj.setValue("ERREUR !!!");
-//            traitementObj.setPourcentage(-1.0);
-//            traitementObj.setTrace(true);
-            traitementObj = null;
         }
     }
 

@@ -1,13 +1,14 @@
 @echo off
-
-set PG_DIR=D:\programmes\PostgreSQL\9.2\bin
+set PG_DIR=D:\programmes\postgres\bin
 
 set PSQL=%PG_DIR%\psql.exe
 set DROPDB=%PG_DIR%\dropdb.exe
 
+set PGPASSWORD=admin
+
 echo debut
 
-%DROPDB% -U postgres
+%DROPDB% -U postgres ocr
 
 %PSQL% -U postgres -f ./dropDatabase.sql
 echo BDD supprimee
