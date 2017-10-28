@@ -164,6 +164,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 			ListPdfIdResponse listPdfIdResponse = new ListPdfIdResponse();
 			listPdfIdResponse.setId(result.getId());
 			listPdfIdResponse.setPdfFilePath(result.getPdfFilePath());
+			listPdfIdResponse.setValider(result.getDejaPresentEnBDD());
 			returnValue.add(listPdfIdResponse);
 		}
 		return returnValue;

@@ -14,6 +14,7 @@ public class ResidusDocument {
     private List<Molecule> moleculesLms;
     private String pdfFilePath;
     private String pdfName;
+    private Boolean dejaPresentEnBDD;
     private String reference;
     private String certificatAnalyses;
     private double poids;

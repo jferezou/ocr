@@ -11,6 +11,8 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.ITextExtractionStrategy;
 import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy;
 import com.perso.bdd.dao.ParamMoleculesGmsDao;
 import com.perso.bdd.dao.ParamMoleculesLmsDao;
+import com.perso.bdd.dao.ResidusDocumentDao;
+import com.perso.bdd.entity.ResidusDocumentEntity;
 import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import com.perso.exception.BddException;
 import com.perso.pojo.ocr.Point;
@@ -51,6 +53,9 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     @Resource
     private ParamMoleculesLmsDao paramMoleculesLmsDao;
+
+    @Resource
+    private ResidusDocumentDao residusDocumentDao;
 
     @Override
     public ResidusDocument extraire(Path path) {
@@ -184,6 +189,10 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                 }
             }
         }
+
+        // on verifie si le doc n'est pas deja en base
+        boolean dejaPresentEnBDD = (this.residusDocumentDao.findByIdentifiant(residusDocument.getReference()) != null);
+        residusDocument.setDejaPresentEnBDD(dejaPresentEnBDD);
 
         LOGGER.debug("Fin traitement fichier : {}", path);
         return residusDocument;
