@@ -34,5 +34,5 @@ public class MoleculesLmsEntity extends MoleculeEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "type_id", referencedColumnName = "id")
-    private TypeResidusEntity type;
+    protected TypeResidusEntity type;
 }

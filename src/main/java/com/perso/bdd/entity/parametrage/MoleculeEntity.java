@@ -15,6 +15,7 @@ public abstract class MoleculeEntity {
 
     protected Double valeurTrace;
 
+    protected TypeResidusEntity type;
 
 
 }

@@ -12,7 +12,6 @@ import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStra
 import com.perso.bdd.dao.ParamMoleculesGmsDao;
 import com.perso.bdd.dao.ParamMoleculesLmsDao;
 import com.perso.bdd.dao.ResidusDocumentDao;
-import com.perso.bdd.entity.ResidusDocumentEntity;
 import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import com.perso.exception.BddException;
 import com.perso.pojo.ocr.Point;
@@ -24,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -43,8 +41,6 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResidusExtractorServiceImpl.class);
     private final int taillePage = 840;
-    private List<MoleculeEntity> gmsList;
-    private  List<MoleculeEntity> lmsList;
 
     private String valeurPrecedente;
 
@@ -59,41 +55,15 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
     @Override
     public ResidusDocument extraire(Path path) {
-        this.gmsList = this.paramMoleculesGmsDao.getAllMoleculesGms();
-        this.lmsList = this.paramMoleculesLmsDao.getAllMoleculesLms();
         LOGGER.debug("Début traitement fichier : {}", path);
         ResidusDocument residusDocument = new ResidusDocument();
-        residusDocument.setGmsDataList(this.gmsList);
-        residusDocument.setLmsDataList(this.lmsList);
+        residusDocument.setGmsDataList(this.paramMoleculesGmsDao.getAllMoleculesGms());
+        residusDocument.setLmsDataList(this.paramMoleculesLmsDao.getAllMoleculesLms());
         residusDocument.setPdfFilePath(path.toString());
-
         residusDocument.setPdfName(path.getFileName().toString());
-        PdfDocument pdfDoc = null;
-        PdfReader reader = null;
-        try {
-            reader = new PdfReader(path.toString());
-            pdfDoc = new PdfDocument(reader);
 
-            // en point depuis le coin en bas à gauche
-            // les valeurs recuperee de gimp sont en point du coin en haut à gauche
-            // donc (x1,y1) et (x2,y2) => (x1, taillePage - y2) et (x2, taillePage - y1)
-            Zone zoneReference = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
-            LOGGER.info("ZoneInterpretation : {}", zoneReference.toString());
-            String reference = this.extractValue(pdfDoc.getFirstPage(), zoneReference);
-            LOGGER.debug("Reference : {}", reference);
-            residusDocument.setReference(reference);
-
-            Zone zoneCertificatAnalyse = new Zone(new Point(0, this.taillePage - 148), new Point(157, this.taillePage - 127));
-            LOGGER.info("ZoneInterpretation : {}", zoneCertificatAnalyse.toString());
-            String certificatAnalyse = this.extractValue(pdfDoc.getFirstPage(), zoneCertificatAnalyse);
-            LOGGER.debug("certificatAnalyse : {}", certificatAnalyse);
-            residusDocument.setCertificatAnalyses(certificatAnalyse);
-
-            Zone zonePoids = new Zone(new Point(408, this.taillePage - 312), new Point(493, this.taillePage - 301));
-            LOGGER.info("ZoneInterpretation : {}", zoneCertificatAnalyse.toString());
-            double poids = getPoids(pdfDoc, zonePoids);
-            LOGGER.debug("poids : {}", poids);
-            residusDocument.setPoids(poids);
+        try (PdfReader reader = new PdfReader(path.toString()) ; PdfDocument pdfDoc =  new PdfDocument(reader)) {
+            this.extraireInformationsGeneralesResidu(residusDocument, pdfDoc);
 
             int totalPage = pdfDoc.getNumberOfPages();
             LOGGER.debug("totalPage : {}", totalPage);
@@ -105,23 +75,16 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             LOGGER.info("zoneResultat : {}", zoneResultat.toString());
             // on parcours de la page 1 à la page total - 5
             for(int page = 1; page <= totalPage - 5 ; page ++) {
-                String resultat = "";
+                String resultat;
                 // cas particulier de la page 1 :
-                if(page ==1) {
+                if(page == 1) {
                     resultat = this.extractValue(pdfDoc.getPage(page), zoneResultatP1);
                 }
                 else {
                     resultat = this.extractValue(pdfDoc.getPage(page), zoneResultat);
                 }
                 LOGGER.debug("Resultat : {}", resultat);
-                resultat = resultat.replace("trace found", "");
-                resultat = resultat.replace("Autres non détectables (<LC)", "");
-                resultat = resultat.replace("Autres non détectables >= LC", "");
-                resultat = resultat.replace("Substance Accr. Résultat Limites", "");
-                resultat = resultat.replace("Aucun produit >= LC", "");
-                resultat = resultat.replace("\nA ","A ");
-                resultat = resultat.replace("A","(A)");
-                resultat = resultat.replaceAll("(?m)^\\s", "");
+                resultat = this.nettoyerResultat(resultat);
                 String[] resultatSplit = resultat.split("\n");
                 List<Molecule> currentList = residusDocument.getMoleculesLms();
                 boolean isGms = false;
@@ -144,24 +107,9 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                             if(currentList.contains(molecule)) {
                               Molecule currentMolecule = currentList.get(currentList.indexOf(molecule));
                               currentMolecule.setPourcentage(Math.max(molecule.getPourcentage(), currentMolecule.getPourcentage()));
-                                  String limite = molecule.getLimite();
-                                  if ("*".equals(limite)){
-                                      currentMolecule.setLimite(limite);
-                                      currentMolecule.setTrace(molecule.isTrace());
-                                  }
-                                  else {
-                                      try {
-                                        double limiteD = Double.parseDouble(limite.replace(",", "."));
-                                        if(limiteD < 1 && limiteD > 0) {
-                                            currentMolecule.setLimite(limite);
-                                            currentMolecule.setTrace(molecule.isTrace());
-                                        }
-                                      } catch(NumberFormatException e) {
-                                          LOGGER.warn("la limite n'est pas un entier");
-                                      }
-                                  }
+                              this.setLimite(molecule, currentMolecule);
 
-                              currentMolecule.setPourcentage(Math.max(molecule.getPourcentage(), currentMolecule.getPourcentage()));
+                              // on passe en erreur car il y a eut de la bidouille (exemple : molécule sur plusieurs lignes)
                               currentMolecule.setErreur(true);
                             }
                             else if(molecule.getValue() != "" && molecule.getValue() != null ) {
@@ -170,24 +118,12 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                         }
                     }
                 }
-
                 LOGGER.debug("Resultat nettoyé : {}", resultat);
             }
 
         }
         catch (IOException e) {
             LOGGER.error("Erreur", e);
-        } finally {
-            if(pdfDoc != null) {
-                pdfDoc.close();
-            }
-            if(reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    LOGGER.error("erreur",e);
-                }
-            }
         }
 
         // on verifie si le doc n'est pas deja en base
@@ -196,6 +132,77 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
         LOGGER.debug("Fin traitement fichier : {}", path);
         return residusDocument;
+    }
+
+    /**
+     * permet de choisir la limite si la môlécule est deja présente dans la liste :
+     * si * alors on prend ça
+     * sinon si la limite est un entier en ] 0 ; 1 [ on prend cet entier
+     * @param molecule
+     * @param currentMolecule
+     */
+    private void setLimite(Molecule molecule, Molecule currentMolecule) {
+        String limite = molecule.getLimite();
+        if ("*".equals(limite)){
+            currentMolecule.setLimite(limite);
+            currentMolecule.setTrace(molecule.isTrace());
+        }
+        else {
+            try {
+              double limiteD = Double.parseDouble(limite.replace(",", "."));
+              if(limiteD < 1 && limiteD > 0) {
+                  currentMolecule.setLimite(limite);
+                  currentMolecule.setTrace(molecule.isTrace());
+              }
+            } catch(NumberFormatException e) {
+                LOGGER.warn("la limite n'est pas un entier");
+            }
+        }
+    }
+
+    /**
+     * Méthode permettant d'extraire les infos générales pour un doc pdf résidus : poids, référence et certificat analyse
+     * @param residusDocument
+     * @param pdfDoc
+     */
+    private void extraireInformationsGeneralesResidu(ResidusDocument residusDocument, PdfDocument pdfDoc) {
+        // en point depuis le coin en bas à gauche
+        // les valeurs recuperee de gimp sont en point du coin en haut à gauche
+        // donc (x1,y1) et (x2,y2) => (x1, taillePage - y2) et (x2, taillePage - y1)
+        Zone zoneReference = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
+        LOGGER.info("ZoneInterpretation : {}", zoneReference.toString());
+        String reference = this.extractValue(pdfDoc.getFirstPage(), zoneReference);
+        LOGGER.debug("Reference : {}", reference);
+        residusDocument.setReference(reference);
+
+        Zone zoneCertificatAnalyse = new Zone(new Point(0, this.taillePage - 148), new Point(157, this.taillePage - 127));
+        LOGGER.info("ZoneInterpretation : {}", zoneCertificatAnalyse.toString());
+        String certificatAnalyse = this.extractValue(pdfDoc.getFirstPage(), zoneCertificatAnalyse);
+        LOGGER.debug("certificatAnalyse : {}", certificatAnalyse);
+        residusDocument.setCertificatAnalyses(certificatAnalyse);
+
+        Zone zonePoids = new Zone(new Point(408, this.taillePage - 312), new Point(493, this.taillePage - 301));
+        LOGGER.info("ZoneInterpretation : {}", zoneCertificatAnalyse.toString());
+        double poids = getPoids(pdfDoc, zonePoids);
+        LOGGER.debug("poids : {}", poids);
+        residusDocument.setPoids(poids);
+    }
+
+    /**
+     * Permet de nettoyer le resultat d'une page avec les éléments non utiles
+     * @param resultat
+     * @return
+     */
+    private String nettoyerResultat(String resultat) {
+        resultat = resultat.replace("trace found", "");
+        resultat = resultat.replace("Autres non détectables (<LC)", "");
+        resultat = resultat.replace("Autres non détectables >= LC", "");
+        resultat = resultat.replace("Substance Accr. Résultat Limites", "");
+        resultat = resultat.replace("Aucun produit >= LC", "");
+        resultat = resultat.replace("\nA ","A ");
+        resultat = resultat.replace("A","(A)");
+        resultat = resultat.replaceAll("(?m)^\\s", "");
+        return resultat;
     }
 
     private double getPoids(PdfDocument pdfDoc, Zone zonePoids) {
@@ -265,14 +272,22 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     }
 
 
-    private Molecule traitementLigne(final String line, boolean isGms) {
+    /**
+     * Méthode principale qui permet d'extraire les données pour une molécule en fonction de la ligne passée en paramètre
+     * @param line
+     * @param isGms
+     * @return
+     */
+    public Molecule traitementLigne(final String line, boolean isGms) {
         LOGGER.debug("traitement ligne nettoyée : {}", line);
         String tempLine = line;
-        String[] splitedLine = tempLine.split(" ");
+        // on essaye d'extraire la limite qui est normalement la dernière valeur, donc après le dernier espace
+        int lastSpaceindex = StringUtilsOcr.getLastSpace(tempLine);
         String limite = "";
-        if(splitedLine.length > 1) {
-            limite = splitedLine[splitedLine.length-1];
-            tempLine = tempLine.substring(0, tempLine.lastIndexOf(" "));
+        if(lastSpaceindex > 1) {
+            limite = line.substring(lastSpaceindex + 1, line.length());
+            // on créé une ligne 'temporaire', sans la valeur limite théorique
+            tempLine = line.substring(0, lastSpaceindex);
         }
         Molecule traitementObj;
         int lastSpace = StringUtilsOcr.getLastSpace(tempLine);
@@ -304,16 +319,21 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     }
 
     private Molecule getMoleculeNoDigit(String line, boolean isGms) {
-        Molecule traitementObj;
-        traitementObj = new Molecule();
+        Molecule traitementObj = new Molecule();
         String value = StringUtils.trim(line);
-        double pourcentage = -1;
-        if(isGms) {
-            pourcentage = getPourcentageFromElement(value, gmsList);
+        MoleculeEntity moleculeEntity = null;
+        try {
+            if (isGms) {
+                moleculeEntity = this.paramMoleculesGmsDao.findByName(value);
+            } else {
+                moleculeEntity = this.paramMoleculesLmsDao.findByName(value);
+            }
         }
-        else {
-            pourcentage = getPourcentageFromElement(value, lmsList);
+        catch(BddException e) {
+            LOGGER.error("Erreur", e);
         }
+
+        double pourcentage = (moleculeEntity == null) ? moleculeEntity.getValeurTrace() : -1;
         if(pourcentage != -1) {
             traitementObj.setValue(value);
             traitementObj.setPourcentage(pourcentage);

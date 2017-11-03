@@ -17,6 +17,7 @@ configurations {
     javaxValidation
     swagger
     hibernate
+    baseUnitTest
     all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
 }
 
@@ -113,6 +114,16 @@ dependencies {
     compile (group: 'net.sourceforge.tess4j', name: 'tess4j', version: '3.4.0'){
         exclude module: "logback-classic"
     }
+    baseUnitTest(group: 'junit', name: 'junit', version: '4.12')
+    baseUnitTest(group: 'org.hsqldb', name: 'hsqldb', version: '2.3.4')
+    baseUnitTest(group: 'org.dbunit', name: 'dbunit', version: '2.4.8') {
+        exclude(module: 'slf4j-api')
+    }
+    baseUnitTest(group: 'org.mockito', name: 'mockito-all', version: '1.9.5')
+    baseUnitTest(group: 'org.springframework', name: 'spring-test', version: '4.3.8.RELEASE')
+    baseUnitTest(group: 'org.assertj', name: 'assertj-core', version: '2.1.0')
+    baseUnitTest(group: 'xmlunit', name: 'xmlunit', version: '1.6')
+
     compile(configurations.lombok)
     compile(configurations.cxf)
     compile(configurations.jackson)
@@ -122,6 +133,7 @@ dependencies {
     compile(configurations.javaxValidation)
     compile(configurations.swagger)
     compile(configurations.hibernate)
+    compile(configurations.baseUnitTest)
 
     compile(group: 'javax.transaction', name: 'jta', version: '1.1')
     compile(group: 'org.yaml', name: 'snakeyaml', version: '1.14')
