@@ -125,7 +125,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public File createPdf(final List<AggregatePdf> aggregatePdfs, String ruche) {
+    public File createPdf(final List<AggregatePdf> aggregatePdfs, final String ruche) {
         String name = this.tempDir + "//pdfResultat_"+ruche+".pdf";
         PdfDocument newPdfDoc = null;
         try {

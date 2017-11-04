@@ -34,7 +34,7 @@ public class EspeceDaoImpl extends HibernateDao implements ParamEspeceDao {
 
     @Override
     @Transactional
-    public EspeceEntity findByName(String nom) throws NoResultException {
+    public EspeceEntity findByName(final String nom) throws NoResultException {
         Query requete = getCurrentSession().createQuery("from EspeceEntity where nom=:nom");
         requete.setParameter("nom", nom);
 

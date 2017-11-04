@@ -14,11 +14,11 @@ public class AtomikosJtaPlatform implements JtaPlatform {
     public AtomikosJtaPlatform() {
     }
 
-    public Object getTransactionIdentifier(Transaction transaction) {
+    public Object getTransactionIdentifier(final Transaction transaction) {
         return transaction;
     }
 
-    public void registerSynchronization(Synchronization synchronization) {
+    public void registerSynchronization(final Synchronization synchronization) {
         try {
             txMgr.getTransaction().registerSynchronization(synchronization);
         } catch (Exception var3) {

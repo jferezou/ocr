@@ -11,12 +11,12 @@ public class SpringRunner {
 	private final Class<?> mainClass;
 	private final AnnotationConfigApplicationContext ctx;
 
-	public SpringRunner(Class<?> mainClass, Class<?> config) {
+	public SpringRunner(final Class<?> mainClass, final Class<?> config) {
 		this.mainClass = mainClass;
 		ctx = new AnnotationConfigApplicationContext(config);
 	}
 
-	public void run(String[] args) {
+	public void run(final String[] args) {
 		Object bean = ctx.getBeanFactory().autowire(mainClass, AutowireCapableBeanFactory.AUTOWIRE_NO, true);
 		try {
 			Method method = mainClass.getMethod("run", String[].class,AnnotationConfigApplicationContext.class);

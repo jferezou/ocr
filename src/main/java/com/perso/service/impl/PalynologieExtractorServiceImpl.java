@@ -98,7 +98,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
         }
     }
 
-    private void fillInterpretation(String zoneInterpretationValue, List<Palynologie> compositionList) {
+    private void fillInterpretation(final String zoneInterpretationValue, final List<Palynologie> compositionList) {
         // on repere la ligne d'interpretation (il doit y avoir des % et des ,)
         final String[] splitedInterpretationLine =  zoneInterpretationValue.split("\n");
 
@@ -170,7 +170,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
     }
 
 
-    private List<Palynologie> fillComposition(String zone1Value) {
+    private List<Palynologie> fillComposition(final String zone1Value) {
         String[] tempZone1 = zone1Value.split("\n");
 
         List<Palynologie> compositionList = new ArrayList<>();
@@ -197,7 +197,7 @@ public class PalynologieExtractorServiceImpl implements PalynologieExtractorServ
         return compositionList;
     }
 
-    private String fillAppelationDemandeur(String zoneEchantillonValue) {
+    private String fillAppelationDemandeur(final String zoneEchantillonValue) {
         String zoneEchantillonValueTempName = StringUtils.stripStart(zoneEchantillonValue, " ");
         zoneEchantillonValueTempName = StringUtils.stripEnd(zoneEchantillonValueTempName, " ");
         zoneEchantillonValueTempName = zoneEchantillonValueTempName.replace("\n","");

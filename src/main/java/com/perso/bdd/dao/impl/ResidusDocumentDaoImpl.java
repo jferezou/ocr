@@ -66,7 +66,7 @@ public class ResidusDocumentDaoImpl extends HibernateDao implements ResidusDocum
 
     @Override
     @Transactional
-    public ResidusDocumentEntity findByIdentifiant(String identifiant) {
+    public ResidusDocumentEntity findByIdentifiant(final String identifiant) {
         Query requete = getCurrentSession().createQuery("from ResidusDocumentEntity where identifiant=:identifiant");
         requete.setParameter("identifiant", identifiant);
 

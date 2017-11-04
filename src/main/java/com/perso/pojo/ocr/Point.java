@@ -12,7 +12,7 @@ public class Point {
 	private int y;
 	private final static double MULTIPLIER = 1;
 
-	public Point(int x, int y) {
+	public Point(final int x, final int y) {
 		super();
 		Double tempX = x * MULTIPLIER;
 		Double tempY = y * MULTIPLIER;

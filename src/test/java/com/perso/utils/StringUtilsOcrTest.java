@@ -35,4 +35,18 @@ public class StringUtilsOcrTest {
         assertThat(StringUtilsOcr.getFirstSpace(input)).isEqualTo(2);
     }
 
+
+    @Test
+    public void testTrimEtSupprimeTiretalaFin() {
+        String input = " azerty-";
+        assertThat(StringUtilsOcr.trimEtSupprimeTiretalaFin(input)).isEqualTo("azerty");
+        input = " azerty grr";
+        assertThat(StringUtilsOcr.trimEtSupprimeTiretalaFin(input)).isEqualTo("azerty grr");
+        input = "aze p jjeiei  \n olohz é(rty-";
+        assertThat(StringUtilsOcr.trimEtSupprimeTiretalaFin(input)).isEqualTo("aze p jjeiei  \n olohz é(rty");
+        input = "azerty";
+        assertThat(StringUtilsOcr.trimEtSupprimeTiretalaFin(input)).isEqualTo("azerty");
+    }
+
+
 }

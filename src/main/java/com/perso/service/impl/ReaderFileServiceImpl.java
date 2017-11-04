@@ -208,7 +208,7 @@ public class ReaderFileServiceImpl implements ReaderFileService {
 
 				pdfList.sort(
 						Comparator.comparing((AggregatePdf p) -> p.getRucher())
-								.thenComparing(p -> p.getMatrice())
+								.thenComparing(Comparator.comparing(AggregatePdf::getMatrice).reversed())
 								.thenComparing(p -> p.getDate())
 								.thenComparing(p -> p.getRuche()));
 

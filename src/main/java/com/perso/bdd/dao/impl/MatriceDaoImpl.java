@@ -18,7 +18,7 @@ public class MatriceDaoImpl extends HibernateDao implements ParamMatriceDao {
 
     @Override
     @Transactional
-    public MatriceEntity findByIdentifiant(String identifiant) throws BddException {
+    public MatriceEntity findByIdentifiant(final String identifiant) throws BddException {
         Query requete = getCurrentSession().createQuery("from MatriceEntity where identifiant=:identifiant");
         requete.setParameter("identifiant", identifiant);
 

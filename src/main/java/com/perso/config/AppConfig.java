@@ -81,7 +81,7 @@ public class AppConfig {
 
     @Bean(name = "OCRDS", initMethod = "init", destroyMethod = "close")
     @Primary
-    public DataSource ocrDataSource(@Qualifier("ocrProperties") DataSourceCfgProperties ocrDsConf) {
+    public DataSource ocrDataSource(@Qualifier("ocrProperties") final DataSourceCfgProperties ocrDsConf) {
         PGXADataSource pgDataSource = new PGXADataSource();
         pgDataSource.setUrl(ocrDsConf.getUrl());
         pgDataSource.setUser(ocrDsConf.getUsername());
@@ -96,8 +96,8 @@ public class AppConfig {
     public LocalSessionFactoryBean sessionFactoryBean(
             @Qualifier("OCRDS") final DataSource dataSource,
             @Qualifier("hibernateProperties") final HibernateCfgProperties hibernateProperty,
-            UserTransaction userTransaction,
-            TransactionManager atomikosTransactionManager) {
+            final UserTransaction userTransaction,
+            final TransactionManager atomikosTransactionManager) {
         return createLocalSessionFactoryBean(dataSource, hibernateProperty, userTransaction, atomikosTransactionManager);
     }
 
@@ -124,7 +124,7 @@ public class AppConfig {
     @Bean(
             name = {"transactionManager"}
     )
-    public PlatformTransactionManager transactionManager(UserTransaction userTransaction, TransactionManager atomikosTransactionManager) throws Throwable {
+    public PlatformTransactionManager transactionManager(final UserTransaction userTransaction, final TransactionManager atomikosTransactionManager) throws Throwable {
         return new JtaTransactionManager(userTransaction, atomikosTransactionManager);
     }
 
@@ -134,11 +134,11 @@ public class AppConfig {
     }
 
     @Bean
-    public SessionFactory sessionFactory(LocalSessionFactoryBean sessionFactoryBean) {
+    public SessionFactory sessionFactory(final LocalSessionFactoryBean sessionFactoryBean) {
         return sessionFactoryBean.getObject();
     }
 
-    protected AtomikosDataSourceBean createAtomikosDS(String dsId, XADataSource ds, DataSourceCfgProperties config) {
+    protected AtomikosDataSourceBean createAtomikosDS(final String dsId, final XADataSource ds, final DataSourceCfgProperties config) {
         AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
         xaDataSource.setXaDataSource(ds);
         xaDataSource.setUniqueResourceName(dsId);
@@ -148,7 +148,7 @@ public class AppConfig {
         return xaDataSource;
     }
 
-    protected LocalSessionFactoryBean createLocalSessionFactoryBean(DataSource dataSource, HibernateCfgProperties hibernateCfgProperties, UserTransaction userTransaction, TransactionManager atomikosTransactionManager) {
+    protected LocalSessionFactoryBean createLocalSessionFactoryBean(final DataSource dataSource, final HibernateCfgProperties hibernateCfgProperties, final UserTransaction userTransaction, final TransactionManager atomikosTransactionManager) {
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         AtomikosJtaPlatform.txMgr = atomikosTransactionManager;
         AtomikosJtaPlatform.userTx = userTransaction;

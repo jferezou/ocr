@@ -18,7 +18,7 @@ public class ContactDaoImpl extends HibernateDao implements ParamContactDao {
 
     @Override
     @Transactional
-    public ContactEntity findByCorrespondance(int idCorrespondance) throws BddException {
+    public ContactEntity findByCorrespondance(final int idCorrespondance) throws BddException {
         Query requete = getCurrentSession().createQuery("from ContactEntity where correspondance=:idCorrespondance");
         requete.setParameter("idCorrespondance", idCorrespondance);
 

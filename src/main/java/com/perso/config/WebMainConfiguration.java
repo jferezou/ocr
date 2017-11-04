@@ -39,7 +39,7 @@ public class WebMainConfiguration {
 	}
 
 
-	private FilterRegistrationBean filterBean(int order, Filter filter, String name) {
+	private FilterRegistrationBean filterBean(final int order, final Filter filter, final String name) {
 		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
 		filterRegistration.setFilter(filter);
 		filterRegistration.setName(name);

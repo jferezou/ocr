@@ -11,7 +11,7 @@ public class BddException extends Exception {
 	    super();
 	  }
 
-	  public BddException(String s) {
+	  public BddException(final String s) {
 	    super(s);
 	  }
 }

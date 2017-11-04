@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public abstract class ServerComponent {
     private static String STOPPED = "### STOPPED ###";
-    public static void run(String componentId, String appId, Class<?> appClass, String[] args) {
+    public static void run(final String componentId, final String appId, final Class<?> appClass, final String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> { System.out.println(STOPPED); }));
         EnvironmentInitializer environmentInitializer = new EnvironmentInitializer();
         environmentInitializer.setUp(componentId, appId);
@@ -20,7 +20,7 @@ public abstract class ServerComponent {
         application.run(args);
     }
 
-    public static void run(String componentId, Class<?> appClass, String[] args) {
+    public static void run(final String componentId, final Class<?> appClass, final String[] args) {
         run(componentId, componentId, appClass, args);
     }
 }

@@ -42,7 +42,7 @@ public class EnvironmentInitializer {
         final String mainManagerConfigLocation;
         final String mainBootConfigLocation;
 
-        FolderConfig(String rootDir) {
+        FolderConfig(final String rootDir) {
             configurationLocation = rootDir;
             mainManagerConfigLocation = String.format(FOLDER_STRUCT, rootDir, Resources.OCR_CONFIG, "configuration");
             mainBootConfigLocation = String.format(FOLDER_STRUCT, rootDir, Resources.OCR_CONFIG, "configuration");
@@ -52,7 +52,7 @@ public class EnvironmentInitializer {
     private SortedMap<String, String> updatedProperties = new TreeMap<>();
     private List<String> errors = new ArrayList<>();
 
-    public void setUp(String componentId, String appId) {
+    public void setUp(final String componentId, final String appId) {
         String ocrDevDir = System.getProperty(Props.OCR_DEV_DIR);
         System.setProperty("javax.xml.parsers.DocumentBuilderFactory", "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl");
         // On est en environnement de développement simplifié
@@ -88,7 +88,7 @@ public class EnvironmentInitializer {
     }
 
 
-    private String getSearchLocations(FolderConfig folderConfig, String... appId) {
+    private String getSearchLocations(final FolderConfig folderConfig, final String... appId) {
         String appHolder = APPLICATION_CONF_DIR;
         String appBase = "";
         if (appId.length == 1) {
@@ -102,7 +102,7 @@ public class EnvironmentInitializer {
         return StringUtils.join(locations, ",");
     }
 
-    private void setupBootstrapConfigurationFileLocations(String componentId, String appId, FolderConfig folderConfig, Mode mode) {
+    private void setupBootstrapConfigurationFileLocations(final String componentId, final String appId, final FolderConfig folderConfig, final Mode mode) {
 
         if (Mode.STANDALONE.equals(mode)) {
             setPropertyAppendValues(SPRING_PROFILES_ACTIVE, "standalone");
@@ -133,7 +133,7 @@ public class EnvironmentInitializer {
         setPropertyIfNotSet(Props.LOG4J_CONFIGURATION_FILE, logFileConfiguration);
     }
 
-    private void checkBootstrapProfile(String bootstrapFile) {
+    private void checkBootstrapProfile(final String bootstrapFile) {
         Yaml yaml = new Yaml();
         try {
             Map<String, Object> bootstrapDoc = (Map<String, Object>) yaml.load(new FileReader(bootstrapFile));
@@ -151,7 +151,7 @@ public class EnvironmentInitializer {
         }
     }
 
-    private String selectFile(String filename, String... folders) {
+    private String selectFile(final String filename, final String... folders) {
         for (String folder : folders) {
             File file = new File(folder + filename);
             if (file.exists()) {
@@ -167,7 +167,7 @@ public class EnvironmentInitializer {
      * @param key   nom de la variable système.
      * @param value valeur à définir.
      */
-    private void setPropertyIfNotSet(String key, String value) {
+    private void setPropertyIfNotSet(final String key, final String value) {
         String currentValue = System.getProperty(key);
         if (currentValue == null) {
             updatedProperties.put(key, value);
@@ -176,14 +176,14 @@ public class EnvironmentInitializer {
         }
     }
 
-    public void setUpProcessFiles(SpringApplication application) {
+    public void setUpProcessFiles(final SpringApplication application) {
         File logs = new File("logs");
         File applicationPid = new File(logs, "application.pid");
         File applicationPort = new File(logs, "application.port");
         application.addListeners(new ApplicationPidFileWriter(applicationPid));
         application.addListeners(new EmbeddedServerPortFileWriter(applicationPort));
     }
-    private void setPropertyAppendValues(String key, String values) {
+    private void setPropertyAppendValues(final String key, String values) {
         String currentValue = System.getProperty(key);
         if (currentValue != null) {
             Set<String> setOfValues = new LinkedHashSet<>();
@@ -195,7 +195,7 @@ public class EnvironmentInitializer {
         System.setProperty(key, values);
     }
 
-    private void splitTrimAndAdd(String currentValue, Set<String> set) {
+    private void splitTrimAndAdd(final String currentValue, final Set<String> set) {
         String[] values = StringUtils.split(currentValue, ',');
         for (int i = 0; i < values.length; i++) {
             set.add(StringUtils.trim(values[i]));

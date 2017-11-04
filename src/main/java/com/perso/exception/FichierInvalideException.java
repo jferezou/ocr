@@ -11,7 +11,7 @@ public class FichierInvalideException extends Exception {
 	    super();
 	  }
 
-	  public FichierInvalideException(String s) {
+	  public FichierInvalideException(final String s) {
 	    super(s);
 	  }
 }

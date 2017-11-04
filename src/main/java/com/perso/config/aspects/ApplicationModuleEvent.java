@@ -15,14 +15,14 @@ public abstract class ApplicationModuleEvent implements Closure<ApplicationModul
 
     public static class AfterServiceMethodExecution extends ApplicationModuleEvent {
         @Override
-        public void execute(ApplicationModuleEventListener input) {
+        public void execute(final ApplicationModuleEventListener input) {
             input.afterServiceMethodExecution(ApplicationModule.currentContext());
         }
     }
 
     public static class BeforeServiceMethodExecution extends ApplicationModuleEvent {
         @Override
-        public void execute(ApplicationModuleEventListener input) {
+        public void execute(final ApplicationModuleEventListener input) {
             input.beforeServiceMethodExecution(ApplicationModule.currentContext());
         }
     }

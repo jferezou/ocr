@@ -39,31 +39,31 @@ public class DataSourceCfgProperties {
         return this.driverClassName;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 
-    public void setMinPoolSize(int minPoolSize) {
+    public void setMinPoolSize(final int minPoolSize) {
         this.minPoolSize = minPoolSize;
     }
 
-    public void setMaxPoolSize(int maxPoolSize) {
+    public void setMaxPoolSize(final int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
     }
 
-    public void setTestQuery(String testQuery) {
+    public void setTestQuery(final String testQuery) {
         this.testQuery = testQuery;
     }
 
-    public void setDriverClassName(String driverClassName) {
+    public void setDriverClassName(final String driverClassName) {
         this.driverClassName = driverClassName;
     }
 }

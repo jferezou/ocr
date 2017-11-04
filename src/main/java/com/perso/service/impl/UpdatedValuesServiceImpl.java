@@ -166,7 +166,7 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     }
 
 
-    private Map<String, String> parseStringToMap(String value) throws ParsingException {
+    private Map<String, String> parseStringToMap(final String value) throws ParsingException {
         int accoladeOuvrante = StringUtils.countMatches(value, "{");
         if(accoladeOuvrante != 1) {
             throw new ParsingException("Attention, { est un caractère interdit, enregistrement non pris en compte !");
@@ -296,14 +296,14 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
     }
 
     @Override
-    public void fillPalynologieMap(List<PalynologieDocument> newValues) {
+    public void fillPalynologieMap(final List<PalynologieDocument> newValues) {
         for(PalynologieDocument palynologieDocument : newValues) {
             this.valeursPalynologie.put(palynologieDocument.getId(), palynologieDocument);
         }
     }
 
     @Override
-    public void fillResidusMap(List<ResidusDocument> newValues) {
+    public void fillResidusMap(final List<ResidusDocument> newValues) {
         for(ResidusDocument residusDocument : newValues) {
             this.valeursResidus.put(residusDocument.getId(), residusDocument);
         }

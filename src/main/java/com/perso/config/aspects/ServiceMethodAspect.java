@@ -27,7 +27,7 @@ public class ServiceMethodAspect {
     }
 
     @Around("anyPublicMethodThatReturnResponse() && @annotation(serviceMethod)")
-    public Response executeInApplicationContext(final ProceedingJoinPoint pjp, ServiceMethod serviceMethod) throws Throwable {
+    public Response executeInApplicationContext(final ProceedingJoinPoint pjp, final ServiceMethod serviceMethod) throws Throwable {
         Logger log = LogManager.getLogger(pjp.getTarget().getClass());
         return app.inContext(log, pjp.getSignature().getName(), serviceMethod, pjp.getArgs()).execute(pjp);
     }

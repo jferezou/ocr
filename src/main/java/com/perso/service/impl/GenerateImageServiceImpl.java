@@ -32,7 +32,7 @@ public class GenerateImageServiceImpl implements GenerateImageService {
     @Resource
     private FileServiceImpl fileServiceImpl;
     @Override
-    public File generatePng(Path path) {
+    public File generatePng(final Path path) {
         File targetFile = null;
         try {
             File file = path.toFile();

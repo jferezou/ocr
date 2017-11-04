@@ -177,7 +177,7 @@ public class ExportCsvServiceImpl implements ExportCsvService {
     }
 
     //https://tools.ietf.org/html/rfc4180
-    private String followCVSformat(String value) {
+    private String followCVSformat(final String value) {
 
         String result = value;
         if (result.contains("\"")) {
@@ -187,7 +187,7 @@ public class ExportCsvServiceImpl implements ExportCsvService {
 
     }
 
-    public String writeLine( List<String> values, char customQuote) throws IOException {
+    public String writeLine(final List<String> values, final char customQuote) throws IOException {
 
         boolean first = true;
         StringBuilder sb = new StringBuilder();

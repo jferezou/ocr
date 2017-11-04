@@ -37,7 +37,7 @@ public class MoleculesLmsDaoImpl extends HibernateDao implements ParamMoleculesL
 
     @Override
     @Transactional
-    public MoleculesLmsEntity findByName(String nom) throws BddException {
+    public MoleculesLmsEntity findByName(final String nom) throws BddException {
         Query requete = getCurrentSession().createQuery("from MoleculesLmsEntity where nom=:nom");
         requete.setParameter("nom", nom);
 
@@ -61,7 +61,7 @@ public class MoleculesLmsDaoImpl extends HibernateDao implements ParamMoleculesL
 
     @Override
     @Transactional
-    public MoleculesLmsEntity findByNameContaining(String nom) throws BddException {
+    public MoleculesLmsEntity findByNameContaining(final String nom) throws BddException {
         Query requete = getCurrentSession().createQuery("from MoleculesLmsEntity where nom like :nom");
         requete.setParameter("nom", "%"+nom+"%");
 

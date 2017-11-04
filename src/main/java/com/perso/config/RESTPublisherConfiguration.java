@@ -15,7 +15,7 @@ public class RESTPublisherConfiguration {
      * http://localhost/ContextApp/services/rest/monServiceRest)
      */
     @Bean
-    public RESTPublisher getRESTPublisher(ApplicationContext context, SpringBus bus) {
+    public RESTPublisher getRESTPublisher(final ApplicationContext context, final SpringBus bus) {
         return new RESTPublisher(context, bus);
     }
 }

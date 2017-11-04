@@ -1,14 +1,11 @@
-package com.perso.service;
+package com.perso.service.impl;
 
-import com.perso.bdd.dao.ParamMoleculesGmsDao;
 import com.perso.bdd.dao.impl.MoleculesGmsDaoImpl;
 import com.perso.bdd.dao.impl.MoleculesLmsDaoImpl;
-import com.perso.bdd.entity.parametrage.MoleculeEntity;
 import com.perso.bdd.entity.parametrage.MoleculesGmsEntity;
 import com.perso.bdd.entity.parametrage.TypeResidusEntity;
 import com.perso.exception.BddException;
 import com.perso.pojo.residus.Molecule;
-import com.perso.service.impl.ResidusExtractorServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -18,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -110,7 +108,7 @@ public class TestResidusExtractorService {
     }
 
 
-    private String simulerTraitement(String line) {
+    private String simulerTraitement(final String line) {
         String value = StringUtils.trim(line);
         value = StringUtils.removeEnd(value,"-");
         return value;

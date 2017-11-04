@@ -47,7 +47,7 @@ public class InsertServiceImpl implements InsertService {
     private ResidusDocumentDao residusDocumentDao;
 
     @Override
-    public void insertNewPalynologie(PalynologieDocument result) throws BddException {
+    public void insertNewPalynologie(final PalynologieDocument result) throws BddException {
         // enregistrer BDD
         String appelationDemandeur = result.getAppelationDemandeur();
         appelationDemandeur = StringUtils.stripStart(appelationDemandeur, " ");
@@ -131,7 +131,7 @@ public class InsertServiceImpl implements InsertService {
 
 
     @Override
-    public void insertNewResidus(ResidusDocument result) throws BddException{
+    public void insertNewResidus(final ResidusDocument result) throws BddException{
         // enregistrer BDD
         String identifiant = result.getReference();
         String[] splitreference = identifiant.split("-");
@@ -206,7 +206,7 @@ public class InsertServiceImpl implements InsertService {
 
 
 
-    private RuchesEntity getRuchesEntity(String ruche) {
+    private RuchesEntity getRuchesEntity(final String ruche) {
         RuchesEntity ruchesEntity = this.rucheDao.findRucheByName(ruche);
         if(ruchesEntity == null) {
             LOGGER.warn("La ruche n'existe pas, on la créé");

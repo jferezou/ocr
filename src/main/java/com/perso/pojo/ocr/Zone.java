@@ -8,7 +8,7 @@ public class Zone {
 	private int width;
 	
 	
-	public Zone(Point debut, Point fin) {
+	public Zone(final Point debut, final Point fin) {
 		super();
 		this.debut = debut;
 		this.fin = fin;

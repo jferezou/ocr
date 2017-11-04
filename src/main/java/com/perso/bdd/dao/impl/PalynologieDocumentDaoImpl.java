@@ -64,7 +64,7 @@ public class PalynologieDocumentDaoImpl extends HibernateDao implements Palynolo
 
     @Override
     @Transactional
-    public PalynologieDocumentEntity findByEchantillonId(String idEchantillon) {
+    public PalynologieDocumentEntity findByEchantillonId(final String idEchantillon) {
         Query requete = getCurrentSession().createQuery("from PalynologieDocumentEntity where identifiant_echantillon=:idEchantillon");
         requete.setParameter("idEchantillon", idEchantillon);
 

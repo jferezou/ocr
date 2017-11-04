@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class OCRPhysicalNamingStrategy implements PhysicalNamingStrategy, Serializable {
     private Map<Identifier, Identifier> schemaMapping;
 
-    public OCRPhysicalNamingStrategy(Map<String, String> logSchema2phySchemas) {
+    public OCRPhysicalNamingStrategy(final Map<String, String> logSchema2phySchemas) {
         this.schemaMapping = (Map)logSchema2phySchemas.entrySet().stream().collect(Collectors.toMap((e) -> {
             return this.toId((String)e.getKey());
         }, (e) -> {
@@ -19,11 +19,11 @@ public class OCRPhysicalNamingStrategy implements PhysicalNamingStrategy, Serial
         }));
     }
 
-    private Identifier toId(String key) {
+    private Identifier toId(final String key) {
         return Identifier.toIdentifier(key);
     }
 
-    public Identifier toPhysicalCatalogName(Identifier identifier, JdbcEnvironment context) {
+    public Identifier toPhysicalCatalogName(Identifier identifier, final JdbcEnvironment context) {
         Identifier mappedSchemaIdentifier = (Identifier)this.schemaMapping.get(identifier);
         if (mappedSchemaIdentifier != null) {
             identifier = mappedSchemaIdentifier;
@@ -32,7 +32,7 @@ public class OCRPhysicalNamingStrategy implements PhysicalNamingStrategy, Serial
         return identifier;
     }
 
-    public Identifier toPhysicalSchemaName(Identifier identifier, JdbcEnvironment context) {
+    public Identifier toPhysicalSchemaName(Identifier identifier, final JdbcEnvironment context) {
         Identifier mappedSchemaIdentifier = (Identifier)this.schemaMapping.get(identifier);
         if (mappedSchemaIdentifier != null) {
             identifier = mappedSchemaIdentifier;
@@ -41,15 +41,15 @@ public class OCRPhysicalNamingStrategy implements PhysicalNamingStrategy, Serial
         return identifier;
     }
 
-    public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment context) {
+    public Identifier toPhysicalTableName(final Identifier name, final JdbcEnvironment context) {
         return name;
     }
 
-    public Identifier toPhysicalSequenceName(Identifier name, JdbcEnvironment context) {
+    public Identifier toPhysicalSequenceName(final Identifier name, final JdbcEnvironment context) {
         return name;
     }
 
-    public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment context) {
+    public Identifier toPhysicalColumnName(final Identifier name, final JdbcEnvironment context) {
         return name;
     }
 }

@@ -11,7 +11,7 @@ public class ParsingException extends Exception {
         super();
     }
 
-	  public ParsingException(String s) {
+	  public ParsingException(final String s) {
         super(s);
     }
 }

@@ -33,23 +33,23 @@ public class HibernateCfgProperties {
         return this.DDLMode;
     }
 
-    public void setJdbcDialect(String jdbcDialect) {
+    public void setJdbcDialect(final String jdbcDialect) {
         this.jdbcDialect = jdbcDialect;
     }
 
-    public void setDefaultSchema(String defaultSchema) {
+    public void setDefaultSchema(final String defaultSchema) {
         this.defaultSchema = defaultSchema;
     }
 
-    public void setSchemas(Map<String, String> schemas) {
+    public void setSchemas(final Map<String, String> schemas) {
         this.schemas = schemas;
     }
 
-    public void setPackagesToScan(String[] packagesToScan) {
+    public void setPackagesToScan(final String[] packagesToScan) {
         this.packagesToScan = packagesToScan;
     }
 
-    public void setDDLMode(String DDLMode) {
+    public void setDDLMode(final String DDLMode) {
         this.DDLMode = DDLMode;
     }
 }

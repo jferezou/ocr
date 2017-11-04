@@ -81,7 +81,7 @@ public class ApplicationModule {
      * @param params    les paramètres d'invocation du service.
      * @return un contexte associé au thread courant.
      */
-    public Context inContext(final Logger logger, final String idService, ServiceMethod annotation, final Object... params) {
+    public Context inContext(final Logger logger, final String idService, final ServiceMethod annotation, final Object... params) {
         return new Context(logger, idService, params, annotation);
     }
 
@@ -99,11 +99,11 @@ public class ApplicationModule {
      *
      * @param event l'évènement à propager.
      */
-    public void fire(ApplicationModuleEvent event) {
+    public void fire(final ApplicationModuleEvent event) {
         CollectionUtils.forAllDo(eventListeners, event);
     }
 
-    public void addEventListener(ApplicationModuleEventListener listener) {
+    public void addEventListener(final ApplicationModuleEventListener listener) {
         eventListeners.add(listener);
     }
 
@@ -116,16 +116,16 @@ public class ApplicationModule {
         return thread2Context.get();
     }
 
-    public static <T> T get(Key<T> key) {
+    public static <T> T get(final Key<T> key) {
         return currentContext().get(key);
     }
 
-    public void prepareExecute(Logger logger, String executionName) {
+    public void prepareExecute(final Logger logger, final String executionName) {
         thread2Context.set(new Context(logger, executionName, new Object[]{}, null));
         fire(ApplicationModuleEvent.BEFORE_SERVICE_METHOD_EXECUTION);
     }
 
-    private void prepareExecute(Context context) {
+    private void prepareExecute(final Context context) {
         thread2Context.set(context);
         fire(ApplicationModuleEvent.BEFORE_SERVICE_METHOD_EXECUTION);
     }
@@ -266,7 +266,7 @@ public class ApplicationModule {
          * @return l'élément correspondant à la clé. Null si aucun objet ne correspond à la clé.
          */
         @SuppressWarnings("unchecked")
-        public <T> T get(Key<T> key) {
+        public <T> T get(final Key<T> key) {
             return (T) elements.get(key);
         }
 
@@ -276,7 +276,7 @@ public class ApplicationModule {
          * @param key   la clé à associé à l'élément à ajouter
          * @param value L'élément à ajouter au contexte
          */
-        public <T> void put(Key<?> key, T value) {
+        public <T> void put(final Key<?> key, final T value) {
             elements.put(key, value);
         }
 
@@ -285,7 +285,7 @@ public class ApplicationModule {
          *
          * @param key
          */
-        public <T> void remove(Key<?> key) {
+        public <T> void remove(final Key<?> key) {
             elements.remove(key);
         }
 

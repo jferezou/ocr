@@ -34,7 +34,7 @@ public class ServicesExposesConfiguration {
     }
 
 
-    private static void initializeSwagger(JAXRSServerFactoryBean factoryBean) {
+    private static void initializeSwagger(final JAXRSServerFactoryBean factoryBean) {
         List<Feature> features = new ArrayList<>();
         Swagger2Feature swagger = new Swagger2Feature();
         swagger.setPrettyPrint(true); // pour formatter la sortie JSON/YAML pour que ça soit lisible sans passer par un outil annexe.

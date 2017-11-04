@@ -20,6 +20,7 @@ import com.perso.pojo.residus.*;
 import com.perso.service.ResidusExtractorService;
 import com.perso.utils.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.bcel.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     private ResidusDocumentDao residusDocumentDao;
 
     @Override
-    public ResidusDocument extraire(Path path) {
+    public ResidusDocument extraire(final Path path) {
         LOGGER.debug("Début traitement fichier : {}", path);
         ResidusDocument residusDocument = new ResidusDocument();
         residusDocument.setGmsDataList(this.paramMoleculesGmsDao.getAllMoleculesGms());
@@ -73,7 +74,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             Zone zoneResultat = new Zone(new Point(0, this.taillePage - 742), new Point(345, this.taillePage - 103));
             LOGGER.info("zoneResultat : {}", zoneResultat.toString());
             // TODO mieux gerer ça !
-            String valeurPrecedente = "";
+            String valeurPrecedente = Constantes.EMPTYSTRING;
             // on parcours de la page 1 à la page total - 5
             for(int page = 1; page <= totalPage - 5 ; page ++) {
                 String resultat;
@@ -86,7 +87,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                 }
                 LOGGER.debug("Resultat : {}", resultat);
                 resultat = this.nettoyerResultat(resultat);
-                String[] resultatSplit = resultat.split("\n");
+                String[] resultatSplit = resultat.split(Constantes.NEWLINE);
                 List<Molecule> currentList = residusDocument.getMoleculesLms();
                 boolean isGms = false;
                 for(int lineIndex = 0; lineIndex < resultatSplit.length; lineIndex ++) {
@@ -103,6 +104,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                     }
                     else {
                         Molecule molecule = this.traitementLigne(line, isGms, valeurPrecedente);
+                        valeurPrecedente = StringUtilsOcr.trimEtSupprimeTiretalaFin(line);
                         if(molecule != null) {
                             // si la liste continet deja cette molécule, on lui assigne le pourcentage max
                             if(currentList.contains(molecule)) {
@@ -113,7 +115,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                               // on passe en erreur car il y a eut de la bidouille (exemple : molécule sur plusieurs lignes)
                               currentMolecule.setErreur(true);
                             }
-                            else if(molecule.getValue() != "" && molecule.getValue() != null ) {
+                            else if(molecule.getValue() != null && !Constantes.EMPTYSTRING.equals(molecule.getValue())) {
                                 currentList.add(molecule);
                             }
                         }
@@ -126,6 +128,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         catch (IOException e) {
             LOGGER.error("Erreur", e);
         }
+
 
         // on verifie si le doc n'est pas deja en base
         boolean dejaPresentEnBDD = (this.residusDocumentDao.findByIdentifiant(residusDocument.getReference()) != null);
@@ -142,7 +145,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
      * @param molecule
      * @param currentMolecule
      */
-    private void setLimite(Molecule molecule, Molecule currentMolecule) {
+    private void setLimite(final Molecule molecule, final Molecule currentMolecule) {
         String limite = molecule.getLimite();
         if ("*".equals(limite)){
             currentMolecule.setLimite(limite);
@@ -150,7 +153,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         }
         else {
             try {
-              double limiteD = Double.parseDouble(limite.replace(",", "."));
+              double limiteD = Double.parseDouble(limite.replace(Constantes.VIRGULE, Constantes.POINT));
               if(limiteD < 1 && limiteD > 0) {
                   currentMolecule.setLimite(limite);
                   currentMolecule.setTrace(molecule.isTrace());
@@ -166,7 +169,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
      * @param residusDocument
      * @param pdfDoc
      */
-    private void extraireInformationsGeneralesResidu(ResidusDocument residusDocument, PdfDocument pdfDoc) {
+    private void extraireInformationsGeneralesResidu(final ResidusDocument residusDocument, final PdfDocument pdfDoc) {
         // en point depuis le coin en bas à gauche
         // les valeurs recuperee de gimp sont en point du coin en haut à gauche
         // donc (x1,y1) et (x2,y2) => (x1, taillePage - y2) et (x2, taillePage - y1)
@@ -195,20 +198,26 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
      * @return
      */
     public String nettoyerResultat(String resultat) {
-        resultat = resultat.replace("trace found", "");
-        resultat = resultat.replace("Autres non détectables (<LC)", "");
-        resultat = resultat.replace("Autres non détectables >= LC", "");
-        resultat = resultat.replace("Substance Accr. Résultat Limites", "");
-        resultat = resultat.replace("Aucun produit >= LC", "");
-        resultat = resultat.replace("\nA ","A ");
-        resultat = resultat.replace("A ","(A) ");
-        resultat = resultat.replaceAll("(?m)^\\s", "");
+        resultat = resultat.replace("trace found", Constantes.EMPTYSTRING);
+        resultat = resultat.replace("Autres non détectables (<LC)", Constantes.EMPTYSTRING);
+        resultat = resultat.replace("Autres non détectables >= LC", Constantes.EMPTYSTRING);
+        resultat = resultat.replace("Substance Accr. Résultat Limites", Constantes.EMPTYSTRING);
+        resultat = resultat.replace("Aucun produit >= LC", Constantes.EMPTYSTRING);
+        resultat = resultat.replace(Constantes.NEWLINE + Constantes.A,Constantes.AENTREPARENTHESE + Constantes.ESPACE);
+        resultat = resultat.replace(Constantes.A + Constantes.ESPACE,Constantes.AENTREPARENTHESE + Constantes.ESPACE);
+        resultat = resultat.replaceAll("(?m)^\\s", Constantes.EMPTYSTRING);
         return resultat;
     }
 
-    private double getPoids(PdfDocument pdfDoc, Zone zonePoids) {
+    /**
+     * Recupèrel av lkauer du poids dans le document
+     * @param pdfDoc
+     * @param zonePoids
+     * @return
+     */
+    private double getPoids(final PdfDocument pdfDoc, final Zone zonePoids) {
         String poidsString = this.extractValue(pdfDoc.getFirstPage(), zonePoids);
-        poidsString = poidsString.replace(",",".");
+        poidsString = poidsString.replace(Constantes.VIRGULE,Constantes.POINT);
         double poids = 0.0;
         try {
             poids = Double.parseDouble(poidsString);
@@ -220,11 +229,15 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
     }
 
 
+    /**
+     * Permet d'aggreger des pdf
+     * @param path
+     * @return
+     */
     @Override
-    public AggregatePdf extraireDate(Path path) {
+    public AggregatePdf extraireDate(final Path path) {
     LOGGER.debug("Traitement fichier : {}", path.getFileName());
         // donc (x1,y1) et (x2,y2) => (x1, taillePage - y2) et (x2, taillePage - y1)
-//        Zone zoneDate = new Zone(new Point(120, this.taillePage - 402), new Point(278, this.taillePage - 390));
         Zone zoneDate = new Zone(new Point(118, this.taillePage - 224), new Point(366, this.taillePage - 210));
         LOGGER.info("ZoneInterpretation : {}", zoneDate.toString());
         Date debut = null;
@@ -238,7 +251,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             pdfDoc = new PdfDocument(reader);
             String dates = this.extractValue(pdfDoc.getFirstPage(), zoneDate);
             LOGGER.debug("Dates = {}", dates);
-            String[] dateList = dates.split("-");
+            String[] dateList = dates.split(Constantes.TIRET);
             String periodeDebut = dateList[3];
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             debut = sdf.parse(periodeDebut);
@@ -279,12 +292,12 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
      * @param isGms
      * @return
      */
-    public Molecule traitementLigne(final String line, boolean isGms, String valeurPrecedente) {
+    protected Molecule traitementLigne(final String line, final boolean isGms, final String valeurPrecedente) {
         LOGGER.debug("traitement ligne nettoyée : {}", line);
         String tempLine = line;
         // on essaye d'extraire la limite qui est normalement la dernière valeur, donc après le dernier espace
         int lastSpaceindex = StringUtilsOcr.getLastSpace(tempLine);
-        String limite = "";
+        String limite = Constantes.EMPTYSTRING;
         if(lastSpaceindex > 1) {
             limite = line.substring(lastSpaceindex + 1, line.length());
             // on créé une ligne 'temporaire', sans la valeur limite théorique
@@ -296,7 +309,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         boolean isDouble = false;
         try {
             if(lastSpace > 0) {
-                Double.parseDouble(tempLine.substring(lastSpace, tempLine.length()).replace(",", "."));
+                Double.parseDouble(tempLine.substring(lastSpace, tempLine.length()).replace(Constantes.VIRGULE, Constantes.POINT));
                 isDouble = true;
             }
         } catch (NumberFormatException e){
@@ -319,7 +332,7 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         return traitementObj;
     }
 
-    private Molecule getMoleculeNoDigit(String line, boolean isGms, String valeurPrecedente) {
+    private Molecule getMoleculeNoDigit(final String line, final boolean isGms, final String valeurPrecedente) {
         Molecule traitementObj = new Molecule();
         String value = StringUtils.trim(line);
         MoleculeEntity moleculeEntity = null;
@@ -342,20 +355,20 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         }
         else {
             // on supprime le - à la fin pour éviter les soucis de retour à la ligne
-            String valeurCourante = StringUtils.removeEnd(value,"-");
+            String valeurCourante = StringUtils.removeEnd(value,Constantes.TIRET);
             this.findMoleculeContainingName(isGms, traitementObj, valeurCourante, valeurPrecedente);
-            valeurPrecedente = valeurCourante;
         }
         return traitementObj;
     }
 
-    private Molecule getMoleculeFirstDigitFound(String line, boolean isGms, int firstDigit, String valeurPrecedente) {
+
+    private Molecule getMoleculeFirstDigitFound(final String line, final boolean isGms, final int firstDigit, final String valeurPrecedente) {
         String value = line.substring(0, firstDigit);
         value = StringUtils.trim(value);
         MoleculeEntity moleculeEntity;
         Molecule traitementObj = null;
         try {
-            double pourcentage = Double.parseDouble(line.substring(firstDigit, line.length()).replace(",", "."));
+            double pourcentage = Double.parseDouble(line.substring(firstDigit, line.length()).replace(Constantes.VIRGULE, Constantes.POINT));
             traitementObj = new Molecule();
             traitementObj.setPourcentage(pourcentage);
             try {
@@ -379,9 +392,9 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
         return traitementObj;
     }
 
-    private void findMoleculeContainingName(boolean isGms, Molecule traitementObj, String valeurCourante, String valeurPrecedente) {
+    private void findMoleculeContainingName(final boolean isGms, Molecule traitementObj, final String valeurCourante, final String valeurPrecedente) {
         MoleculeEntity moleculeEntity = null;
-        if(!"".equals(valeurPrecedente)) {
+        if(!Constantes.EMPTYSTRING.equals(valeurPrecedente)) {
             try {
                 if (isGms) {
                     moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(valeurPrecedente);
@@ -394,8 +407,8 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
             try {
                 if(moleculeEntity == null) {
-                    String nom = (valeurPrecedente + " " + valeurCourante).replace("(A)","");
-                    nom = StringUtils.removeEnd(nom,"-");
+                    String nom = (valeurPrecedente + Constantes.ESPACE + valeurCourante).replace(Constantes.AENTREPARENTHESE,Constantes.EMPTYSTRING);
+                    nom = StringUtils.removeEnd(nom,Constantes.TIRET);
                     if (isGms) {
                         moleculeEntity = this.paramMoleculesGmsDao.findByNameContaining(nom);
                     } else {
@@ -403,14 +416,13 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
                     }
                 }
 
-
                 traitementObj.setValue(moleculeEntity.getNom());
                 if (traitementObj.getPourcentage() == null || traitementObj.getPourcentage() < 0) {
                     traitementObj.setPourcentage(moleculeEntity.getValeurTrace());
                     traitementObj.setTrace(true);
                 }
             } catch (BddException ne) {
-                LOGGER.error("Erreur", ne);
+                LOGGER.error("Erreur : {}", ne.getMessage());
                 traitementObj = null;
             }
         }

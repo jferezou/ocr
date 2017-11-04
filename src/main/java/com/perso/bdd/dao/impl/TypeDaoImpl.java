@@ -18,7 +18,7 @@ public class TypeDaoImpl extends HibernateDao implements ParamTypeDao {
 
     @Override
     @Transactional
-    public TypeEntity findByName(String typeName) throws BddException {
+    public TypeEntity findByName(final String typeName) throws BddException {
         Query requete = getCurrentSession().createQuery("from TypeEntity where valeur=:typeName");
         requete.setParameter("typeName", typeName);
 

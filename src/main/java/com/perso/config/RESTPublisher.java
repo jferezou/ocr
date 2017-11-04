@@ -37,7 +37,7 @@ public class RESTPublisher {
      */
     private final SpringBus bus;
 
-    RESTPublisher(ApplicationContext context, SpringBus bus) {
+    RESTPublisher(final ApplicationContext context, final SpringBus bus) {
         this.context = context;
         this.bus = bus;
     }
@@ -47,7 +47,7 @@ public class RESTPublisher {
      *
      * @param services  services à publier.
      */
-    public JAXRSServerFactoryBean publish(Class<?>... services) {
+    public JAXRSServerFactoryBean publish(final Class<?>... services) {
         return publish(DEFAULT_NS, services);
     }
 
@@ -57,12 +57,12 @@ public class RESTPublisher {
      * @param nameSpace nom de la racine à ajouter.
      * @param services  services à publier.
      */
-    public JAXRSServerFactoryBean publish(String nameSpace, Class<?>... services) {
+    public JAXRSServerFactoryBean publish(final String nameSpace, final Class<?>... services) {
         return publish(nameSpace, (factoryBean -> {
         }), services);
     }
 
-    public JAXRSServerFactoryBean publish(String nameSpace, FactoryInitializer initializer, Class<?>... services) {
+    public JAXRSServerFactoryBean publish(final String nameSpace, final FactoryInitializer initializer, final Class<?>... services) {
         JAXRSServerFactoryBean serverFactory = new JAXRSServerFactoryBean();
         serverFactory.setAddress(nameSpace);
 
@@ -83,7 +83,7 @@ public class RESTPublisher {
 
     }
 
-    protected List<Object> getServices(ApplicationContext context, Class<?>... services) {
+    protected List<Object> getServices(final ApplicationContext context, final Class<?>... services) {
         List<Object> beanList = new ArrayList<Object>();
         List<Class<?>> publishedServiceClass = Arrays.asList(services);
         for (Class<?> serviceClass : publishedServiceClass) {

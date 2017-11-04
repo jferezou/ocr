@@ -8,7 +8,7 @@ import com.perso.config.ServerComponent;
  *
  */
 public class OcrServer extends ServerComponent {
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		run("ocr", "ocr", OcrServer.class, args);
 	}
 }
