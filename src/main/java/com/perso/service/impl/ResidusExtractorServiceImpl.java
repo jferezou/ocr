@@ -129,6 +129,12 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
             LOGGER.error("Erreur", e);
         }
 
+        if(residusDocument.getMoleculesGms().isEmpty()) {
+            residusDocument.getMoleculesGms().add(this.createRASMolecule());
+        }
+        if(residusDocument.getMoleculesLms().isEmpty()) {
+            residusDocument.getMoleculesLms().add(this.createRASMolecule());
+        }
 
         // on verifie si le doc n'est pas deja en base
         boolean dejaPresentEnBDD = (this.residusDocumentDao.findByIdentifiant(residusDocument.getReference()) != null);
@@ -136,6 +142,15 @@ public class ResidusExtractorServiceImpl implements ResidusExtractorService {
 
         LOGGER.debug("Fin traitement fichier : {}", path);
         return residusDocument;
+    }
+
+    private Molecule createRASMolecule() {
+        Molecule molecule = new Molecule();
+        molecule.setValue("RAS");
+        molecule.setPourcentage(0.0);
+        molecule.setLimite("");
+        molecule.setTrace(true);
+        return molecule;
     }
 
     /**
