@@ -272,7 +272,8 @@ public class UpdatedValuesServiceImpl implements UpdatedValuesService {
                     "LMR (mg/kg)",
                     "Trace",
                     "Type analyse",
-                    "Fichier PDF"),'"'));
+                    "Fichier PDF",
+                    "Valeur originale"),'"'));
             // on écrit les résultats dans le fichier
             for (ResidusDocumentEntity residusDocument : residusDocsList) {
                 final String str = this.exportCsvService.writeResult(residusDocument);

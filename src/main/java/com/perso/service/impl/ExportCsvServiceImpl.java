@@ -8,6 +8,7 @@ import com.perso.pojo.palynologie.PalynologieDocument;
 import com.perso.pojo.residus.Molecule;
 import com.perso.pojo.residus.ResidusDocument;
 import com.perso.service.ExportCsvService;
+import com.perso.utils.StringUtilsOcr;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -120,6 +121,7 @@ public class ExportCsvServiceImpl implements ExportCsvService {
 
         StringBuilder result = new StringBuilder();
         for(ResidusGmsEntity residusGmsEntity : residusDocument.getResidusGmsList()) {
+            String simplifiedName = getSimplifiedString(residusGmsEntity.getMoleculeGms().getNom());
             result.append(writeLine(Arrays.asList(certificatAnalyse,
                     annee,
                     "",
@@ -138,15 +140,18 @@ public class ExportCsvServiceImpl implements ExportCsvService {
                     "",
                     poids.toString().replace(".",","),
                     residusGmsEntity.getMoleculeGms().getType().getNom(),
-                    residusGmsEntity.getMoleculeGms().getNom(),
+                    simplifiedName,
                     residusGmsEntity.getTaux().toString().replace(".",","),
                     String.valueOf(residusGmsEntity.getMoleculeGms().getValeurTrace()).replace(".",","),
                     residusGmsEntity.getLimite(),
                     residusGmsEntity.getTrace().toString(),
                     "GMS",
-                    pdfFileName),'"'));
+                    pdfFileName,
+                    residusGmsEntity.getMoleculeGms().getNom()),'"'));
         }
         for(ResidusLmsEntity residusLmsEntity : residusDocument.getResidusLmsList()) {
+            String simplifiedName = getSimplifiedString(residusLmsEntity.getMoleculeLms().getNom());
+
             result.append(writeLine(Arrays.asList(certificatAnalyse,
                     annee,
                     "",
@@ -165,15 +170,31 @@ public class ExportCsvServiceImpl implements ExportCsvService {
                     "",
                     poids.toString().replace(".",","),
                     residusLmsEntity.getMoleculeLms().getType().getNom(),
-                    residusLmsEntity.getMoleculeLms().getNom(),
+                    simplifiedName,
                     residusLmsEntity.getTaux().toString().replace(".",","),
                     String.valueOf(residusLmsEntity.getMoleculeLms().getValeurTrace()).replace(".",","),
                     residusLmsEntity.getLimite(),
                     residusLmsEntity.getTrace().toString(),
                     "LMS",
-                    pdfFileName),'"'));
+                    pdfFileName,
+                    residusLmsEntity.getMoleculeLms().getNom()),'"'));
         }
         return result.toString();
+    }
+
+    private String getSimplifiedString(final String value) {
+        String simplifiedName = value;
+        int parentheseIndex = StringUtilsOcr.getFirstParenthese(value);
+        int deuxPointsIndex = StringUtilsOcr.getFirstDeuxPoint(value);
+        if(parentheseIndex > 0 && deuxPointsIndex > 0) {
+            simplifiedName = simplifiedName.substring(0, Math.min(parentheseIndex, deuxPointsIndex));
+        } else if(parentheseIndex == -1 && deuxPointsIndex > 0) {
+            simplifiedName = simplifiedName.substring(0, deuxPointsIndex);
+        } else if(parentheseIndex > 0 && deuxPointsIndex == -1) {
+            simplifiedName = simplifiedName.substring(0, parentheseIndex);
+        }
+        simplifiedName = simplifiedName.trim();
+        return simplifiedName;
     }
 
     //https://tools.ietf.org/html/rfc4180

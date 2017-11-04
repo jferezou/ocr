@@ -9,6 +9,8 @@ public class Constantes {
     public static final String VIRGULE = ",";
     public static final String POINT = ".";
     public static final String NEWLINE = "\n";
+    public static final String PARENTHESEOUVRANTE = "(";
+    public static final String DEUXPOINT = ":";
 
 
     public static final String AENTREPARENTHESE = "(A)";

@@ -23,19 +23,23 @@ public class StringUtilsOcr {
         return value;
     }
     public static int getFirstSpace(final String stringValue) {
-        Pattern pattern = Pattern.compile("(\\s)+");
-        Matcher matcher = pattern.matcher(stringValue);
-        matcher.find();
-        int value = -1;
-        try {
-            value = matcher.start(1);
-        } catch (IllegalStateException | IndexOutOfBoundsException e) {
-            LOGGER.warn("Erreur lors de la récupération de l'espace pour : {}",stringValue);
-        }
+        int value = stringValue.indexOf(Constantes.ESPACE);
         LOGGER.debug("Index du 1er espace de la chaîne {} : {}", stringValue, value);
         return value;
     }
 
+
+    public static int getFirstParenthese(final String stringValue) {
+        int value = stringValue.indexOf(Constantes.PARENTHESEOUVRANTE);
+        LOGGER.debug("Index du 1er ( de la chaîne {} : {}", stringValue, value);
+        return value;
+    }
+
+    public static int getFirstDeuxPoint(final String stringValue) {
+        int value = stringValue.indexOf(Constantes.DEUXPOINT);
+        LOGGER.debug("Index du 1er : de la chaîne {} : {}", stringValue, value);
+        return value;
+    }
     public static int getLastUnderscore(final String stringValue) {
         int lastUnderScore = stringValue.lastIndexOf(Constantes.UNDERSCORE);
 
